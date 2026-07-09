@@ -21,6 +21,10 @@
             margin: 0 auto;
             padding: 0 20px;
         }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
         /* ===== ШАПКА ===== */
         .header {
@@ -45,7 +49,6 @@
             font-size: 26px;
             font-weight: 800;
             color: #1a1a2e;
-            text-decoration: none;
         }
         .logo span { color: #2d7d46; }
         .logo small { font-size: 13px; font-weight: 400; color: #888; }
@@ -73,14 +76,8 @@
             font-weight: 700;
             font-size: 16px;
         }
-        .user-info .name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-        .user-info .role {
-            font-size: 12px;
-            color: #888;
-        }
+        .user-info .name { font-weight: 600; font-size: 14px; }
+        .user-info .role { font-size: 12px; color: #888; }
         .btn {
             padding: 8px 20px;
             border: none;
@@ -274,12 +271,19 @@
             overflow: hidden;
             position: relative;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .ad-card .media-preview img,
         .ad-card .media-preview video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        .ad-card .media-preview .no-media {
+            font-size: 48px;
+            color: #ccc;
         }
         .ad-card .media-preview .media-count {
             position: absolute;
@@ -339,7 +343,7 @@
             margin-top: auto;
         }
 
-        /* ===== ССЫЛКА И ШАРИНГ ===== */
+        /* ===== ССЫЛКИ И ШАРИНГ ===== */
         .ad-card .ad-link-row {
             display: flex;
             align-items: center;
@@ -375,6 +379,7 @@
         .ad-card .ad-link-row .share-btn.wa { background: #25D366; color: white; }
         .ad-card .ad-link-row .share-btn.sms { background: #ff9800; color: white; }
         .ad-card .ad-link-row .share-btn.email { background: #9c27b0; color: white; }
+        .ad-card .ad-link-row .share-btn.copy { background: #2d7d46; color: white; }
         .ad-card .ad-link-row .share-btn:active { transform: scale(0.95); }
 
         /* ===== МОДАЛКА ===== */
@@ -458,12 +463,19 @@
             background: #f5f5f5;
             position: relative;
             aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .detail-gallery .gallery-item img,
         .detail-gallery .gallery-item video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        .detail-gallery .gallery-item .no-media {
+            font-size: 32px;
+            color: #ccc;
         }
 
         .detail-link {
@@ -536,13 +548,8 @@
             font-size: 20px;
             font-weight: 700;
         }
-        .contact-block .seller-info .name-phone {
-            font-size: 14px;
-        }
-        .contact-block .seller-info .name-phone .name {
-            font-weight: 700;
-            font-size: 16px;
-        }
+        .contact-block .seller-info .name-phone { font-size: 14px; }
+        .contact-block .seller-info .name-phone .name { font-weight: 700; font-size: 16px; }
         .contact-block .seller-info .name-phone .phone {
             color: #2d7d46;
             font-weight: 600;
@@ -803,6 +810,9 @@
         }
         .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 
+        /* ===== МОДАЛКА ВХОДА ===== */
+        .login-modal .modal-content { max-width: 400px; }
+
         /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
             .header-content { flex-direction: column; align-items: stretch; gap: 8px; }
@@ -851,7 +861,6 @@
             <button class="btn-fav" onclick="showFavorites()">
                 ⭐ Избранное <span class="count" id="favoritesCount">0</span>
             </button>
-            <!-- Кнопка входа/выхода -->
             <button class="btn btn-primary" id="loginBtn" onclick="toggleLoginForm()">Войти</button>
             <button class="btn-logout" id="logoutBtn" onclick="logout()" style="display:none;">🚪 Выйти</button>
         </div>
@@ -947,8 +956,8 @@
 <div class="toast" id="toast"></div>
 
 <!-- ========== МОДАЛКА ВХОДА ========== -->
-<div class="modal-overlay" id="loginModal">
-    <div class="modal-content" style="max-width:400px;">
+<div class="modal-overlay login-modal" id="loginModal">
+    <div class="modal-content">
         <button class="close-btn" onclick="closeLogin()">✕</button>
         <h2 style="margin-bottom:20px;">🔑 Вход</h2>
         <form onsubmit="login(event)">
@@ -968,10 +977,13 @@
 
 <script>
     // ================================================================
-    //  ДАННЫЕ
+    //  ДАННЫЕ С РЕАЛЬНЫМИ КАРТИНКАМИ
     // ================================================================
     const ADMIN_PHONE = '+79678297477';
     const ADMIN_NAME = 'Дмитрий';
+
+    // Генерация реальных изображений через picsum.photos
+    const IMG_BASE = 'https://picsum.photos/seed/';
 
     let adsData = [{
         id: 1,
@@ -985,7 +997,7 @@
         area: 41,
         floor: 11,
         totalFloors: 21,
-        description: 'Светлая студия на 11 этаже. Рядом парк, магазины. Мебель и техника в комплекте.',
+        description: 'Светлая студия на 11 этаже. Рядом парк, магазины. Мебель и техника в комплекте. Отличный вариант для одного человека или пары.',
         features: ['Мебель', 'Техника', 'Интернет', 'Кондиционер'],
         date: '2026-07-10',
         badge: 'rent',
@@ -993,11 +1005,13 @@
         region: 'Астрахань',
         actual: true,
         media: [
-            { type: 'image', url: 'https://via.placeholder.com/600x400/2d7d46/ffffff?text=Квартира+1' },
-            { type: 'image', url: 'https://via.placeholder.com/600x400/1a73e8/ffffff?text=Квартира+2' }
+            { type: 'image', url: IMG_BASE + 'studio1/400/300' },
+            { type: 'image', url: IMG_BASE + 'studio2/400/300' },
+            { type: 'image', url: IMG_BASE + 'studio3/400/300' }
         ],
         reviews: [
-            { name: 'Анна', text: 'Отличная квартира! Всё как на фото.', rating: 5, date: '2026-07-08' }
+            { name: 'Анна', text: 'Отличная квартира! Всё как на фото.', rating: 5, date: '2026-07-08' },
+            { name: 'Иван', text: 'Хороший вариант, рекомендую.', rating: 4, date: '2026-07-06' }
         ]
     }, {
         id: 2,
@@ -1011,7 +1025,7 @@
         area: 45,
         floor: 13,
         totalFloors: 17,
-        description: 'Квартира с видом на набережную. Отличный район, рядом рестораны, парк.',
+        description: 'Квартира с видом на набережную. Отличный район, рядом рестораны, парк. Сделан современный ремонт.',
         features: ['Вид на набережную', 'Лифт', 'Домофон', 'Парковка'],
         date: '2026-07-09',
         badge: 'rent',
@@ -1019,9 +1033,12 @@
         region: 'Астрахань',
         actual: true,
         media: [
-            { type: 'image', url: 'https://via.placeholder.com/600x400/ff6f00/ffffff?text=Набережная' }
+            { type: 'image', url: IMG_BASE + 'naberezhnaya1/400/300' },
+            { type: 'image', url: IMG_BASE + 'naberezhnaya2/400/300' }
         ],
-        reviews: []
+        reviews: [
+            { name: 'Мария', text: 'Шикарный вид, квартира чистая.', rating: 5, date: '2026-07-07' }
+        ]
     }, {
         id: 3,
         type: 'Дом',
@@ -1034,7 +1051,7 @@
         area: 100,
         floor: 1,
         totalFloors: 1,
-        description: 'Уютный коттедж с участком. Индивидуальное отопление, гараж.',
+        description: 'Уютный коттедж с участком. Индивидуальное отопление, гараж. Отличное место для семьи с детьми.',
         features: ['Гараж', 'Участок', 'Индивидуальное отопление', 'Сад'],
         date: '2026-07-06',
         badge: 'rent',
@@ -1042,7 +1059,8 @@
         region: 'Астрахань',
         actual: true,
         media: [
-            { type: 'image', url: 'https://via.placeholder.com/600x400/bf360c/ffffff?text=Коттедж' }
+            { type: 'image', url: IMG_BASE + 'cottage1/400/300' },
+            { type: 'image', url: IMG_BASE + 'cottage2/400/300' }
         ],
         reviews: []
     }, {
@@ -1057,7 +1075,7 @@
         area: 10,
         floor: 0,
         totalFloors: 0,
-        description: '10 соток в живописном месте. Электричество, дорога, рядом Волга.',
+        description: '10 соток в живописном месте. Электричество, дорога, рядом Волга. Отличное место для загородной жизни.',
         features: ['Электричество', 'Вода', 'Рядом Волга', 'Дорога'],
         date: '2026-07-05',
         badge: 'sale',
@@ -1065,15 +1083,66 @@
         region: 'Астраханская область',
         actual: false,
         media: [
-            { type: 'image', url: 'https://via.placeholder.com/600x400/33691e/ffffff?text=Участок' }
+            { type: 'image', url: IMG_BASE + 'land1/400/300' }
+        ],
+        reviews: []
+    }, {
+        id: 5,
+        type: 'Квартира',
+        action: 'Продажа',
+        rooms: 3,
+        title: '3-к. в центре Астрахани',
+        address: 'Астрахань, ул. Пушкина, 15',
+        price: 8500000,
+        priceText: '8 500 000 ₽',
+        area: 78,
+        floor: 5,
+        totalFloors: 9,
+        description: 'Просторная 3-комнатная квартира в центре Астрахани. Рядом набережная, парк, школы. Качественный ремонт, можно заезжать сразу.',
+        features: ['Парковка', 'Лифт', 'Домофон', 'Рядом набережная'],
+        date: '2026-07-08',
+        badge: 'sale',
+        emoji: '🏢',
+        region: 'Астрахань',
+        actual: true,
+        media: [
+            { type: 'image', url: IMG_BASE + 'center1/400/300' },
+            { type: 'image', url: IMG_BASE + 'center2/400/300' },
+            { type: 'image', url: IMG_BASE + 'center3/400/300' }
+        ],
+        reviews: []
+    }, {
+        id: 6,
+        type: 'Коммерческая',
+        action: 'Аренда',
+        rooms: 0,
+        title: 'Офис в центре Астрахани',
+        address: 'Астрахань, ул. Кирова, 18',
+        price: 75000,
+        priceText: '75 000 ₽/мес',
+        area: 55,
+        floor: 3,
+        totalFloors: 6,
+        description: 'Современный офис в центре Астрахани. Панорамные окна, кондиционер, интернет. Круглосуточная охрана, парковка. Подходит для компании до 8 сотрудников.',
+        features: ['Охрана', 'Парковка', 'Кондиционер', 'Интернет'],
+        date: '2026-07-04',
+        badge: 'rent',
+        emoji: '🏢',
+        region: 'Астрахань',
+        actual: true,
+        media: [
+            { type: 'image', url: IMG_BASE + 'office1/400/300' },
+            { type: 'image', url: IMG_BASE + 'office2/400/300' }
         ],
         reviews: []
     }];
 
-    let nextId = 5;
+    let nextId = 7;
     let currentAdId = null;
     let currentFiltered = [...adsData];
     let currentUser = null;
+    let tempMediaUrls = [];
+    let editingId = null;
 
     // ================================================================
     //  АВТОРИЗАЦИЯ
@@ -1120,11 +1189,9 @@
             return;
         }
 
-        // Нормализуем номер
         const cleanPhone = phone.replace(/[^0-9]/g, '');
         const adminClean = ADMIN_PHONE.replace(/[^0-9]/g, '');
         
-        // Проверяем, что это Дмитрий
         if (cleanPhone !== adminClean || name.toLowerCase() !== ADMIN_NAME.toLowerCase()) {
             showToast('❌ Доступ только для Дмитрия (+7 967 829 74 77)');
             return;
@@ -1165,7 +1232,7 @@
     }
 
     // ================================================================
-    //  ИЗБРАННОЕ (ДОСТУПНО ГОСТЯМ)
+    //  ИЗБРАННОЕ
     // ================================================================
     function getFavorites() {
         try { return JSON.parse(localStorage.getItem('favorites') || '[]'); } catch { return []; }
@@ -1200,7 +1267,7 @@
     }
 
     // ================================================================
-    //  ШАРИНГ (ГОСТИ МОГУТ СКИДЫВАТЬ)
+    //  ССЫЛКИ И ШАРИНГ
     // ================================================================
     function getFullLink(id) {
         return window.location.href.split('?')[0] + '?ad=' + (id || currentAdId);
@@ -1278,7 +1345,12 @@
                         ${fav ? '❤️' : '🤍'}
                     </button>
                     <div class="media-preview" onclick="event.stopPropagation(); openAd(${ad.id})">
-                        ${firstMedia ? (firstMedia.type === 'image' ? `<img src="${firstMedia.url}" alt="${ad.title}" loading="lazy">` : `<video src="${firstMedia.url}" muted playsinline></video>`) : '<div style="height:100%; display:flex; align-items:center; justify-content:center; font-size:48px;">🏠</div>'}
+                        ${firstMedia ? 
+                            (firstMedia.type === 'image' ? 
+                                `<img src="${firstMedia.url}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'no-media\\'>🏠</div>';">` : 
+                                `<video src="${firstMedia.url}" muted playsinline></video>`) : 
+                            '<div class="no-media">🏠</div>'
+                        }
                         ${mediaCount > 1 ? `<span class="media-count">+${mediaCount - 1} 📷</span>` : ''}
                     </div>
                     <div class="card-body">
@@ -1296,14 +1368,13 @@
                             ${ad.reviews && ad.reviews.length ? `<span>💬 ${ad.reviews.length}</span>` : ''}
                         </div>
                     </div>
-                    <!-- БЛОК ССЫЛОК ДЛЯ ГОСТЕЙ -->
                     <div class="ad-link-row" onclick="event.stopPropagation();">
                         <input class="link-input" type="text" value="${shortLink}" readonly onclick="this.select(); this.setSelectionRange(0, this.value.length);" />
                         <button class="share-btn tg" onclick="shareLink('telegram', '${fullLink}');">✈️</button>
                         <button class="share-btn wa" onclick="shareLink('whatsapp', '${fullLink}');">💬</button>
                         <button class="share-btn sms" onclick="shareLink('sms', '${fullLink}');">📱</button>
                         <button class="share-btn email" onclick="shareLink('email', '${fullLink}');">✉️</button>
-                        <button class="share-btn copy" onclick="shareLink('copy', '${fullLink}');" style="background:#2d7d46; color:white; border:none; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600; cursor:pointer;">📋</button>
+                        <button class="share-btn copy" onclick="shareLink('copy', '${fullLink}');">📋</button>
                     </div>
                 </div>
             `;
@@ -1353,9 +1424,20 @@
                 <div class="detail-gallery">
                     ${ad.media.map(m => `
                         <div class="gallery-item">
-                            ${m.type === 'image' ? `<img src="${m.url}" alt="Фото" loading="lazy">` : `<video src="${m.url}" controls playsinline></video>`}
+                            ${m.type === 'image' ? 
+                                `<img src="${m.url}" alt="Фото" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'no-media\\'>📷</div>';">` : 
+                                `<video src="${m.url}" controls playsinline></video>`
+                            }
                         </div>
                     `).join('')}
+                </div>
+            `;
+        } else {
+            galleryHtml = `
+                <div class="detail-gallery">
+                    <div class="gallery-item">
+                        <div class="no-media">🏠</div>
+                    </div>
                 </div>
             `;
         }
@@ -1418,7 +1500,6 @@
 
             ${galleryHtml}
 
-            <!-- КНОПКИ ШАРИНГА В МОДАЛКЕ -->
             <div style="margin:12px 0;">
                 <div style="font-weight:600; font-size:14px; color:#1a1a2e; margin-bottom:8px;">📤 Поделиться объявлением:</div>
                 <div class="share-buttons-modal">
@@ -1579,6 +1660,301 @@
     }
 
     // ================================================================
+    //  ДОБАВЛЕНИЕ/РЕДАКТИРОВАНИЕ (ДЛЯ ДМИТРИЯ)
+    // ================================================================
+    function openAddForm() {
+        if (!currentUser || !currentUser.isAdmin) {
+            showToast('⛔ Только Дмитрий может добавлять объявления!');
+            return;
+        }
+        editingId = null;
+        tempMediaUrls = [];
+        showEditForm(null);
+    }
+
+    function showEditForm(ad) {
+        const isEdit = !!ad;
+        const mediaList = ad?.media || [];
+        const mediaHtml = mediaList.map((m, i) => `
+            <span class="file-tag">
+                ${m.type === 'image' ? '📷' : '🎬'} ${m.type === 'image' ? 'Фото' : 'Видео'}
+                <span class="remove-file" onclick="removeMedia(${ad.id}, ${i})">✕</span>
+            </span>
+        `).join('');
+
+        const html = `
+            <h2>${isEdit ? '✏️ Редактирование объявления' : '➕ Добавление объявления'}</h2>
+            <p style="color:#888; font-size:14px; margin-bottom:16px;">📍 Все объявления только по Астрахани и Астраханской области</p>
+
+            <form class="edit-form" style="display:flex; flex-direction:column; gap:14px;" onsubmit="saveAd(event)">
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Тип *</label>
+                        <select id="editType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            <option value="Квартира" ${ad?.type === 'Квартира' ? 'selected' : ''}>Квартира</option>
+                            <option value="Дом" ${ad?.type === 'Дом' ? 'selected' : ''}>Дом</option>
+                            <option value="Земельный участок" ${ad?.type === 'Земельный участок' ? 'selected' : ''}>Земельный участок</option>
+                            <option value="Коммерческая" ${ad?.type === 'Коммерческая' ? 'selected' : ''}>Коммерческая</option>
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Действие *</label>
+                        <select id="editAction" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            <option value="Продажа" ${ad?.action === 'Продажа' ? 'selected' : ''}>Продажа</option>
+                            <option value="Аренда" ${ad?.action === 'Аренда' ? 'selected' : ''}>Аренда</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Эмодзи</label>
+                        <select id="editEmoji" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            ${['🏢','🏠','🏡','🌳','🌲','🏘️'].map(e => `<option value="${e}" ${ad?.emoji === e ? 'selected' : ''}>${e}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Комнат</label>
+                        <input type="number" id="editRooms" value="${ad?.rooms || 0}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Название *</label>
+                    <input type="text" id="editTitle" value="${ad?.title || ''}" placeholder="Например: 3-комнатная в центре" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Адрес *</label>
+                    <input type="text" id="editAddress" value="${ad?.address || ''}" placeholder="Астрахань, ул. Пушкина, 15" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    <div style="font-size:13px; color:#0d47a1; background:#e3f2fd; padding:8px 14px; border-radius:8px; margin-top:4px;">📍 Только Астрахань и область</div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Цена *</label>
+                        <input type="text" id="editPrice" value="${ad?.priceText || ''}" placeholder="5 000 000 ₽" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Площадь (м²)</label>
+                        <input type="number" id="editArea" value="${ad?.area || ''}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Этаж</label>
+                        <input type="number" id="editFloor" value="${ad?.floor || ''}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Всего этажей</label>
+                        <input type="number" id="editTotalFloors" value="${ad?.totalFloors || ''}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Описание</label>
+                    <textarea id="editDescription" rows="3" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px; font-family:inherit;">${ad?.description || ''}</textarea>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Особенности (через запятую)</label>
+                    <input type="text" id="editFeatures" value="${ad?.features?.join(', ') || ''}" placeholder="Парковка, Лифт, Домофон" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Фото и видео (вставьте ссылку)</label>
+                    <input type="text" id="editMediaUrl" placeholder="https://example.com/photo.jpg" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    <button type="button" onclick="addMediaUrl()" style="margin-top:4px; padding:6px 16px; background:#2d7d46; color:white; border:none; border-radius:8px; cursor:pointer;">➕ Добавить медиа</button>
+                    <div class="file-list" id="fileList">
+                        ${mediaHtml}
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Актуально</label>
+                    <select id="editActual" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                        <option value="true" ${ad?.actual !== false ? 'selected' : ''}>Да</option>
+                        <option value="false" ${ad?.actual === false ? 'selected' : ''}>Нет</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Регион</label>
+                        <select id="editRegion" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            <option value="Астрахань" ${ad?.region === 'Астрахань' ? 'selected' : ''}>Астрахань</option>
+                            <option value="Астраханская область" ${ad?.region === 'Астраханская область' ? 'selected' : ''}>Астраханская область</option>
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Дата</label>
+                        <input type="date" id="editDate" value="${ad?.date || new Date().toISOString().split('T')[0]}" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:8px;">
+                    <button type="submit" style="flex:1; padding:12px; background:#2d7d46; color:white; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer;">💾 Сохранить</button>
+                    <button type="button" onclick="closeModal()" style="flex:1; padding:12px; background:#f5f5f5; color:#555; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer;">Отмена</button>
+                </div>
+            </form>
+        `;
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('modalOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function addMediaUrl() {
+        const url = document.getElementById('editMediaUrl').value.trim();
+        if (!url) { showToast('⚠️ Введите ссылку'); return; }
+        tempMediaUrls.push({ type: 'image', url: url });
+        document.getElementById('editMediaUrl').value = '';
+        updateMediaList();
+    }
+
+    function updateMediaList() {
+        const list = document.getElementById('fileList');
+        if (!list) return;
+        list.innerHTML = tempMediaUrls.map((m, i) => `
+            <span class="file-tag">
+                📷 ${m.url.substring(0, 30)}${m.url.length > 30 ? '...' : ''}
+                <span class="remove-file" onclick="removeTempMedia(${i})">✕</span>
+            </span>
+        `).join('');
+    }
+
+    function removeTempMedia(index) {
+        tempMediaUrls.splice(index, 1);
+        updateMediaList();
+    }
+
+    function removeMedia(adId, index) {
+        const ad = adsData.find(a => a.id === adId);
+        if (ad && ad.media) {
+            ad.media.splice(index, 1);
+            showToast('🗑️ Медиа удалено');
+            openAd(adId);
+            renderAds(currentFiltered);
+        }
+    }
+
+    function saveAd(e) {
+        e.preventDefault();
+        if (!currentUser || !currentUser.isAdmin) {
+            showToast('⛔ Только Дмитрий может сохранять!');
+            return;
+        }
+        const title = document.getElementById('editTitle').value.trim();
+        const address = document.getElementById('editAddress').value.trim();
+        const priceText = document.getElementById('editPrice').value.trim();
+        const type = document.getElementById('editType').value;
+        const action = document.getElementById('editAction').value;
+        const emoji = document.getElementById('editEmoji').value;
+        const rooms = parseInt(document.getElementById('editRooms').value) || 0;
+        const area = parseInt(document.getElementById('editArea').value) || 0;
+        const floor = parseInt(document.getElementById('editFloor').value) || 0;
+        const totalFloors = parseInt(document.getElementById('editTotalFloors').value) || 0;
+        const description = document.getElementById('editDescription').value.trim();
+        const features = document.getElementById('editFeatures').value.split(',').map(f => f.trim()).filter(f => f);
+        const region = document.getElementById('editRegion').value;
+        const date = document.getElementById('editDate').value;
+        const actual = document.getElementById('editActual').value === 'true';
+
+        if (!title || !address || !priceText) {
+            showToast('⚠️ Заполните обязательные поля');
+            return;
+        }
+
+        const isAstrakhan = address.toLowerCase().includes('астрахан') ||
+            address.toLowerCase().includes('астраханской обл') ||
+            address.toLowerCase().includes('астраханская обл') ||
+            region === 'Астрахань' || region === 'Астраханская область';
+        if (!isAstrakhan) {
+            showToast('⚠️ Объявления только по Астрахани и области!');
+            return;
+        }
+
+        const badge = action === 'Продажа' ? 'sale' : 'rent';
+        let media = [];
+        if (editingId) {
+            const existing = adsData.find(a => a.id === editingId);
+            if (existing && existing.media) media = [...existing.media];
+        }
+        for (let m of tempMediaUrls) {
+            media.push({ type: m.type || 'image', url: m.url });
+        }
+
+        const adData = {
+            id: editingId || nextId++,
+            type,
+            action,
+            rooms,
+            title,
+            address,
+            price: parseInt(priceText.replace(/[^0-9]/g, '')) || 0,
+            priceText,
+            area,
+            floor,
+            totalFloors,
+            description: description || 'Описание отсутствует',
+            features: features.length ? features : ['Нет данных'],
+            date: date || new Date().toISOString().split('T')[0],
+            badge,
+            emoji,
+            region,
+            actual,
+            media: media,
+            reviews: editingId ? (adsData.find(a => a.id === editingId)?.reviews || []) : []
+        };
+
+        if (editingId) {
+            const idx = adsData.findIndex(a => a.id === editingId);
+            if (idx !== -1) {
+                adsData[idx] = adData;
+                showToast('✅ Объявление обновлено!');
+            }
+        } else {
+            adsData.push(adData);
+            showToast('✅ Объявление добавлено!');
+        }
+        tempMediaUrls = [];
+        closeModal();
+        filterAds();
+        updateCategories();
+    }
+
+    // ================================================================
+    //  УДАЛЕНИЕ
+    // ================================================================
+    let deleteTargetId = null;
+
+    function confirmDeleteAd(id) {
+        if (!currentUser || !currentUser.isAdmin) {
+            showToast('⛔ Только Дмитрий может удалять!');
+            return;
+        }
+        deleteTargetId = id;
+        document.getElementById('confirmDialog').style.display = 'flex';
+    }
+
+    function confirmDelete() {
+        if (deleteTargetId !== null) {
+            adsData = adsData.filter(a => a.id !== deleteTargetId);
+            showToast('🗑️ Объявление удалено');
+            deleteTargetId = null;
+            document.getElementById('confirmDialog').style.display = 'none';
+            filterAds();
+            updateCategories();
+            if (currentAdId === deleteTargetId) closeModal();
+        }
+    }
+
+    function closeConfirm() {
+        document.getElementById('confirmDialog').style.display = 'none';
+        deleteTargetId = null;
+    }
+
+    // ================================================================
     //  ОБЩИЕ ФУНКЦИИ
     // ================================================================
     function showToast(msg) {
@@ -1664,6 +2040,42 @@
             closeLogin();
         }
     });
+
+    // Добавляем кнопку "Добавить" для Дмитрия
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn btn-primary';
+    addBtn.textContent = '➕ Добавить';
+    addBtn.id = 'addBtn';
+    addBtn.style.display = 'none';
+    addBtn.onclick = openAddForm;
+    document.querySelector('.header-actions').appendChild(addBtn);
+
+    // Обновляем отображение кнопки Добавить
+    const origUpdateUI = updateUIForUser;
+    updateUIForUser = function() {
+        origUpdateUI();
+        const addBtn = document.getElementById('addBtn');
+        if (addBtn) {
+            addBtn.style.display = currentUser && currentUser.isAdmin ? 'inline-flex' : 'none';
+        }
+    };
+    updateUIForUser();
+
+    // Добавляем confirmDialog
+    const confirmDialog = document.createElement('div');
+    confirmDialog.id = 'confirmDialog';
+    confirmDialog.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center; padding:20px;';
+    confirmDialog.innerHTML = `
+        <div style="background:white; border-radius:16px; padding:30px; max-width:400px; width:100%; text-align:center;">
+            <h3>⚠️ Удалить объявление?</h3>
+            <p style="color:#666; margin:16px 0;">Вы уверены, что хотите удалить это объявление? Действие необратимо.</p>
+            <div style="display:flex; gap:12px;">
+                <button onclick="confirmDelete()" style="flex:1; padding:10px; background:#d32f2f; color:white; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Да, удалить</button>
+                <button onclick="closeConfirm()" style="flex:1; padding:10px; background:#f5f5f5; color:#555; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(confirmDialog);
 </script>
 
 </body>
