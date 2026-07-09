@@ -577,7 +577,7 @@
         }
         .contact-block .actions .btn-phone:hover { background: #1e5f33; }
 
-        /* ===== ЧАТ КАК НА СКРИНШОТЕ ===== */
+        /* ===== ЧАТ ===== */
         .chat-floating {
             position: fixed;
             bottom: 30px;
@@ -589,7 +589,6 @@
             gap: 12px;
         }
 
-        /* Кнопка чата как на скриншоте */
         .chat-toggle {
             width: 64px;
             height: 64px;
@@ -656,13 +655,12 @@
             transform: translateY(0);
         }
 
-        /* Окно чата */
         .chat-window {
             background: white;
             border-radius: 16px;
-            width: 380px;
+            width: 400px;
             max-width: 90vw;
-            max-height: 520px;
+            max-height: 560px;
             box-shadow: 0 8px 40px rgba(0,0,0,0.15);
             overflow: hidden;
             display: none;
@@ -673,11 +671,10 @@
             display: flex;
         }
 
-        /* Заголовок чата */
         .chat-window .chat-header {
             background: linear-gradient(135deg, #00b894, #00a884);
             color: white;
-            padding: 16px 20px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -686,26 +683,36 @@
         .chat-window .chat-header .info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .chat-window .chat-header .info .avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
         }
         .chat-window .chat-header .info .name {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
         }
         .chat-window .chat-header .info .status {
             font-size: 11px;
             opacity: 0.85;
+        }
+        .chat-window .chat-header .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            margin-right: 4px;
+            display: none;
         }
         .chat-window .chat-header .close-chat {
             background: none;
@@ -721,16 +728,94 @@
             opacity: 1;
         }
 
-        /* Сообщения */
+        .chat-window .chat-list {
+            overflow-y: auto;
+            flex: 1;
+            background: white;
+            padding: 8px 0;
+            display: block;
+        }
+        .chat-window .chat-list.hidden {
+            display: none;
+        }
+        .chat-window .chat-list .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 1px solid #f5f5f5;
+            gap: 12px;
+        }
+        .chat-window .chat-list .chat-item:hover {
+            background: #f8f9fa;
+        }
+        .chat-window .chat-list .chat-item .chat-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            color: #2d7d46;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .chat-window .chat-list .chat-item .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .chat-window .chat-list .chat-item .chat-info .chat-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+        .chat-window .chat-list .chat-item .chat-info .chat-last {
+            font-size: 13px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-window .chat-list .chat-item .chat-time {
+            font-size: 11px;
+            color: #999;
+            flex-shrink: 0;
+        }
+        .chat-window .chat-list .chat-item .chat-unread {
+            background: #e53935;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .chat-window .chat-list .empty-chats {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+
         .chat-window .chat-messages {
             padding: 16px;
             overflow-y: auto;
             flex: 1;
             max-height: 300px;
             background: #f5f6fa;
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 8px;
+        }
+        .chat-window .chat-messages.active {
+            display: flex;
         }
         .chat-window .chat-messages .message {
             display: flex;
@@ -779,15 +864,17 @@
             font-size: 14px;
         }
 
-        /* Поле ввода */
         .chat-window .chat-input-area {
-            display: flex;
+            display: none;
             padding: 12px 16px;
             border-top: 1px solid #f0f0f0;
             background: white;
             flex-shrink: 0;
             gap: 10px;
             align-items: center;
+        }
+        .chat-window .chat-input-area.active {
+            display: flex;
         }
         .chat-window .chat-input-area input {
             flex: 1;
@@ -852,34 +939,104 @@
         .share-buttons-modal .btn-sms { background: #ff9800; }
         .share-buttons-modal .btn-email { background: #9c27b0; }
 
-        /* ===== ОТЗЫВЫ ===== */
+        /* ===== ОТЗЫВЫ (улучшенные) ===== */
         .reviews-section {
             margin: 20px 0;
             padding-top: 16px;
             border-top: 1px solid #f0f0f0;
         }
-        .reviews-section h4 { margin-bottom: 12px; font-size: 17px; }
-        .review-item {
+        .reviews-section h4 { 
+            margin-bottom: 12px; 
+            font-size: 17px; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reviews-section .rating-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
             background: #f8f9fa;
             border-radius: 10px;
-            padding: 12px;
+        }
+        .reviews-section .rating-summary .big-rating {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d7d46;
+        }
+        .reviews-section .rating-summary .stars {
+            font-size: 20px;
+            color: #ffb300;
+        }
+        .reviews-section .rating-summary .count {
+            font-size: 13px;
+            color: #888;
+        }
+        .review-item {
+            background: white;
+            border-radius: 10px;
+            padding: 14px 16px;
             margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
         .review-item .review-header {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 4px;
+            align-items: center;
+            margin-bottom: 6px;
         }
-        .review-item .review-header strong { color: #1a1a2e; }
-        .review-item .review-text { font-size: 13px; color: #444; }
+        .review-item .review-header .reviewer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .review-item .review-header .reviewer .initials {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #2d7d46;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .review-item .review-header .reviewer .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+        .review-item .review-header .reviewer .date {
+            font-size: 11px;
+            color: #999;
+        }
+        .review-item .review-header .rating-stars {
+            font-size: 16px;
+            color: #ffb300;
+        }
+        .review-item .review-text {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+        .review-item .review-helpful {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #888;
+        }
 
         .review-form {
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-top: 12px;
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 10px;
         }
         .review-form textarea {
             padding: 10px;
@@ -889,6 +1046,7 @@
             min-height: 60px;
             resize: vertical;
             font-family: inherit;
+            transition: 0.2s;
         }
         .review-form textarea:focus { outline: none; border-color: #2d7d46; }
         .review-form .rating-select {
@@ -903,6 +1061,21 @@
         }
         .review-form .rating-select .star.active { color: #ffb300; }
         .review-form .rating-select .star:hover { transform: scale(1.2); }
+        .review-form .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .review-form .form-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: 0.2s;
+            min-width: 120px;
+        }
+        .review-form .form-row input:focus { outline: none; border-color: #2d7d46; }
         .review-form button {
             padding: 8px 20px;
             background: #2d7d46;
@@ -912,48 +1085,10 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
             align-self: flex-start;
         }
         .review-form button:hover { background: #1e5f33; }
-
-        /* ===== КОНТАКТЫ ВНИЗУ ===== */
-        .contact-section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-top: 30px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-            text-align: center;
-        }
-        .contact-section h2 { margin-bottom: 12px; color: #1a1a2e; font-size: 22px; }
-        .contact-section .contact-info { font-size: 15px; color: #444; }
-        .contact-section .contact-info strong { color: #2d7d46; }
-        .contact-section .contact-form { max-width: 450px; margin: 16px auto 0; }
-        .contact-section .contact-form input,
-        .contact-section .contact-form textarea {
-            width: 100%;
-            padding: 10px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .contact-section .contact-form input:focus,
-        .contact-section .contact-form textarea:focus { outline: none; border-color: #2d7d46; }
-        .contact-section .contact-form textarea { min-height: 80px; resize: vertical; }
-        .contact-section .contact-form button {
-            background: #2d7d46;
-            color: white;
-            border: none;
-            padding: 12px 36px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .contact-section .contact-form button:hover { background: #1e5f33; }
 
         /* ===== TOAST ===== */
         .toast {
@@ -1027,8 +1162,7 @@
         /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
             .header-content { flex-direction: column; align-items: center; gap: 8px; }
-            .header-right { justify-content: center; }
-            .header-contacts { justify-content: center; }
+            .header-actions { justify-content: center; flex-wrap: wrap; }
             .hero h1 { font-size: 26px; }
             .ads-grid { grid-template-columns: 1fr; }
             .filters { flex-direction: column; }
@@ -1041,6 +1175,7 @@
             .chat-toggle { width: 56px; height: 56px; font-size: 24px; }
             .chat-floating { bottom: 20px; right: 20px; }
             .chat-toggle .tooltip { display: none; }
+            .reviews-section .rating-summary { flex-wrap: wrap; }
         }
         @media (max-width: 480px) {
             .container { padding: 0 12px; }
@@ -1051,6 +1186,7 @@
             .chat-window { width: 100vw; max-width: 100vw; border-radius: 12px 12px 0 0; bottom: 0; right: 0; max-height: 80vh; }
             .chat-floating { bottom: 16px; right: 16px; }
             .chat-toggle { width: 48px; height: 48px; font-size: 20px; }
+            .reviews-section .rating-summary .big-rating { font-size: 26px; }
         }
         @media (hover: none) and (pointer: coarse) {
             .chat-toggle { width: 56px; height: 56px; font-size: 24px; }
@@ -1072,12 +1208,10 @@
                 <div class="sub">Агентство недвижимости</div>
             </div>
         </div>
-        <div class="header-right">
-            <div class="header-contacts">
-                <div>
-                    <div class="phone">+7 967 829 74 77</div>
-                    <div class="manager">Дмитрий · 9:00–21:00</div>
-                </div>
+        <div class="header-contacts">
+            <div>
+                <div class="phone">+7 967 829 74 77</div>
+                <div class="manager">Дмитрий · 9:00–21:00</div>
             </div>
             <div class="header-actions">
                 <div class="user-info" id="userInfo">
@@ -1135,21 +1269,6 @@
 <!-- ========== СЕТКА ОБЪЯВЛЕНИЙ ========== -->
 <div class="container ads-grid" id="adsGrid"></div>
 
-<!-- ========== КОНТАКТЫ ========== -->
-<section class="container contact-section">
-    <h2>📞 Связаться с нами</h2>
-    <div class="contact-info">
-        <p><strong>+7 967 829 74 77</strong> — Дмитрий</p>
-        <p style="font-size:13px; color:#888;">Работаем ежедневно с 9:00 до 21:00</p>
-    </div>
-    <form class="contact-form" onsubmit="sendMessage(event)">
-        <input type="text" placeholder="Ваше имя" required>
-        <input type="tel" placeholder="+7 ___ ___ __ __" required>
-        <textarea placeholder="Ваше сообщение..." required></textarea>
-        <button type="submit">📨 Отправить</button>
-    </form>
-</section>
-
 <!-- ========== МОДАЛКИ ========== -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal-content">
@@ -1197,7 +1316,7 @@
     </div>
 </div>
 
-<!-- ========== ЧАТ КАК НА СКРИНШОТЕ ========== -->
+<!-- ========== ЧАТ ========== -->
 <div class="chat-floating" id="chatFloating">
     <button class="chat-toggle" onclick="toggleChat()">
         💬
@@ -1209,16 +1328,22 @@
             <div class="info">
                 <div class="avatar">Д</div>
                 <div>
-                    <div class="name">Дмитрий</div>
-                    <div class="status">🟢 онлайн</div>
+                    <div class="name" id="chatHeaderName">Дмитрий</div>
+                    <div class="status" id="chatHeaderStatus">🟢 онлайн</div>
                 </div>
             </div>
-            <button class="close-chat" onclick="toggleChat()">✕</button>
+            <div>
+                <button class="back-btn" id="chatBackBtn" onclick="showChatList()">←</button>
+                <button class="close-chat" onclick="toggleChat()">✕</button>
+            </div>
         </div>
-        <div class="chat-messages" id="chatMessagesFloat">
+        <div class="chat-list" id="chatList">
+            <div class="empty-chats">Нет сообщений</div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
             <div class="empty-state">Напишите первое сообщение</div>
         </div>
-        <div class="chat-input-area">
+        <div class="chat-input-area" id="chatInputArea">
             <input type="text" id="chatInputFloat" placeholder="Введите сообщение..." />
             <button onclick="sendChatMessageFloat()">Отправить</button>
         </div>
@@ -1251,7 +1376,7 @@
         floor: 11,
         totalFloors: 21,
         description: 'Светлая студия на 11 этаже. Рядом парк, магазины. Мебель и техника в комплекте.',
-        features: ['Мебель', 'Техника', 'Интернет', 'Кондиционер'],
+        features: ['🛋️ Мебель', '📺 Техника', '🌐 Интернет', '❄️ Кондиционер', '🔊 Шумоизоляция', '🪟 Панорамные окна'],
         date: '2026-07-10',
         badge: 'rent',
         emoji: '🏢',
@@ -1262,7 +1387,10 @@
             { type: 'image', url: IMG_BASE + 'studio1/400/300' },
             { type: 'image', url: IMG_BASE + 'studio2/400/300' }
         ],
-        reviews: [{ name: 'Анна', text: 'Отличная квартира!', rating: 5, date: '2026-07-08' }]
+        reviews: [
+            { name: 'Анна', text: 'Отличная квартира! Всё как на фото, чисто, уютно. Хозяин приятный и отзывчивый.', rating: 5, date: '2026-07-08', helpful: 12 },
+            { name: 'Иван', text: 'Хороший вариант для одного человека. Рядом всё необходимое, тихо.', rating: 4, date: '2026-07-06', helpful: 5 }
+        ]
     }, {
         id: 2,
         type: 'Квартира',
@@ -1277,7 +1405,7 @@
         floor: 13,
         totalFloors: 17,
         description: 'Квартира с видом на набережную. Отличный район, рядом рестораны, парк.',
-        features: ['Вид на набережную', 'Лифт', 'Домофон', 'Парковка'],
+        features: ['🌊 Вид на набережную', '🛗 Лифт', '📞 Домофон', '🅿️ Парковка', '🧺 Стиральная машина', '🔥 Газовая плита'],
         date: '2026-07-09',
         badge: 'rent',
         emoji: '🏢',
@@ -1287,7 +1415,9 @@
         media: [
             { type: 'image', url: IMG_BASE + 'naberezhnaya1/400/300' }
         ],
-        reviews: [{ name: 'Мария', text: 'Шикарный вид!', rating: 5, date: '2026-07-07' }]
+        reviews: [
+            { name: 'Мария', text: 'Шикарный вид! Квартира чистая, светлая. Очень понравилось.', rating: 5, date: '2026-07-07', helpful: 8 }
+        ]
     }, {
         id: 3,
         type: 'Дом',
@@ -1302,7 +1432,7 @@
         floor: 1,
         totalFloors: 1,
         description: 'Уютный коттедж с участком. Индивидуальное отопление, гараж.',
-        features: ['Гараж', 'Участок', 'Индивидуальное отопление', 'Сад'],
+        features: ['🏎️ Гараж', '🌳 Участок', '🔥 Индивидуальное отопление', '🌸 Сад', '🧺 Стиральная машина', '🍳 Полная кухня'],
         date: '2026-07-06',
         badge: 'rent',
         emoji: '🏡',
@@ -1327,7 +1457,7 @@
         floor: 0,
         totalFloors: 0,
         description: '10 соток в живописном месте. Электричество, дорога, рядом Волга.',
-        features: ['Электричество', 'Вода', 'Рядом Волга', 'Дорога'],
+        features: ['⚡ Электричество', '💧 Вода', '🌊 Рядом Волга', '🛣️ Дорога'],
         date: '2026-07-05',
         badge: 'sale',
         emoji: '🌳',
@@ -1350,7 +1480,7 @@
         floor: 5,
         totalFloors: 9,
         description: 'Просторная 3-комнатная квартира в центре Астрахани. Рядом набережная, парк, школы.',
-        features: ['Парковка', 'Лифт', 'Домофон', 'Рядом набережная'],
+        features: ['🅿️ Парковка', '🛗 Лифт', '📞 Домофон', '🌊 Рядом набережная', '🧺 Стиральная машина', '🔥 Газовая плита', '❄️ Кондиционер'],
         date: '2026-07-08',
         badge: 'sale',
         emoji: '🏢',
@@ -1361,7 +1491,9 @@
             { type: 'image', url: IMG_BASE + 'center1/400/300' },
             { type: 'image', url: IMG_BASE + 'center2/400/300' }
         ],
-        reviews: []
+        reviews: [
+            { name: 'Ольга', text: 'Отличная квартира в центре! Всё рядом, хороший ремонт.', rating: 5, date: '2026-07-04', helpful: 3 }
+        ]
     }];
 
     let nextId = 6;
@@ -1371,6 +1503,7 @@
     let tempMediaFiles = [];
     let editingId = null;
     let deleteTargetId = null;
+    let currentChatUserId = null;
 
     // ================================================================
     //  АВТОРИЗАЦИЯ
@@ -1597,35 +1730,135 @@
     }
 
     // ================================================================
-    //  ЧАТ КАК НА СКРИНШОТЕ
+    //  ТЕЛЕФОН — ОТКРЫВАЕТ НАБОР НОМЕРА НА МОБИЛЬНЫХ
     // ================================================================
-    function toggleChat() {
-        const window = document.getElementById('chatWindow');
-        window.classList.toggle('open');
-        if (window.classList.contains('open')) {
-            renderChatMessagesFloat();
-            // Скрываем бейдж
-            document.getElementById('chatBadge').style.display = 'none';
+    function callPhone(phone) {
+        const cleanPhone = phone.replace(/[^0-9+]/g, '');
+        window.location.href = 'tel:' + cleanPhone;
+    }
+
+    function showPhone() {
+        const phone = '+7 967 829 74 77';
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            callPhone(phone);
+        } else {
+            copyText(phone);
+            showToast('📞 Номер скопирован: ' + phone);
         }
     }
 
-    function getChatMessagesFloat() {
-        try { return JSON.parse(localStorage.getItem('chat_float') || '[]'); } catch { return []; }
+    // ================================================================
+    //  ЧАТ
+    // ================================================================
+
+    function getUserId() {
+        let userId = localStorage.getItem('userId');
+        if (!userId) {
+            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            localStorage.setItem('userId', userId);
+        }
+        return userId;
     }
 
-    function saveChatMessagesFloat(messages) {
-        localStorage.setItem('chat_float', JSON.stringify(messages));
+    function getUserName() {
+        if (currentUser && currentUser.name) {
+            return currentUser.name;
+        }
+        let guestName = localStorage.getItem('guestName');
+        if (!guestName) {
+            guestName = 'Гость ' + Math.floor(Math.random() * 1000);
+            localStorage.setItem('guestName', guestName);
+        }
+        return guestName;
     }
 
-    function renderChatMessagesFloat() {
-        const container = document.getElementById('chatMessagesFloat');
-        const messages = getChatMessagesFloat();
-        if (!messages.length) {
+    function getChatKey(userId) {
+        return 'chat_user_' + userId;
+    }
+
+    function getChatMessages(userId) {
+        try {
+            return JSON.parse(localStorage.getItem(getChatKey(userId)) || '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    function saveChatMessages(userId, messages) {
+        localStorage.setItem(getChatKey(userId), JSON.stringify(messages));
+    }
+
+    function getAllChatUsers() {
+        const users = [];
+        for (let key in localStorage) {
+            if (key.startsWith('chat_user_')) {
+                const userId = key.replace('chat_user_', '');
+                const messages = getChatMessages(userId);
+                if (messages.length > 0) {
+                    const lastMsg = messages[messages.length - 1];
+                    let userName = 'Гость';
+                    for (let msg of messages) {
+                        if (msg.userName) {
+                            userName = msg.userName;
+                            break;
+                        }
+                    }
+                    const isAdmin = userId === 'admin';
+                    users.push({
+                        userId: userId,
+                        name: isAdmin ? 'Дмитрий' : userName,
+                        isAdmin: isAdmin,
+                        lastMessage: lastMsg.text,
+                        lastTime: lastMsg.time || '',
+                        unread: 0,
+                        count: messages.length
+                    });
+                }
+            }
+        }
+        users.sort((a, b) => {
+            if (!a.lastTime) return 1;
+            if (!b.lastTime) return -1;
+            return b.lastTime.localeCompare(a.lastTime);
+        });
+        return users;
+    }
+
+    function renderChatList() {
+        const container = document.getElementById('chatList');
+        const users = getAllChatUsers();
+        
+        if (users.length === 0) {
+            container.innerHTML = '<div class="empty-chats">Нет сообщений</div>';
+            return;
+        }
+
+        container.innerHTML = users.map(user => `
+            <div class="chat-item" onclick="openUserChat('${user.userId}', '${user.name}')">
+                <div class="chat-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                <div class="chat-info">
+                    <div class="chat-name">${user.name}</div>
+                    <div class="chat-last">${user.lastMessage || 'Напишите первое сообщение'}</div>
+                </div>
+                <div class="chat-time">${user.lastTime || ''}</div>
+                ${user.unread > 0 ? `<div class="chat-unread">${user.unread}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function renderChatMessagesForUser(userId) {
+        const container = document.getElementById('chatMessages');
+        const messages = getChatMessages(userId);
+        
+        if (messages.length === 0) {
             container.innerHTML = '<div class="empty-state">Напишите первое сообщение</div>';
             return;
         }
+
+        const isAdmin = currentUser && currentUser.isAdmin;
         container.innerHTML = messages.map(msg => {
-            const isOutgoing = msg.from === 'user';
+            const isOutgoing = msg.from === 'user' && !isAdmin;
             return `
                 <div class="message ${isOutgoing ? 'outgoing' : 'incoming'}">
                     <div class="bubble">${msg.text}</div>
@@ -1636,35 +1869,123 @@
         container.scrollTop = container.scrollHeight;
     }
 
+    function openUserChat(userId, userName) {
+        currentChatUserId = userId;
+        
+        document.getElementById('chatList').classList.add('hidden');
+        document.getElementById('chatMessages').classList.add('active');
+        document.getElementById('chatInputArea').classList.add('active');
+        document.getElementById('chatBackBtn').style.display = 'inline-block';
+        
+        const displayName = userName || (userId === 'admin' ? 'Дмитрий' : 'Пользователь');
+        document.getElementById('chatHeaderName').textContent = displayName;
+        document.getElementById('chatHeaderStatus').textContent = '🟢 онлайн';
+        
+        renderChatMessagesForUser(userId);
+        
+        const chatWindow = document.getElementById('chatWindow');
+        if (!chatWindow.classList.contains('open')) {
+            chatWindow.classList.add('open');
+        }
+    }
+
+    function showChatList() {
+        document.getElementById('chatList').classList.remove('hidden');
+        document.getElementById('chatMessages').classList.remove('active');
+        document.getElementById('chatInputArea').classList.remove('active');
+        document.getElementById('chatBackBtn').style.display = 'none';
+        document.getElementById('chatHeaderName').textContent = 'Сообщения';
+        document.getElementById('chatHeaderStatus').textContent = '';
+        renderChatList();
+        currentChatUserId = null;
+    }
+
+    function toggleChat() {
+        const window = document.getElementById('chatWindow');
+        const isOpen = window.classList.contains('open');
+        
+        if (isOpen) {
+            window.classList.remove('open');
+            setTimeout(() => {
+                showChatList();
+            }, 300);
+        } else {
+            window.classList.add('open');
+            if (!currentUser || !currentUser.isAdmin) {
+                const userId = getUserId();
+                const userName = getUserName();
+                openUserChat(userId, userName);
+            } else {
+                renderChatList();
+                document.getElementById('chatHeaderName').textContent = 'Сообщения';
+                document.getElementById('chatHeaderStatus').textContent = '';
+            }
+            document.getElementById('chatBadge').style.display = 'none';
+        }
+    }
+
     function sendChatMessageFloat() {
         const input = document.getElementById('chatInputFloat');
         const text = input.value.trim();
         if (!text) return;
-        const messages = getChatMessagesFloat();
+        
+        const isAdmin = currentUser && currentUser.isAdmin;
+        const userId = isAdmin ? 'admin' : getUserId();
+        const userName = getUserName();
+        
+        const messages = getChatMessages(userId);
         const now = new Date();
         const time = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        messages.push({ from: 'user', text, time, timestamp: now.getTime() });
         
-        // Автоответчик без слова "пожалуйста"
-        setTimeout(() => {
-            const msgs = getChatMessagesFloat();
-            msgs.push({
-                from: 'seller',
-                text: 'Здравствуйте! Спасибо за ваш интерес. Оставьте свой номер телефона, и я свяжусь с вами в ближайшее время.',
-                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-                timestamp: Date.now()
-            });
-            saveChatMessagesFloat(msgs);
-            renderChatMessagesFloat();
-            // Показываем бейдж
+        messages.push({
+            from: isAdmin ? 'admin' : 'user',
+            text: text,
+            time: time,
+            userName: userName,
+            timestamp: now.getTime()
+        });
+        saveChatMessages(userId, messages);
+        
+        renderChatMessagesForUser(userId);
+        input.value = '';
+        
+        if (!isAdmin) {
+            setTimeout(() => {
+                const msgs = getChatMessages(userId);
+                msgs.push({
+                    from: 'admin',
+                    text: 'Здравствуйте! Спасибо за ваш интерес. Оставьте свой номер телефона, и я свяжусь с вами в ближайшее время.',
+                    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                    userName: 'Дмитрий',
+                    timestamp: Date.now()
+                });
+                saveChatMessages(userId, msgs);
+                renderChatMessagesForUser(userId);
+                
+                const badge = document.getElementById('chatBadge');
+                badge.style.display = 'flex';
+                badge.textContent = '1';
+            }, 1500);
+        } else {
             const badge = document.getElementById('chatBadge');
             badge.style.display = 'flex';
             badge.textContent = '1';
-        }, 1500);
+        }
+    }
+
+    function openChatFromAd(adId) {
+        const chatWindow = document.getElementById('chatWindow');
+        if (!chatWindow.classList.contains('open')) {
+            chatWindow.classList.add('open');
+        }
         
-        saveChatMessagesFloat(messages);
-        renderChatMessagesFloat();
-        input.value = '';
+        if (!currentUser || !currentUser.isAdmin) {
+            const userId = getUserId();
+            const userName = getUserName();
+            openUserChat(userId, userName);
+        } else {
+            showChatList();
+        }
     }
 
     // ================================================================
@@ -1684,6 +2005,8 @@
             const mediaCount = hasMedia ? ad.media.length : 0;
             const districtDisplay = ad.district ? ` • ${ad.district} р-н` : '';
             const isArchived = ad.archived === true;
+            const featuresDisplay = ad.features && ad.features.length > 0 ? ad.features.slice(0, 4).join(' · ') : '';
+            const featuresMore = ad.features && ad.features.length > 4 ? ` +${ad.features.length - 4}` : '';
 
             return `
                 <div class="ad-card" onclick="${isArchived ? '' : `openAd(${ad.id})`}">
@@ -1711,6 +2034,7 @@
                             ${ad.rooms ? `<span>🛏 ${ad.rooms} комн.</span>` : ''}
                             ${ad.floor ? `<span>🏗 ${ad.floor}/${ad.totalFloors} эт.</span>` : ''}
                         </div>
+                        ${featuresDisplay ? `<div style="font-size:12px; color:#666; margin:4px 0;">${featuresDisplay}${featuresMore}</div>` : ''}
                         <div class="meta">
                             <span>${ad.type}</span>
                             <span>📅 ${ad.date}</span>
@@ -1790,18 +2114,48 @@
             `;
         }
 
+        // Улучшенные отзывы с рейтингом
         let reviewsHtml = '';
-        if (ad.reviews && ad.reviews.length) {
-            reviewsHtml = ad.reviews.map(r => `
-                <div class="review-item">
-                    <div class="review-header">
-                        <strong>${r.name}</strong>
-                        <span>${'⭐'.repeat(r.rating)}</span>
-                        <span>${r.date}</span>
-                    </div>
-                    <div class="review-text">${r.text}</div>
+        let avgRating = 0;
+        let totalReviews = 0;
+        
+        if (ad.reviews && ad.reviews.length > 0) {
+            totalReviews = ad.reviews.length;
+            const sum = ad.reviews.reduce((acc, r) => acc + r.rating, 0);
+            avgRating = sum / totalReviews;
+            
+            const fullStars = Math.floor(avgRating);
+            const hasHalfStar = avgRating % 1 >= 0.5;
+            let starsStr = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < fullStars) starsStr += '⭐';
+                else if (i === fullStars && hasHalfStar) starsStr += '⭐';
+                else starsStr += '☆';
+            }
+            
+            reviewsHtml = `
+                <div class="rating-summary">
+                    <div class="big-rating">${avgRating.toFixed(1)}</div>
+                    <div class="stars">${starsStr}</div>
+                    <div class="count">${totalReviews} ${totalReviews === 1 ? 'отзыв' : totalReviews < 5 ? 'отзыва' : 'отзывов'}</div>
                 </div>
-            `).join('');
+                ${ad.reviews.map(r => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer">
+                                <div class="initials">${r.name.charAt(0).toUpperCase()}</div>
+                                <div>
+                                    <div class="name">${r.name}</div>
+                                    <div class="date">${r.date}</div>
+                                </div>
+                            </div>
+                            <div class="rating-stars">${'⭐'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                        </div>
+                        <div class="review-text">${r.text}</div>
+                        ${r.helpful ? `<div class="review-helpful">👍 ${r.helpful} человек(а) считают это полезным</div>` : ''}
+                    </div>
+                `).join('')}
+            `;
         }
 
         const contactBlock = `
@@ -1810,12 +2164,12 @@
                     <div class="avatar">Д</div>
                     <div class="name-phone">
                         <div class="name">Дмитрий (продавец)</div>
-                        <div class="phone" onclick="copyText('+7 967 829 74 77')">📞 +7 967 829 74 77</div>
+                        <div class="phone" onclick="callPhone('+7 967 829 74 77')">📞 +7 967 829 74 77</div>
                     </div>
                 </div>
                 <div class="actions">
-                    <button class="btn-chat" onclick="toggleChat();">💬 Написать</button>
-                    <button class="btn-phone" onclick="showPhone()">📞 Показать номер</button>
+                    <button class="btn-chat" onclick="openChatFromAd(${ad.id})">💬 Написать</button>
+                    <button class="btn-phone" onclick="showPhone()">📞 Позвонить</button>
                 </div>
             </div>
         `;
@@ -1833,6 +2187,8 @@
                 </div>
             `;
         }
+
+        const featuresDisplay = ad.features && ad.features.length > 0 ? ad.features.map(f => `<span style="background:#e8f5e9; padding:4px 14px; border-radius:20px; font-size:13px; color:#2e7d32;">${f}</span>`).join('') : '';
 
         const html = `
             <span class="detail-badge" style="background:${ad.badge === 'sale' ? '#e8f5e9' : '#fff3e0'}; color:${ad.badge === 'sale' ? '#2e7d32' : '#e65100'};">
@@ -1855,9 +2211,9 @@
 
             <div style="line-height:1.8; margin:16px 0;">${ad.description}</div>
 
-            ${ad.features ? `
+            ${featuresDisplay ? `
                 <div style="display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;">
-                    ${ad.features.map(f => `<span style="background:#e8f5e9; padding:4px 14px; border-radius:20px; font-size:13px; color:#2e7d32;">✓ ${f}</span>`).join('')}
+                    ${featuresDisplay}
                 </div>
             ` : ''}
 
@@ -1879,7 +2235,7 @@
 
             ${ad.reviews && ad.reviews.length ? `
                 <div class="reviews-section">
-                    <h4>💬 Отзывы (${ad.reviews.length})</h4>
+                    <h4>💬 Отзывы</h4>
                     ${reviewsHtml}
                 </div>
             ` : ''}
@@ -1890,8 +2246,10 @@
                     <div class="rating-select" id="ratingSelect">
                         ${[1,2,3,4,5].map(i => `<span class="star" data-value="${i}" onclick="setRating(${i})">⭐</span>`).join('')}
                     </div>
-                    <input type="text" placeholder="Ваше имя" id="reviewName" required style="padding:10px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
-                    <textarea placeholder="Ваш отзыв..." id="reviewText" required></textarea>
+                    <div class="form-row">
+                        <input type="text" placeholder="Ваше имя" id="reviewName" required>
+                        <input type="text" placeholder="Ваш отзыв..." id="reviewText" required style="flex:2;">
+                    </div>
                     <input type="hidden" id="reviewRating" value="5">
                     <button type="submit">📝 Отправить</button>
                 </form>
@@ -1952,18 +2310,16 @@
         const ad = adsData.find(a => a.id === adId);
         if (!ad) return;
         if (!ad.reviews) ad.reviews = [];
-        ad.reviews.push({ name, text, rating, date: new Date().toISOString().split('T')[0] });
+        ad.reviews.push({ 
+            name, 
+            text, 
+            rating, 
+            date: new Date().toISOString().split('T')[0],
+            helpful: 0 
+        });
         showToast('✅ Отзыв добавлен!');
         openAd(adId);
         renderAds(currentFiltered);
-    }
-
-    // ================================================================
-    //  ТЕЛЕФОН
-    // ================================================================
-    function showPhone() {
-        copyText('+7 967 829 74 77');
-        showToast('📞 Номер скопирован');
     }
 
     // ================================================================
@@ -2004,6 +2360,8 @@
         const districtOptions = DISTRICTS.map(d => 
             `<option value="${d}" ${ad?.district === d ? 'selected' : ''}>${d}</option>`
         ).join('');
+
+        const featuresValue = ad?.features ? ad.features.join(', ') : '';
 
         const html = `
             <h2>${isEdit ? '✏️ Редактирование объявления' : '➕ Добавление объявления'}</h2>
@@ -2088,8 +2446,9 @@
                 </div>
 
                 <div>
-                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Особенности (через запятую)</label>
-                    <input type="text" id="editFeatures" value="${ad?.features?.join(', ') || ''}" placeholder="Парковка, Лифт, Домофон" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Особенности (через запятую, с эмодзи)</label>
+                    <input type="text" id="editFeatures" value="${featuresValue}" placeholder="🛋️ Мебель, 📺 Техника, 🌐 Интернет" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                    <div style="font-size:12px; color:#888; margin-top:4px;">💡 Пример: 🛋️ Мебель, 📺 Техника, 🌐 Интернет, ❄️ Кондиционер</div>
                 </div>
 
                 <div>
@@ -2199,7 +2558,8 @@
         const floor = parseInt(document.getElementById('editFloor').value) || 0;
         const totalFloors = parseInt(document.getElementById('editTotalFloors').value) || 0;
         const description = document.getElementById('editDescription').value.trim();
-        const features = document.getElementById('editFeatures').value.split(',').map(f => f.trim()).filter(f => f);
+        const featuresRaw = document.getElementById('editFeatures').value;
+        const features = featuresRaw.split(',').map(f => f.trim()).filter(f => f);
         const region = document.getElementById('editRegion').value;
         const date = document.getElementById('editDate').value;
         const actual = document.getElementById('editActual').value === 'true';
@@ -2310,12 +2670,6 @@
         t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
     }
 
-    function sendMessage(e) {
-        e.preventDefault();
-        showToast('✅ Сообщение отправлено! Мы свяжемся с вами.');
-        e.target.reset();
-    }
-
     function updateCategories() {
         const activeAds = adsData.filter(a => !a.archived);
         const counts = {
@@ -2372,12 +2726,19 @@
             }
         }
 
-        // Двойной клик по логотипу для входа
         document.querySelector('.logo').addEventListener('dblclick', function() {
             if (!currentUser || !currentUser.isAdmin) {
                 showLoginForm();
             }
         });
+
+        if (currentUser && currentUser.isAdmin) {
+            document.getElementById('chatHeaderName').textContent = 'Сообщения';
+            document.getElementById('chatHeaderStatus').textContent = '';
+        } else {
+            document.getElementById('chatHeaderName').textContent = 'Дмитрий';
+            document.getElementById('chatHeaderStatus').textContent = '🟢 онлайн';
+        }
     });
 
     document.getElementById('modalOverlay').addEventListener('click', function(e) {
@@ -2394,7 +2755,6 @@
         }
     });
 
-    // Кнопка "Добавить"
     const addBtn = document.createElement('button');
     addBtn.className = 'btn btn-primary';
     addBtn.textContent = '➕ Добавить';
@@ -2418,6 +2778,11 @@
     window.archiveAd = archiveAd;
     window.toggleChat = toggleChat;
     window.sendChatMessageFloat = sendChatMessageFloat;
+    window.openChatFromAd = openChatFromAd;
+    window.openUserChat = openUserChat;
+    window.showChatList = showChatList;
+    window.callPhone = callPhone;
+    window.showPhone = showPhone;
 </script>
 
 </body>
