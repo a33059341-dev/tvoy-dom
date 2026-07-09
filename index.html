@@ -742,7 +742,7 @@
         }
         .review-form button:hover { background: #1e5f33; }
 
-        /* ===== КОНТАКТЫ ВНИЗУ ===== */
+        /* ===== КОНТАКТЫ ВНИЗУ (БЕЗ АДРЕСА) ===== */
         .contact-section {
             background: white;
             border-radius: 16px;
@@ -810,8 +810,14 @@
         }
         .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 
-        /* ===== МОДАЛКА ВХОДА ===== */
+        /* ===== МОДАЛКА ВХОДА (БЕЗ ПОДСКАЗОК) ===== */
         .login-modal .modal-content { max-width: 400px; }
+        .login-modal .modal-content .login-hint {
+            font-size: 13px;
+            color: #999;
+            text-align: center;
+            margin-top: 12px;
+        }
 
         /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
@@ -884,7 +890,6 @@
     <button class="cat-btn" data-cat="3room">🛏 3-комн.</button>
     <button class="cat-btn" data-cat="house">🏡 Дома</button>
     <button class="cat-btn" data-cat="land">🌳 Участки</button>
-    <button class="cat-btn" data-cat="commercial">🏢 Коммерческая</button>
 </div>
 
 <!-- ========== ФИЛЬТРЫ ========== -->
@@ -894,7 +899,6 @@
         <option value="Квартира">Квартиры</option>
         <option value="Дом">Дома</option>
         <option value="Земельный участок">Участки</option>
-        <option value="Коммерческая">Коммерческая</option>
     </select>
     <select id="filterAction">
         <option value="all">Все предложения</option>
@@ -907,13 +911,12 @@
 <!-- ========== СЕТКА ОБЪЯВЛЕНИЙ ========== -->
 <div class="container ads-grid" id="adsGrid"></div>
 
-<!-- ========== КОНТАКТЫ ========== -->
+<!-- ========== КОНТАКТЫ (БЕЗ АДРЕСА) ========== -->
 <section class="container contact-section">
     <h2>📞 Связаться с нами</h2>
     <div class="contact-info">
         <p><strong>+7 967 829 74 77</strong> — Дмитрий</p>
         <p style="font-size:14px; color:#888;">Работаем ежедневно с 9:00 до 21:00</p>
-        <p style="font-size:14px; color:#888; margin-top:4px;">📍 Астрахань, ул. Пушкина, 15</p>
     </div>
     <form class="contact-form" onsubmit="sendMessage(event)">
         <input type="text" placeholder="Ваше имя" required>
@@ -955,7 +958,7 @@
 <!-- ========== ТОСТ ========== -->
 <div class="toast" id="toast"></div>
 
-<!-- ========== МОДАЛКА ВХОДА ========== -->
+<!-- ========== МОДАЛКА ВХОДА (БЕЗ ПОДСКАЗОК) ========== -->
 <div class="modal-overlay login-modal" id="loginModal">
     <div class="modal-content">
         <button class="close-btn" onclick="closeLogin()">✕</button>
@@ -963,26 +966,36 @@
         <form onsubmit="login(event)">
             <div style="margin-bottom:16px;">
                 <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Номер телефона</label>
-                <input type="tel" id="loginPhone" placeholder="+7 967 829 74 77" style="width:100%; padding:12px; border:2px solid #e8e8e8; border-radius:10px; font-size:16px;" required>
+                <input type="tel" id="loginPhone" placeholder="Введите номер телефона" style="width:100%; padding:12px; border:2px solid #e8e8e8; border-radius:10px; font-size:16px;" required>
             </div>
             <div style="margin-bottom:16px;">
                 <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Имя</label>
-                <input type="text" id="loginName" placeholder="Дмитрий" style="width:100%; padding:12px; border:2px solid #e8e8e8; border-radius:10px; font-size:16px;" required>
+                <input type="text" id="loginName" placeholder="Введите ваше имя" style="width:100%; padding:12px; border:2px solid #e8e8e8; border-radius:10px; font-size:16px;" required>
             </div>
             <button type="submit" style="width:100%; padding:12px; background:#2d7d46; color:white; border:none; border-radius:30px; font-size:16px; font-weight:600; cursor:pointer;">🔑 Войти</button>
-            <p style="margin-top:12px; font-size:13px; color:#888; text-align:center;">Только Дмитрий (+7 967 829 74 77) может добавлять объявления</p>
+            <div class="login-hint">Только администратор может добавлять объявления</div>
         </form>
+    </div>
+</div>
+
+<!-- ===== ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ ===== -->
+<div class="confirm-dialog" id="confirmDialog" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:white; border-radius:16px; padding:30px; max-width:400px; width:100%; text-align:center;">
+        <h3>⚠️ Удалить объявление?</h3>
+        <p style="color:#666; margin:16px 0;">Вы уверены, что хотите удалить это объявление? Действие необратимо.</p>
+        <div style="display:flex; gap:12px;">
+            <button onclick="confirmDelete()" style="flex:1; padding:10px; background:#d32f2f; color:white; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Да, удалить</button>
+            <button onclick="closeConfirm()" style="flex:1; padding:10px; background:#f5f5f5; color:#555; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Отмена</button>
+        </div>
     </div>
 </div>
 
 <script>
     // ================================================================
-    //  ДАННЫЕ С РЕАЛЬНЫМИ КАРТИНКАМИ
+    //  ДАННЫЕ
     // ================================================================
     const ADMIN_PHONE = '+79678297477';
     const ADMIN_NAME = 'Дмитрий';
-
-    // Генерация реальных изображений через picsum.photos
     const IMG_BASE = 'https://picsum.photos/seed/';
 
     let adsData = [{
@@ -1111,38 +1124,15 @@
             { type: 'image', url: IMG_BASE + 'center3/400/300' }
         ],
         reviews: []
-    }, {
-        id: 6,
-        type: 'Коммерческая',
-        action: 'Аренда',
-        rooms: 0,
-        title: 'Офис в центре Астрахани',
-        address: 'Астрахань, ул. Кирова, 18',
-        price: 75000,
-        priceText: '75 000 ₽/мес',
-        area: 55,
-        floor: 3,
-        totalFloors: 6,
-        description: 'Современный офис в центре Астрахани. Панорамные окна, кондиционер, интернет. Круглосуточная охрана, парковка. Подходит для компании до 8 сотрудников.',
-        features: ['Охрана', 'Парковка', 'Кондиционер', 'Интернет'],
-        date: '2026-07-04',
-        badge: 'rent',
-        emoji: '🏢',
-        region: 'Астрахань',
-        actual: true,
-        media: [
-            { type: 'image', url: IMG_BASE + 'office1/400/300' },
-            { type: 'image', url: IMG_BASE + 'office2/400/300' }
-        ],
-        reviews: []
     }];
 
-    let nextId = 7;
+    let nextId = 6;
     let currentAdId = null;
     let currentFiltered = [...adsData];
     let currentUser = null;
     let tempMediaUrls = [];
     let editingId = null;
+    let deleteTargetId = null;
 
     // ================================================================
     //  АВТОРИЗАЦИЯ
@@ -1177,6 +1167,10 @@
             loginBtn.style.display = 'inline-flex';
             logoutBtn.style.display = 'none';
         }
+        const addBtn = document.getElementById('addBtn');
+        if (addBtn) {
+            addBtn.style.display = currentUser && currentUser.isAdmin ? 'inline-flex' : 'none';
+        }
     }
 
     function login(e) {
@@ -1193,7 +1187,7 @@
         const adminClean = ADMIN_PHONE.replace(/[^0-9]/g, '');
         
         if (cleanPhone !== adminClean || name.toLowerCase() !== ADMIN_NAME.toLowerCase()) {
-            showToast('❌ Доступ только для Дмитрия (+7 967 829 74 77)');
+            showToast('❌ Доступ только для администратора');
             return;
         }
 
@@ -1402,7 +1396,6 @@
             if (cat === '3room' && ad.rooms !== 3) return false;
             if (cat === 'house' && ad.type !== 'Дом') return false;
             if (cat === 'land' && ad.type !== 'Земельный участок') return false;
-            if (cat === 'commercial' && ad.type !== 'Коммерческая') return false;
             return true;
         });
         renderAds(currentFiltered);
@@ -1660,11 +1653,11 @@
     }
 
     // ================================================================
-    //  ДОБАВЛЕНИЕ/РЕДАКТИРОВАНИЕ (ДЛЯ ДМИТРИЯ)
+    //  ДОБАВЛЕНИЕ/РЕДАКТИРОВАНИЕ
     // ================================================================
     function openAddForm() {
         if (!currentUser || !currentUser.isAdmin) {
-            showToast('⛔ Только Дмитрий может добавлять объявления!');
+            showToast('⛔ Только администратор может добавлять объявления!');
             return;
         }
         editingId = null;
@@ -1677,7 +1670,7 @@
         const mediaList = ad?.media || [];
         const mediaHtml = mediaList.map((m, i) => `
             <span class="file-tag">
-                ${m.type === 'image' ? '📷' : '🎬'} ${m.type === 'image' ? 'Фото' : 'Видео'}
+                📷 ${m.url.substring(0, 30)}${m.url.length > 30 ? '...' : ''}
                 <span class="remove-file" onclick="removeMedia(${ad.id}, ${i})">✕</span>
             </span>
         `).join('');
@@ -1694,7 +1687,6 @@
                             <option value="Квартира" ${ad?.type === 'Квартира' ? 'selected' : ''}>Квартира</option>
                             <option value="Дом" ${ad?.type === 'Дом' ? 'selected' : ''}>Дом</option>
                             <option value="Земельный участок" ${ad?.type === 'Земельный участок' ? 'selected' : ''}>Земельный участок</option>
-                            <option value="Коммерческая" ${ad?.type === 'Коммерческая' ? 'selected' : ''}>Коммерческая</option>
                         </select>
                     </div>
                     <div style="flex:1; min-width:150px;">
@@ -1710,7 +1702,7 @@
                     <div style="flex:1; min-width:150px;">
                         <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Эмодзи</label>
                         <select id="editEmoji" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
-                            ${['🏢','🏠','🏡','🌳','🌲','🏘️'].map(e => `<option value="${e}" ${ad?.emoji === e ? 'selected' : ''}>${e}</option>`).join('')}
+                            ${['🏢','🏠','🏡','🌳','🌲'].map(e => `<option value="${e}" ${ad?.emoji === e ? 'selected' : ''}>${e}</option>`).join('')}
                         </select>
                     </div>
                     <div style="flex:1; min-width:150px;">
@@ -1763,10 +1755,12 @@
                 </div>
 
                 <div>
-                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Фото и видео (вставьте ссылку)</label>
-                    <input type="text" id="editMediaUrl" placeholder="https://example.com/photo.jpg" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
-                    <button type="button" onclick="addMediaUrl()" style="margin-top:4px; padding:6px 16px; background:#2d7d46; color:white; border:none; border-radius:8px; cursor:pointer;">➕ Добавить медиа</button>
-                    <div class="file-list" id="fileList">
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Фото (вставьте ссылку)</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="editMediaUrl" placeholder="https://example.com/photo.jpg" style="flex:1; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                        <button type="button" onclick="addMediaUrl()" style="padding:10px 20px; background:#2d7d46; color:white; border:none; border-radius:10px; cursor:pointer;">➕</button>
+                    </div>
+                    <div class="file-list" id="fileList" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
                         ${mediaHtml}
                     </div>
                 </div>
@@ -1816,9 +1810,9 @@
         const list = document.getElementById('fileList');
         if (!list) return;
         list.innerHTML = tempMediaUrls.map((m, i) => `
-            <span class="file-tag">
+            <span class="file-tag" style="background:#e8f5e9; padding:4px 12px; border-radius:20px; font-size:12px; color:#2e7d32; display:inline-flex; align-items:center; gap:6px;">
                 📷 ${m.url.substring(0, 30)}${m.url.length > 30 ? '...' : ''}
-                <span class="remove-file" onclick="removeTempMedia(${i})">✕</span>
+                <span class="remove-file" onclick="removeTempMedia(${i})" style="cursor:pointer; color:#d32f2f; font-weight:bold;">✕</span>
             </span>
         `).join('');
     }
@@ -1841,7 +1835,7 @@
     function saveAd(e) {
         e.preventDefault();
         if (!currentUser || !currentUser.isAdmin) {
-            showToast('⛔ Только Дмитрий может сохранять!');
+            showToast('⛔ Только администратор может сохранять!');
             return;
         }
         const title = document.getElementById('editTitle').value.trim();
@@ -1926,11 +1920,9 @@
     // ================================================================
     //  УДАЛЕНИЕ
     // ================================================================
-    let deleteTargetId = null;
-
     function confirmDeleteAd(id) {
         if (!currentUser || !currentUser.isAdmin) {
-            showToast('⛔ Только Дмитрий может удалять!');
+            showToast('⛔ Только администратор может удалять!');
             return;
         }
         deleteTargetId = id;
@@ -1980,8 +1972,7 @@
             '2room': adsData.filter(a => a.rooms === 2).length,
             '3room': adsData.filter(a => a.rooms === 3).length,
             house: adsData.filter(a => a.type === 'Дом').length,
-            land: adsData.filter(a => a.type === 'Земельный участок').length,
-            commercial: adsData.filter(a => a.type === 'Коммерческая').length
+            land: adsData.filter(a => a.type === 'Земельный участок').length
         };
         document.querySelectorAll('.cat-btn').forEach(btn => {
             const cat = btn.dataset.cat;
@@ -2041,7 +2032,7 @@
         }
     });
 
-    // Добавляем кнопку "Добавить" для Дмитрия
+    // Добавляем кнопку "Добавить" для администратора
     const addBtn = document.createElement('button');
     addBtn.className = 'btn btn-primary';
     addBtn.textContent = '➕ Добавить';
@@ -2061,21 +2052,10 @@
     };
     updateUIForUser();
 
-    // Добавляем confirmDialog
-    const confirmDialog = document.createElement('div');
-    confirmDialog.id = 'confirmDialog';
-    confirmDialog.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center; padding:20px;';
-    confirmDialog.innerHTML = `
-        <div style="background:white; border-radius:16px; padding:30px; max-width:400px; width:100%; text-align:center;">
-            <h3>⚠️ Удалить объявление?</h3>
-            <p style="color:#666; margin:16px 0;">Вы уверены, что хотите удалить это объявление? Действие необратимо.</p>
-            <div style="display:flex; gap:12px;">
-                <button onclick="confirmDelete()" style="flex:1; padding:10px; background:#d32f2f; color:white; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Да, удалить</button>
-                <button onclick="closeConfirm()" style="flex:1; padding:10px; background:#f5f5f5; color:#555; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Отмена</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(confirmDialog);
+    // Добавляем подтверждение удаления
+    const confirmDialog = document.getElementById('confirmDialog');
+    window.confirmDelete = confirmDelete;
+    window.closeConfirm = closeConfirm;
 </script>
 
 </body>
