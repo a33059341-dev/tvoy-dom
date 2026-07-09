@@ -90,6 +90,7 @@
             gap: 8px;
             padding-right: 12px;
             border-right: 1px solid #eee;
+            cursor: pointer;
         }
         .user-info .avatar {
             width: 32px;
@@ -159,6 +160,22 @@
             cursor: pointer;
         }
         .btn-archive:hover { background: #ffecb3; }
+        /* Кнопка входа — видна для всех */
+        .btn-login {
+            background: #2d7d46;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-login:hover { background: #1e5f33; }
 
         /* ===== ГЕРОЙ ===== */
         .hero {
@@ -912,6 +929,39 @@
             transform: scale(0.95);
         }
 
+        /* Редактирование имени */
+        .edit-name-modal .modal-content { max-width: 400px; }
+        .edit-name-modal .modal-content .edit-name-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .edit-name-modal .modal-content .edit-name-form input {
+            padding: 10px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+        .edit-name-modal .modal-content .edit-name-form input:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+        .edit-name-modal .modal-content .edit-name-form button {
+            padding: 10px;
+            background: #2d7d46;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .edit-name-modal .modal-content .edit-name-form button:hover {
+            background: #1e5f33;
+        }
+
         /* ===== ШАРИНГ В МОДАЛКЕ ===== */
         .share-buttons-modal {
             display: flex;
@@ -939,7 +989,7 @@
         .share-buttons-modal .btn-sms { background: #ff9800; }
         .share-buttons-modal .btn-email { background: #9c27b0; }
 
-        /* ===== ОТЗЫВЫ (улучшенные) ===== */
+        /* ===== ОТЗЫВЫ ===== */
         .reviews-section {
             margin: 20px 0;
             padding-top: 16px;
@@ -1226,6 +1276,8 @@
                 </button>
                 <button class="btn-archive" id="archiveBtn" onclick="openArchive()" style="display:none;">📦 Архив</button>
                 <button class="btn-logout" id="logoutBtn" onclick="logout()" style="display:none;">🚪 Выйти</button>
+                <!-- Кнопка входа — ВИДНА ДЛЯ ВСЕХ -->
+                <button class="btn-login" id="loginBtn" onclick="showLoginForm()">🔑 Войти</button>
             </div>
         </div>
     </div>
@@ -1285,6 +1337,7 @@
     </div>
 </div>
 
+<!-- Модалка входа -->
 <div class="modal-overlay login-modal" id="loginModal">
     <div class="modal-content">
         <button class="close-btn" onclick="closeLogin()">✕</button>
@@ -1299,7 +1352,19 @@
                 <input type="text" id="loginName" placeholder="Введите ваше имя" style="width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-size:16px;" required>
             </div>
             <button type="submit" style="width:100%; padding:12px; background:#2d7d46; color:white; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer;">🔑 Войти</button>
-            <div class="login-hint">Только администратор может добавлять объявления</div>
+            <div class="login-hint">Только администраторы могут добавлять объявления</div>
+        </form>
+    </div>
+</div>
+
+<!-- Модалка редактирования имени -->
+<div class="modal-overlay edit-name-modal" id="editNameModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeEditName()">✕</button>
+        <h2 style="margin-bottom:20px;">✏️ Редактировать имя</h2>
+        <form class="edit-name-form" onsubmit="saveGuestName(event)">
+            <input type="text" id="editNameInput" placeholder="Введите ваше имя" required>
+            <button type="submit">💾 Сохранить</button>
         </form>
     </div>
 </div>
@@ -1320,7 +1385,7 @@
 <div class="chat-floating" id="chatFloating">
     <button class="chat-toggle" onclick="toggleChat()">
         💬
-        <span class="badge" id="chatBadge" style="display:none;">1</span>
+        <span class="badge" id="chatBadge">0</span>
         <span class="tooltip">Написать Дмитрию</span>
     </button>
     <div class="chat-window" id="chatWindow">
@@ -1359,6 +1424,9 @@
     // ================================================================
     const ADMIN_PHONE = '+79678297477';
     const ADMIN_NAME = 'Дмитрий';
+    const ADMIN_PHONE2 = '+79171847324';
+    const ADMIN_NAME2 = 'Gleb';
+
     const IMG_BASE = 'https://picsum.photos/seed/';
     const DISTRICTS = ['Кировский', 'Советский', 'Ленинский', 'Трусовский', 'Приволжский'];
 
@@ -1504,6 +1572,7 @@
     let editingId = null;
     let deleteTargetId = null;
     let currentChatUserId = null;
+    let chatJustOpened = false;
 
     // ================================================================
     //  АВТОРИЗАЦИЯ
@@ -1518,29 +1587,56 @@
         }
     }
 
+    function isAdmin(user) {
+        if (!user) return false;
+        const cleanPhone = user.phone.replace(/[^0-9]/g, '');
+        const adminClean1 = ADMIN_PHONE.replace(/[^0-9]/g, '');
+        const adminClean2 = ADMIN_PHONE2.replace(/[^0-9]/g, '');
+        return cleanPhone === adminClean1 || cleanPhone === adminClean2;
+    }
+
     function updateUIForUser() {
         const avatar = document.getElementById('userAvatar');
         const nameEl = document.getElementById('userName');
         const roleEl = document.getElementById('userRole');
         const logoutBtn = document.getElementById('logoutBtn');
         const archiveBtn = document.getElementById('archiveBtn');
+        const loginBtn = document.getElementById('loginBtn');
 
         if (currentUser) {
             avatar.textContent = currentUser.name.charAt(0).toUpperCase();
             nameEl.textContent = currentUser.name;
-            roleEl.textContent = currentUser.isAdmin ? 'администратор' : 'покупатель';
+            roleEl.textContent = isAdmin(currentUser) ? 'администратор ✅' : 'покупатель';
             logoutBtn.style.display = 'inline-flex';
-            archiveBtn.style.display = currentUser.isAdmin ? 'inline-flex' : 'none';
+            archiveBtn.style.display = isAdmin(currentUser) ? 'inline-flex' : 'none';
+            loginBtn.style.display = 'none'; // Скрываем кнопку входа для авторизованных
         } else {
             avatar.textContent = 'Г';
             nameEl.textContent = 'Гость';
             roleEl.textContent = 'просмотр';
             logoutBtn.style.display = 'none';
             archiveBtn.style.display = 'none';
+            loginBtn.style.display = 'inline-flex'; // Показываем кнопку входа
         }
         const addBtn = document.getElementById('addBtn');
         if (addBtn) {
-            addBtn.style.display = currentUser && currentUser.isAdmin ? 'inline-flex' : 'none';
+            addBtn.style.display = currentUser && isAdmin(currentUser) ? 'inline-flex' : 'none';
+        }
+        
+        // Обновляем имя в чате
+        updateChatHeaderName();
+    }
+
+    function updateChatHeaderName() {
+        const nameEl = document.getElementById('chatHeaderName');
+        const statusEl = document.getElementById('chatHeaderStatus');
+        
+        if (currentUser && isAdmin(currentUser)) {
+            nameEl.textContent = 'Сообщения';
+            statusEl.textContent = '';
+        } else {
+            nameEl.textContent = 'Дмитрий';
+            statusEl.textContent = '🟢 онлайн';
         }
     }
 
@@ -1562,10 +1658,12 @@
         }
 
         const cleanPhone = phone.replace(/[^0-9]/g, '');
-        const adminClean = ADMIN_PHONE.replace(/[^0-9]/g, '');
+        const adminClean1 = ADMIN_PHONE.replace(/[^0-9]/g, '');
+        const adminClean2 = ADMIN_PHONE2.replace(/[^0-9]/g, '');
         
-        if (cleanPhone !== adminClean || name.toLowerCase() !== ADMIN_NAME.toLowerCase()) {
-            showToast('❌ Доступ только для администратора');
+        if ((cleanPhone !== adminClean1 || name.toLowerCase() !== ADMIN_NAME.toLowerCase()) &&
+            (cleanPhone !== adminClean2 || name.toLowerCase() !== ADMIN_NAME2.toLowerCase())) {
+            showToast('❌ Доступ только для администраторов');
             return;
         }
 
@@ -1577,8 +1675,9 @@
         localStorage.setItem('user', JSON.stringify(currentUser));
         updateUIForUser();
         closeLogin();
-        showToast('✅ Добро пожаловать, Дмитрий!');
+        showToast('✅ Добро пожаловать, ' + name + '!');
         renderAds(currentFiltered);
+        updateChatList();
     }
 
     function logout() {
@@ -1588,12 +1687,45 @@
             updateUIForUser();
             showToast('🔓 Вы вышли');
             renderAds(currentFiltered);
+            updateChatList();
         }
     }
 
     function closeLogin() {
         document.getElementById('loginModal').classList.remove('active');
         document.body.style.overflow = '';
+    }
+
+    // ================================================================
+    //  РЕДАКТИРОВАНИЕ ИМЕНИ ГОСТЯ
+    // ================================================================
+    function openEditName() {
+        const currentName = getUserName();
+        document.getElementById('editNameInput').value = currentName;
+        document.getElementById('editNameModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditName() {
+        document.getElementById('editNameModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function saveGuestName(e) {
+        e.preventDefault();
+        const name = document.getElementById('editNameInput').value.trim();
+        if (!name) {
+            showToast('⚠️ Введите имя');
+            return;
+        }
+        localStorage.setItem('guestName', name);
+        closeEditName();
+        showToast('✅ Имя сохранено!');
+        const nameEl = document.getElementById('userName');
+        if (!currentUser) {
+            nameEl.textContent = name;
+        }
+        updateChatList();
     }
 
     // ================================================================
@@ -1635,7 +1767,7 @@
     //  АРХИВ
     // ================================================================
     function openArchive() {
-        if (!currentUser || !currentUser.isAdmin) {
+        if (!currentUser || !isAdmin(currentUser)) {
             showToast('⛔ Только администратор может просматривать архив');
             return;
         }
@@ -1730,7 +1862,7 @@
     }
 
     // ================================================================
-    //  ТЕЛЕФОН — ОТКРЫВАЕТ НАБОР НОМЕРА НА МОБИЛЬНЫХ
+    //  ТЕЛЕФОН
     // ================================================================
     function callPhone(phone) {
         const cleanPhone = phone.replace(/[^0-9+]/g, '');
@@ -1773,61 +1905,95 @@
         return guestName;
     }
 
-    function getChatKey(userId) {
-        return 'chat_user_' + userId;
-    }
+    const CHAT_KEY = 'chat_with_dmitry';
 
-    function getChatMessages(userId) {
+    function getChatMessages() {
         try {
-            return JSON.parse(localStorage.getItem(getChatKey(userId)) || '[]');
+            return JSON.parse(localStorage.getItem(CHAT_KEY) || '[]');
         } catch {
             return [];
         }
     }
 
-    function saveChatMessages(userId, messages) {
-        localStorage.setItem(getChatKey(userId), JSON.stringify(messages));
+    function saveChatMessages(messages) {
+        localStorage.setItem(CHAT_KEY, JSON.stringify(messages));
+        updateUnreadCount();
     }
 
-    function getAllChatUsers() {
-        const users = [];
-        for (let key in localStorage) {
-            if (key.startsWith('chat_user_')) {
-                const userId = key.replace('chat_user_', '');
-                const messages = getChatMessages(userId);
-                if (messages.length > 0) {
-                    const lastMsg = messages[messages.length - 1];
-                    let userName = 'Гость';
-                    for (let msg of messages) {
-                        if (msg.userName) {
-                            userName = msg.userName;
-                            break;
-                        }
-                    }
-                    const isAdmin = userId === 'admin';
-                    users.push({
-                        userId: userId,
-                        name: isAdmin ? 'Дмитрий' : userName,
-                        isAdmin: isAdmin,
-                        lastMessage: lastMsg.text,
-                        lastTime: lastMsg.time || '',
-                        unread: 0,
-                        count: messages.length
-                    });
-                }
-            }
+    function getUnreadCount() {
+        try {
+            const data = JSON.parse(localStorage.getItem('chat_unread') || '{"count":0}');
+            return data.count || 0;
+        } catch {
+            return 0;
         }
-        users.sort((a, b) => {
+    }
+
+    function setUnreadCount(count) {
+        localStorage.setItem('chat_unread', JSON.stringify({ count: count }));
+        updateUnreadBadge();
+    }
+
+    function updateUnreadCount() {
+        const messages = getChatMessages();
+        const unread = messages.filter(m => m.from === 'admin' && !m.read).length;
+        setUnreadCount(unread);
+    }
+
+    function updateUnreadBadge() {
+        const badge = document.getElementById('chatBadge');
+        const count = getUnreadCount();
+        if (count > 0) {
+            badge.textContent = count;
+            badge.style.display = 'flex';
+        } else {
+            badge.textContent = '0';
+            badge.style.display = 'none';
+        }
+    }
+
+    function markAllAsRead() {
+        const messages = getChatMessages();
+        let changed = false;
+        messages.forEach(m => {
+            if (m.from === 'admin' && !m.read) {
+                m.read = true;
+                changed = true;
+            }
+        });
+        if (changed) {
+            saveChatMessages(messages);
+            setUnreadCount(0);
+        }
+    }
+
+    function getChatUsers() {
+        const messages = getChatMessages();
+        const usersMap = new Map();
+        messages.forEach(msg => {
+            if (msg.userId && !usersMap.has(msg.userId)) {
+                usersMap.set(msg.userId, {
+                    userId: msg.userId,
+                    name: msg.userName || 'Гость',
+                    lastMessage: msg.text,
+                    lastTime: msg.time || '',
+                    count: 0
+                });
+            }
+        });
+        usersMap.forEach((user, userId) => {
+            user.count = messages.filter(m => m.userId === userId).length;
+        });
+        return Array.from(usersMap.values()).sort((a, b) => {
             if (!a.lastTime) return 1;
             if (!b.lastTime) return -1;
             return b.lastTime.localeCompare(a.lastTime);
         });
-        return users;
     }
 
     function renderChatList() {
         const container = document.getElementById('chatList');
-        const users = getAllChatUsers();
+        const users = getChatUsers();
         
         if (users.length === 0) {
             container.innerHTML = '<div class="empty-chats">Нет сообщений</div>';
@@ -1845,20 +2011,22 @@
                 ${user.unread > 0 ? `<div class="chat-unread">${user.unread}</div>` : ''}
             </div>
         `).join('');
+        updateUnreadBadge();
     }
 
     function renderChatMessagesForUser(userId) {
         const container = document.getElementById('chatMessages');
-        const messages = getChatMessages(userId);
+        const messages = getChatMessages();
+        const userMessages = messages.filter(m => m.userId === userId);
         
-        if (messages.length === 0) {
+        if (userMessages.length === 0) {
             container.innerHTML = '<div class="empty-state">Напишите первое сообщение</div>';
             return;
         }
 
-        const isAdmin = currentUser && currentUser.isAdmin;
-        container.innerHTML = messages.map(msg => {
-            const isOutgoing = msg.from === 'user' && !isAdmin;
+        const isAdminUser = currentUser && isAdmin(currentUser);
+        container.innerHTML = userMessages.map(msg => {
+            const isOutgoing = msg.from === 'user' && !isAdminUser;
             return `
                 <div class="message ${isOutgoing ? 'outgoing' : 'incoming'}">
                     <div class="bubble">${msg.text}</div>
@@ -1867,17 +2035,34 @@
             `;
         }).join('');
         container.scrollTop = container.scrollHeight;
+        
+        if (isAdminUser) {
+            const allMessages = getChatMessages();
+            let changed = false;
+            allMessages.forEach(m => {
+                if (m.userId === userId && m.from === 'user' && !m.read) {
+                    m.read = true;
+                    changed = true;
+                }
+            });
+            if (changed) {
+                saveChatMessages(allMessages);
+                setUnreadCount(0);
+                updateUnreadBadge();
+            }
+        }
     }
 
     function openUserChat(userId, userName) {
         currentChatUserId = userId;
+        markAllAsRead();
         
         document.getElementById('chatList').classList.add('hidden');
         document.getElementById('chatMessages').classList.add('active');
         document.getElementById('chatInputArea').classList.add('active');
         document.getElementById('chatBackBtn').style.display = 'inline-block';
         
-        const displayName = userName || (userId === 'admin' ? 'Дмитрий' : 'Пользователь');
+        const displayName = userName || 'Пользователь';
         document.getElementById('chatHeaderName').textContent = displayName;
         document.getElementById('chatHeaderStatus').textContent = '🟢 онлайн';
         
@@ -1887,6 +2072,7 @@
         if (!chatWindow.classList.contains('open')) {
             chatWindow.classList.add('open');
         }
+        chatJustOpened = true;
     }
 
     function showChatList() {
@@ -1898,6 +2084,8 @@
         document.getElementById('chatHeaderStatus').textContent = '';
         renderChatList();
         currentChatUserId = null;
+        markAllAsRead();
+        chatJustOpened = false;
     }
 
     function toggleChat() {
@@ -1911,7 +2099,7 @@
             }, 300);
         } else {
             window.classList.add('open');
-            if (!currentUser || !currentUser.isAdmin) {
+            if (!currentUser || !isAdmin(currentUser)) {
                 const userId = getUserId();
                 const userName = getUserName();
                 openUserChat(userId, userName);
@@ -1920,7 +2108,8 @@
                 document.getElementById('chatHeaderName').textContent = 'Сообщения';
                 document.getElementById('chatHeaderStatus').textContent = '';
             }
-            document.getElementById('chatBadge').style.display = 'none';
+            markAllAsRead();
+            chatJustOpened = true;
         }
     }
 
@@ -1929,63 +2118,56 @@
         const text = input.value.trim();
         if (!text) return;
         
-        const isAdmin = currentUser && currentUser.isAdmin;
-        const userId = isAdmin ? 'admin' : getUserId();
+        const isAdminUser = currentUser && isAdmin(currentUser);
+        const userId = getUserId();
         const userName = getUserName();
         
-        const messages = getChatMessages(userId);
+        const messages = getChatMessages();
         const now = new Date();
         const time = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         
         messages.push({
-            from: isAdmin ? 'admin' : 'user',
+            from: isAdminUser ? 'admin' : 'user',
+            userId: isAdminUser ? 'admin' : userId,
+            userName: userName,
             text: text,
             time: time,
-            userName: userName,
+            read: false,
             timestamp: now.getTime()
         });
-        saveChatMessages(userId, messages);
+        saveChatMessages(messages);
         
         renderChatMessagesForUser(userId);
         input.value = '';
         
-        if (!isAdmin) {
-            setTimeout(() => {
-                const msgs = getChatMessages(userId);
-                msgs.push({
-                    from: 'admin',
-                    text: 'Здравствуйте! Спасибо за ваш интерес. Оставьте свой номер телефона, и я свяжусь с вами в ближайшее время.',
-                    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-                    userName: 'Дмитрий',
-                    timestamp: Date.now()
-                });
-                saveChatMessages(userId, msgs);
-                renderChatMessagesForUser(userId);
-                
-                const badge = document.getElementById('chatBadge');
-                badge.style.display = 'flex';
-                badge.textContent = '1';
-            }, 1500);
-        } else {
-            const badge = document.getElementById('chatBadge');
-            badge.style.display = 'flex';
-            badge.textContent = '1';
+        if (isAdminUser) {
+            updateUnreadBadge();
         }
     }
 
     function openChatFromAd(adId) {
+        // Закрываем модалку
+        closeModal();
+        
+        // Открываем чат
         const chatWindow = document.getElementById('chatWindow');
         if (!chatWindow.classList.contains('open')) {
             chatWindow.classList.add('open');
         }
         
-        if (!currentUser || !currentUser.isAdmin) {
+        if (!currentUser || !isAdmin(currentUser)) {
             const userId = getUserId();
             const userName = getUserName();
             openUserChat(userId, userName);
         } else {
             showChatList();
         }
+    }
+
+    function updateChatList() {
+        renderChatList();
+        updateUnreadBadge();
+        updateChatHeaderName();
     }
 
     // ================================================================
@@ -2114,7 +2296,6 @@
             `;
         }
 
-        // Улучшенные отзывы с рейтингом
         let reviewsHtml = '';
         let avgRating = 0;
         let totalReviews = 0;
@@ -2175,7 +2356,7 @@
         `;
 
         let adminActions = '';
-        if (currentUser && currentUser.isAdmin) {
+        if (currentUser && isAdmin(currentUser)) {
             adminActions = `
                 <div style="display:flex; gap:10px; margin-top:12px;">
                     <button onclick="closeModal(); setTimeout(() => openEditForm(${ad.id}), 400);" 
@@ -2274,7 +2455,7 @@
     //  АРХИВИРОВАНИЕ
     // ================================================================
     function archiveAd(id) {
-        if (!currentUser || !currentUser.isAdmin) {
+        if (!currentUser || !isAdmin(currentUser)) {
             showToast('⛔ Только администратор может архивировать');
             return;
         }
@@ -2326,7 +2507,7 @@
     //  ДОБАВЛЕНИЕ/РЕДАКТИРОВАНИЕ
     // ================================================================
     function openAddForm() {
-        if (!currentUser || !currentUser.isAdmin) {
+        if (!currentUser || !isAdmin(currentUser)) {
             showToast('⛔ Только администратор может добавлять объявления!');
             return;
         }
@@ -2336,7 +2517,7 @@
     }
 
     function openEditForm(id) {
-        if (!currentUser || !currentUser.isAdmin) {
+        if (!currentUser || !isAdmin(currentUser)) {
             showToast('⛔ Только администратор может редактировать!');
             return;
         }
@@ -2543,7 +2724,7 @@
 
     function saveAd(e) {
         e.preventDefault();
-        if (!currentUser || !currentUser.isAdmin) {
+        if (!currentUser || !isAdmin(currentUser)) {
             showToast('⛔ Только администратор может сохранять!');
             return;
         }
@@ -2634,7 +2815,7 @@
     //  УДАЛЕНИЕ
     // ================================================================
     function confirmDeleteAd(id) {
-        if (!currentUser || !currentUser.isAdmin) {
+        if (!currentUser || !isAdmin(currentUser)) {
             showToast('⛔ Только администратор может удалять!');
             return;
         }
@@ -2712,6 +2893,7 @@
         renderAds(currentFiltered);
         updateCategories();
         updateFavoritesCount();
+        updateUnreadBadge();
 
         document.getElementById('chatInputFloat').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') sendChatMessageFloat();
@@ -2726,19 +2908,14 @@
             }
         }
 
-        document.querySelector('.logo').addEventListener('dblclick', function() {
-            if (!currentUser || !currentUser.isAdmin) {
-                showLoginForm();
+        // Клик по имени гостя для редактирования
+        document.getElementById('userName').addEventListener('click', function() {
+            if (!currentUser) {
+                openEditName();
             }
         });
 
-        if (currentUser && currentUser.isAdmin) {
-            document.getElementById('chatHeaderName').textContent = 'Сообщения';
-            document.getElementById('chatHeaderStatus').textContent = '';
-        } else {
-            document.getElementById('chatHeaderName').textContent = 'Дмитрий';
-            document.getElementById('chatHeaderStatus').textContent = '🟢 онлайн';
-        }
+        updateChatHeaderName();
     });
 
     document.getElementById('modalOverlay').addEventListener('click', function(e) {
@@ -2752,6 +2929,7 @@
             closeModal();
             closeLogin();
             closeArchive();
+            closeEditName();
         }
     });
 
@@ -2768,8 +2946,9 @@
         origUpdateUI();
         const addBtn = document.getElementById('addBtn');
         if (addBtn) {
-            addBtn.style.display = currentUser && currentUser.isAdmin ? 'inline-flex' : 'none';
+            addBtn.style.display = currentUser && isAdmin(currentUser) ? 'inline-flex' : 'none';
         }
+        updateChatHeaderName();
     };
     updateUIForUser();
 
@@ -2783,6 +2962,10 @@
     window.showChatList = showChatList;
     window.callPhone = callPhone;
     window.showPhone = showPhone;
+    window.openEditName = openEditName;
+    window.closeEditName = closeEditName;
+    window.saveGuestName = saveGuestName;
+    window.showLoginForm = showLoginForm;
 </script>
 
 </body>
