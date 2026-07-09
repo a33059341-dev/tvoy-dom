@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Твой Дом — Агентство недвижимости в Астрахани</title>
+    <style>
+        /* ========== ОБЩИЕ СТИЛИ ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            color: #1a1a2e;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ========== ШАПКА ========== */
+        .header {
+            background: white;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        .logo span { color: #2d7d46; }
+        .logo small { font-size: 14px; font-weight: 400; color: #888; }
+        .header-contacts {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .header-contacts .phone {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d7d46;
+        }
+        .header-contacts .manager {
+            font-size: 14px;
+            color: #666;
+        }
+        .btn-add {
+            background: #2d7d46;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-add:hover { background: #1e5f33; transform: translateY(-2px); }
+        .btn-add:active { transform: scale(0.95); }
+
+        /* ========== ГЕРОЙ (БАННЕР) ========== */
+        .hero {
+            background: linear-gradient(135deg, #e8f0fe 0%, #d4e4f7 100%);
+            padding: 50px 20px;
+            margin: 30px 0;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 38px; color: #1a1a2e; margin-bottom: 10px; }
+        .hero p { font-size: 18px; color: #444; max-width: 600px; margin: 0 auto 20px; }
+        .hero .badge-region {
+            background: #2d7d46;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        /* ========== КАТЕГОРИИ ========== */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        .cat-btn {
+            padding: 8px 20px;
+            border: 2px solid #e8e8e8;
+            border-radius: 30px;
+            background: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #555;
+        }
+        .cat-btn:hover { border-color: #2d7d46; color: #2d7d46; }
+        .cat-btn.active {
+            background: #2d7d46;
+            border-color: #2d7d46;
+            color: white;
+        }
+
+        /* ========== ФИЛЬТРЫ ========== */
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .filters select, .filters input {
+            padding: 12px 18px;
+            border: 2px solid #e8e8e8;
+            border-radius: 30px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 150px;
+            background: white;
+            transition: 0.2s;
+        }
+        .filters select:focus, .filters input:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+
+        /* ========== СЕТКА ОБЪЯВЛЕНИЙ ========== */
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .ad-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+        }
+        .ad-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .ad-card:active { transform: scale(0.98); }
+
+        .ad-card .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        .badge.sale { background: #e8f5e9; color: #2e7d32; }
+        .badge.rent { background: #fff3e0; color: #e65100; }
+
+        .ad-card .emoji-big { font-size: 36px; display: block; margin-bottom: 8px; }
+        .ad-card h3 { font-size: 18px; margin-bottom: 6px; color: #1a1a2e; padding-right: 70px; }
+        .ad-card .address { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .ad-card .details { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+        .ad-card .details span { background: #f5f5f5; padding: 4px 12px; border-radius: 6px; font-size: 13px; color: #555; }
+        .ad-card .price { font-size: 24px; font-weight: 700; color: #2d7d46; }
+        .ad-card .meta { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; font-size: 12px; color: #999; }
+
+        /* ---------- ССЫЛКА НА КАРТОЧКЕ ---------- */
+        .ad-card .ad-link-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+        }
+        .ad-card .ad-link-row .link-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1a73e8;
+            background: #f8f9fa;
+            min-width: 80px;
+            font-weight: 500;
+        }
+        .ad-card .ad-link-row .link-input:focus { outline: none; border-color: #1a73e8; }
+        .ad-card .ad-link-row .open-link-btn,
+        .ad-card .ad-link-row .copy-link-btn-small {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            touch-action: manipulation;
+            min-height: 40px;
+        }
+        .ad-card .ad-link-row .open-link-btn {
+            background: #1a73e8;
+            color: white;
+        }
+        .ad-card .ad-link-row .open-link-btn:active { background: #0d47a1; transform: scale(0.95); }
+        .ad-card .ad-link-row .copy-link-btn-small {
+            background: #2d7d46;
+            color: white;
+        }
+        .ad-card .ad-link-row .copy-link-btn-small:active { background: #1e5f33; transform: scale(0.95); }
+
+        /* ========== МОДАЛЬНОЕ ОКНО ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            animation: fadeIn 0.3s;
+        }
+        .modal-overlay.active { display: flex; align-items: flex-start; justify-content: center; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 700px;
+            width: 100%;
+            margin: 40px auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content .close-btn {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: #f0f0f0;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            z-index: 5;
+        }
+        .modal-content .close-btn:hover { background: #e0e0e0; }
+
+        .detail-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .detail-emoji { font-size: 48px; display: block; margin: 10px 0; }
+        .detail-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin: 16px 0;
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 12px;
+        }
+        .detail-specs .spec { text-align: center; }
+        .detail-specs .spec .label { font-size: 11px; color: #999; text-transform: uppercase; }
+        .detail-specs .spec .value { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+
+        .detail-link {
+            background: #f0f4ff;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border: 1px solid #d0e0ff;
+        }
+        .detail-link .link-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .detail-link .link-url {
+            color: #1a73e8;
+            font-weight: 500;
+            word-break: break-all;
+            flex: 1;
+        }
+        .detail-link .link-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            touch-action: manipulation;
+            min-height: 40px;
+        }
+        .detail-link .link-btn.open { background: #1a73e8; color: white; }
+        .detail-link .link-btn.copy { background: #2d7d46; color: white; }
+        .detail-link .link-btn:active { transform: scale(0.95); }
+
+        .contact-btn {
+            width: 100%;
+            padding: 14px;
+            background: #2d7d46;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 12px;
+        }
+        .contact-btn:hover { background: #1e5f33; }
+        .contact-btn:active { transform: scale(0.97); }
+
+        /* ========== ФОРМА СВЯЗИ ========== */
+        .contact-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-top: 30px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            text-align: center;
+        }
+        .contact-section h2 { margin-bottom: 15px; color: #1a1a2e; font-size: 28px; }
+        .contact-section .contact-info { font-size: 18px; color: #444; }
+        .contact-section .contact-info strong { color: #2d7d46; }
+        .contact-section .contact-form { max-width: 500px; margin: 20px auto 0; }
+        .contact-section .contact-form input,
+        .contact-section .contact-form textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .contact-section .contact-form input:focus,
+        .contact-section .contact-form textarea:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+        .contact-section .contact-form textarea { min-height: 100px; resize: vertical; }
+        .contact-section .contact-form button {
+            background: #2d7d46;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .contact-section .contact-form button:hover { background: #1e5f33; }
+
+        /* ========== УВЕДОМЛЕНИЯ ========== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            z-index: 2000;
+            display: none;
+            font-size: 15px;
+            text-align: center;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+        .toast.show { display: block; }
+
+        /* ========== ПУСТОЙ РЕЗУЛЬТАТ ========== */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+        .empty-state .icon { font-size: 56px; margin-bottom: 16px; }
+
+        /* ========== АДАПТИВ ========== */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .hero h1 { font-size: 28px; }
+            .hero p { font-size: 16px; }
+            .ads-grid { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; }
+            .filters select, .filters input { min-width: 100%; }
+            .modal-content { padding: 20px; margin: 10px 0; }
+            .contact-section { padding: 20px; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 12px; }
+            .logo { font-size: 22px; }
+            .ad-card { padding: 14px; }
+            .ad-card .ad-link-row .open-link-btn,
+            .ad-card .ad-link-row .copy-link-btn-small { font-size: 12px; padding: 6px 12px; min-height: 36px; }
+        }
+        @media (hover: none) and (pointer: coarse) {
+            .ad-card .ad-link-row .open-link-btn,
+            .ad-card .ad-link-row .copy-link-btn-small { min-height: 44px; font-size: 15px; padding: 10px 18px; }
+            .detail-link .link-btn { min-height: 48px; font-size: 16px; padding: 10px 20px; }
+            .contact-btn { min-height: 56px; font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== ШАПКА ========== -->
+<header class="header">
+    <div class="container header-content">
+        <a href="#" class="logo" onclick="location.reload(); return false;">
+            🏠 <span>Твой Дом</span> <small>Астрахань</small>
+        </a>
+        <div class="header-contacts">
+            <div>
+                <div class="phone">📞 +7 967 829 74 77</div>
+                <div class="manager">Дмитрий · 9:00–21:00</div>
+            </div>
+            <button class="btn-add" onclick="openAddForm()">➕ Добавить</button>
+        </div>
+    </div>
+</header>
+
+<!-- ========== ОСНОВНОЙ КОНТЕНТ ========== -->
+<main class="container">
+
+    <!-- Герой -->
+    <section class="hero">
+        <h1>🏠 Недвижимость в Астрахани</h1>
+        <p>Сдаём и продаём квартиры, дома, участки. Надёжно, прозрачно, по-соседски.</p>
+        <span class="badge-region">📍 Астрахань и область</span>
+    </section>
+
+    <!-- Категории -->
+    <div class="categories" id="categories">
+        <button class="cat-btn active" data-cat="all">🏠 Все</button>
+        <button class="cat-btn" data-cat="sale">💰 Продажа</button>
+        <button class="cat-btn" data-cat="rent">🔑 Аренда</button>
+        <button class="cat-btn" data-cat="1room">🛏 1-комн.</button>
+        <button class="cat-btn" data-cat="2room">🛏 2-комн.</button>
+        <button class="cat-btn" data-cat="3room">🛏 3-комн.</button>
+        <button class="cat-btn" data-cat="house">🏡 Дома</button>
+        <button class="cat-btn" data-cat="land">🌳 Участки</button>
+        <button class="cat-btn" data-cat="commercial">🏢 Коммерческая</button>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filters">
+        <select id="filterType">
+            <option value="all">Все типы</option>
+            <option value="Квартира">Квартиры</option>
+            <option value="Дом">Дома</option>
+            <option value="Земельный участок">Участки</option>
+            <option value="Коммерческая">Коммерческая</option>
+        </select>
+        <select id="filterAction">
+            <option value="all">Все предложения</option>
+            <option value="Продажа">Продажа</option>
+            <option value="Аренда">Аренда</option>
+        </select>
+        <input type="text" id="filterSearch" placeholder="🔍 Поиск по адресу..." />
+    </div>
+
+    <!-- Сетка объявлений -->
+    <div class="ads-grid" id="adsGrid"></div>
+
+    <!-- Связаться с нами -->
+    <section class="contact-section">
+        <h2>📞 Связаться с нами</h2>
+        <div class="contact-info">
+            <p><strong>+7 967 829 74 77</strong> — Дмитрий</p>
+            <p style="font-size:14px; color:#888;">Работаем ежедневно с 9:00 до 21:00</p>
+            <p style="font-size:14px; color:#888; margin-top:5px;">📍 Астрахань, ул. Пушкина, 15</p>
+        </div>
+        <form class="contact-form" onsubmit="sendMessage(event)">
+            <input type="text" placeholder="Ваше имя" required>
+            <input type="tel" placeholder="+7 ___ ___ __ __" required>
+            <textarea placeholder="Ваше сообщение..." required></textarea>
+            <button type="submit">📨 Отправить</button>
+        </form>
+    </section>
+
+</main>
+
+<!-- ========== МОДАЛЬНОЕ ОКНО ========== -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">✕</button>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<!-- ========== УВЕДОМЛЕНИЕ ========== -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // ================================================================
+    //  ДАННЫЕ ОБЪЯВЛЕНИЙ (АСТРАХАНЬ)
+    // ================================================================
+    const adsData = [
+        {
+            id: 1,
+            type: 'Квартира',
+            action: 'Аренда',
+            rooms: 1,
+            title: '1-к. студия на Трофимова',
+            address: 'Астрахань, ул. Трофимова, 11',
+            price: 35000,
+            priceText: '35 000 ₽/мес',
+            area: 41,
+            floor: 11,
+            totalFloors: 21,
+            description: 'Светлая студия на 11 этаже. Рядом парк, магазины. Мебель и техника в комплекте. Отличный вариант для одного человека или пары.',
+            features: ['Мебель', 'Техника', 'Интернет', 'Кондиционер'],
+            date: '2026-07-10',
+            badge: 'rent',
+            emoji: '🏢',
+            region: 'Астрахань'
+        },
+        {
+            id: 2,
+            type: 'Квартира',
+            action: 'Аренда',
+            rooms: 1,
+            title: '1-к. на Набережной',
+            address: 'Астрахань, Наб. Приволжского затона, 13',
+            price: 35000,
+            priceText: '35 000 ₽/мес',
+            area: 45,
+            floor: 13,
+            totalFloors: 17,
+            description: 'Квартира с видом на набережную. Отличный район, рядом рестораны, парк. Сделан современный ремонт.',
+            features: ['Вид на набережную', 'Лифт', 'Домофон', 'Парковка'],
+            date: '2026-07-09',
+            badge: 'rent',
+            emoji: '🏢',
+            region: 'Астрахань'
+        },
+        {
+            id: 3,
+            type: 'Квартира',
+            action: 'Аренда',
+            rooms: 2,
+            title: '2-к. на Кремлёвской',
+            address: 'Астрахань, Кремлёвская ул., 3',
+            price: 100000,
+            priceText: '100 000 ₽/мес',
+            area: 74,
+            floor: 3,
+            totalFloors: 7,
+            description: 'Новая двухкомнатная в центре. Дизайнерский ремонт, элитный дом. Панорамные окна, высокие потолки.',
+            features: ['Дизайнерский ремонт', 'Парковка', 'Охрана', 'Консьерж'],
+            date: '2026-07-08',
+            badge: 'rent',
+            emoji: '🏢',
+            region: 'Астрахань'
+        },
+        {
+            id: 4,
+            type: 'Квартира',
+            action: 'Аренда',
+            rooms: 3,
+            title: '3-к. в центре',
+            address: 'Астрахань, ул. Пушкина, 15',
+            price: 40000,
+            priceText: '40 000 ₽/мес',
+            area: 70,
+            floor: 7,
+            totalFloors: 9,
+            description: 'Просторная 3-комнатная в центре. Рядом набережная, парк, школы. Качественный ремонт, можно заезжать сразу.',
+            features: ['Парковка', 'Лифт', 'Рядом набережная', 'Домофон'],
+            date: '2026-07-07',
+            badge: 'rent',
+            emoji: '🏢',
+            region: 'Астрахань'
+        },
+        {
+            id: 5,
+            type: 'Дом',
+            action: 'Аренда',
+            rooms: 4,
+            title: 'Коттедж на Пирогова',
+            address: 'Астрахань, ул. Пирогова, 7',
+            price: 35000,
+            priceText: '35 000 ₽/мес',
+            area: 100,
+            floor: 1,
+            totalFloors: 1,
+            description: 'Уютный коттедж с участком. Индивидуальное отопление, гараж. Отличное место для семьи с детьми.',
+            features: ['Гараж', 'Участок', 'Индивидуальное отопление', 'Сад'],
+            date: '2026-07-06',
+            badge: 'rent',
+            emoji: '🏡',
+            region: 'Астрахань'
+        },
+        {
+            id: 6,
+            type: 'Земельный участок',
+            action: 'Продажа',
+            rooms: 0,
+            title: 'Участок в Приволжском',
+            address: 'Астраханская обл., Приволжский р-н, СНТ "Родник"',
+            price: 1200000,
+            priceText: '1 200 000 ₽',
+            area: 10,
+            floor: 0,
+            totalFloors: 0,
+            description: '10 соток в живописном месте. Электричество, дорога, рядом Волга. Отличное место для загородной жизни.',
+            features: ['Электричество', 'Вода', 'Рядом Волга', 'Дорога'],
+            date: '2026-07-05',
+            badge: 'sale',
+            emoji: '🌳',
+            region: 'Астраханская область'
+        },
+        {
+            id: 7,
+            type: 'Квартира',
+            action: 'Аренда',
+            rooms: 2,
+            title: '2-к. в Автогородке',
+            address: 'Астрахань, ул. Боевая, 122',
+            price: 50000,
+            priceText: '50 000 ₽/мес',
+            area: 45,
+            floor: 10,
+            totalFloors: 19,
+            description: 'Новая квартира в ЖК "Автогородок". Закрытый двор, детская площадка. Отличная инфраструктура.',
+            features: ['Новый ЖК', 'Детская площадка', 'Парковка', 'Лифт'],
+            date: '2026-07-04',
+            badge: 'rent',
+            emoji: '🏢',
+            region: 'Астрахань'
+        },
+        {
+            id: 8,
+            type: 'Коммерческая',
+            action: 'Аренда',
+            rooms: 0,
+            title: 'Офис в центре',
+            address: 'Астрахань, ул. Кирова, 18',
+            price: 75000,
+            priceText: '75 000 ₽/мес',
+            area: 55,
+            floor: 3,
+            totalFloors: 6,
+            description: 'Современный офис в центре. Панорамные окна, кондиционер, интернет. Круглосуточная охрана, парковка.',
+            features: ['Охрана', 'Парковка', 'Кондиционер', 'Интернет'],
+            date: '2026-07-03',
+            badge: 'rent',
+            emoji: '🏢',
+            region: 'Астрахань'
+        },
+        {
+            id: 9,
+            type: 'Земельный участок',
+            action: 'Продажа',
+            rooms: 0,
+            title: 'Участок в Камызякском',
+            address: 'Астраханская обл., Камызякский р-н, с. Икряное',
+            price: 1600000,
+            priceText: '1 600 000 ₽',
+            area: 15,
+            floor: 0,
+            totalFloors: 0,
+            description: '15 соток в Камызякском районе. Рядом река Икрянка. Газ по границе, электричество. Рыбалка и отдых.',
+            features: ['Газ', 'Электричество', 'Река', 'Рыбалка'],
+            date: '2026-07-02',
+            badge: 'sale',
+            emoji: '🌲',
+            region: 'Астраханская область'
+        },
+        {
+            id: 10,
+            type: 'Квартира',
+            action: 'Продажа',
+            rooms: 4,
+            title: '4-к. с видом на набережную',
+            address: 'Астрахань, наб. Приволжского затона, 12',
+            price: 14500000,
+            priceText: '14 500 000 ₽',
+            area: 120,
+            floor: 8,
+            totalFloors: 12,
+            description: 'Роскошная 4-комнатная квартира с панорамным видом на набережную. Высокие потолки, дизайнерский ремонт.',
+            features: ['Панорамные окна', 'Паркинг', 'Консьерж', 'Вид на Волгу'],
+            date: '2026-07-01',
+            badge: 'sale',
+            emoji: '🏢',
+            region: 'Астрахань'
+        }
+    ];
+
+    let nextId = 11;
+    let currentAdId = null;
+    let currentFiltered = [...adsData];
+
+    // ================================================================
+    //  ФУНКЦИИ ДЛЯ ССЫЛОК
+    // ================================================================
+    function getFullLink(id) {
+        const currentUrl = window.location.href.split('?')[0];
+        return currentUrl + '?ad=' + (id || currentAdId);
+    }
+
+    function getShortLink(id) {
+        return '?ad=' + (id || currentAdId);
+    }
+
+    function openLink(url) {
+        if (!url) return;
+        try {
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (e) {
+            window.open(url, '_blank');
+        }
+    }
+
+    // ================================================================
+    //  ОТРИСОВКА ОБЪЯВЛЕНИЙ
+    // ================================================================
+    function renderAds(list) {
+        const grid = document.getElementById('adsGrid');
+        if (!list.length) {
+            grid.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>Объявлений не найдено в Астрахани и области</p></div>`;
+            return;
+        }
+        grid.innerHTML = list.map(ad => {
+            const shortLink = getShortLink(ad.id);
+            const fullLink = getFullLink(ad.id);
+            return `
+                <div class="ad-card" onclick="openAd(${ad.id})">
+                    <span class="badge ${ad.badge}">${ad.action === 'Продажа' ? 'Продается' : 'Сдается'}</span>
+                    <span class="emoji-big">${ad.emoji}</span>
+                    <h3>${ad.title}</h3>
+                    <div class="address">📍 ${ad.address}</div>
+                    <div class="details">
+                        ${ad.area ? `<span>📐 ${ad.area} м²</span>` : ''}
+                        ${ad.rooms ? `<span>🛏 ${ad.rooms} комн.</span>` : ''}
+                        ${ad.floor ? `<span>🏗 ${ad.floor}/${ad.totalFloors} эт.</span>` : ''}
+                    </div>
+                    <div class="price">${ad.priceText}</div>
+                    <div class="meta"><span>${ad.type}</span><span>📅 ${ad.date}</span></div>
+                    <div class="ad-link-row" onclick="event.stopPropagation();">
+                        <input class="link-input" type="text" value="${shortLink}" readonly onclick="this.select(); this.setSelectionRange(0, this.value.length);" />
+                        <button class="open-link-btn" onclick="openLink('${fullLink}');">Открыть</button>
+                        <button class="copy-link-btn-small" onclick="copyText('${fullLink}');">📋</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ================================================================
+    //  ФИЛЬТРАЦИЯ
+    // ================================================================
+    function filterAds() {
+        const type = document.getElementById('filterType').value;
+        const action = document.getElementById('filterAction').value;
+        const search = document.getElementById('filterSearch').value.toLowerCase().trim();
+        const cat = document.querySelector('.cat-btn.active')?.dataset.cat || 'all';
+
+        currentFiltered = adsData.filter(ad => {
+            if (type !== 'all' && ad.type !== type) return false;
+            if (action !== 'all' && ad.action !== action) return false;
+            if (search && !ad.address.toLowerCase().includes(search) && !ad.title.toLowerCase().includes(search)) return false;
+            if (cat === 'sale' && ad.action !== 'Продажа') return false;
+            if (cat === 'rent' && ad.action !== 'Аренда') return false;
+            if (cat === '1room' && ad.rooms !== 1) return false;
+            if (cat === '2room' && ad.rooms !== 2) return false;
+            if (cat === '3room' && ad.rooms !== 3) return false;
+            if (cat === 'house' && ad.type !== 'Дом') return false;
+            if (cat === 'land' && ad.type !== 'Земельный участок') return false;
+            if (cat === 'commercial' && ad.type !== 'Коммерческая') return false;
+            return true;
+        });
+        renderAds(currentFiltered);
+    }
+
+    // ================================================================
+    //  МОДАЛЬНОЕ ОКНО
+    // ================================================================
+    function openAd(id) {
+        const ad = adsData.find(a => a.id === id);
+        if (!ad) { showToast('❌ Объявление не найдено'); return; }
+        currentAdId = id;
+        const fullLink = getFullLink(id);
+        const shortLink = getShortLink(id);
+
+        const html = `
+            <span class="detail-badge" style="background:${ad.badge === 'sale' ? '#e8f5e9' : '#fff3e0'}; color:${ad.badge === 'sale' ? '#2e7d32' : '#e65100'};">
+                ${ad.action === 'Продажа' ? '🏷 Продается' : '🔑 Сдается'}
+            </span>
+            <span class="detail-emoji">${ad.emoji}</span>
+            <h2 style="font-size:26px;">${ad.title}</h2>
+            <div style="color:#666; margin-bottom:10px;">📍 ${ad.address}</div>
+            <div style="font-size:32px; font-weight:700; color:#2d7d46;">${ad.priceText}</div>
+
+            <div class="detail-specs">
+                <div class="spec"><div class="label">Площадь</div><div class="value">${ad.area || '—'} м²</div></div>
+                <div class="spec"><div class="label">Комнаты</div><div class="value">${ad.rooms || '—'}</div></div>
+                <div class="spec"><div class="label">Этаж</div><div class="value">${ad.floor ? ad.floor + '/' + ad.totalFloors : '—'}</div></div>
+                <div class="spec"><div class="label">Тип</div><div class="value">${ad.type}</div></div>
+                <div class="spec"><div class="label">Регион</div><div class="value">${ad.region}</div></div>
+            </div>
+
+            <div style="line-height:1.8; margin:16px 0;">${ad.description}</div>
+
+            ${ad.features ? `
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;">
+                    ${ad.features.map(f => `<span style="background:#e8f5e9; padding:4px 14px; border-radius:20px; font-size:13px; color:#2e7d32;">✓ ${f}</span>`).join('')}
+                </div>
+            ` : ''}
+
+            <div class="detail-link">
+                <div style="font-weight:600; color:#1a73e8; margin-bottom:4px;">🔗 Ссылка на объявление:</div>
+                <div class="link-row">
+                    <span class="link-url">${shortLink}</span>
+                    <button class="link-btn open" onclick="openLink('${fullLink}');">Открыть</button>
+                    <button class="link-btn copy" onclick="copyText('${fullLink}');">📋 Копировать</button>
+                </div>
+            </div>
+
+            <button class="contact-btn" onclick="contactOwner()">📞 Связаться с владельцем</button>
+
+            <div style="margin-top:16px; font-size:13px; color:#999;">
+                📅 Добавлено: ${ad.date} · ID: #${ad.id} · ${ad.region}
+            </div>
+        `;
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('modalOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ================================================================
+    //  ДОБАВЛЕНИЕ ОБЪЯВЛЕНИЯ
+    // ================================================================
+    let editingId = null;
+
+    function openAddForm() {
+        editingId = null;
+        showEditForm(null);
+    }
+
+    function showEditForm(ad) {
+        const isEdit = !!ad;
+        const html = `
+            <h2>${isEdit ? '✏️ Редактирование объявления' : '➕ Добавление объявления'}</h2>
+            <p style="color:#888; font-size:14px; margin-bottom:16px;">📍 Все объявления только по Астрахани и Астраханской области</p>
+
+            <form class="edit-form" style="display:flex; flex-direction:column; gap:14px;" onsubmit="saveAd(event)">
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Тип *</label>
+                        <select id="editType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            <option value="Квартира" ${ad?.type === 'Квартира' ? 'selected' : ''}>Квартира</option>
+                            <option value="Дом" ${ad?.type === 'Дом' ? 'selected' : ''}>Дом</option>
+                            <option value="Земельный участок" ${ad?.type === 'Земельный участок' ? 'selected' : ''}>Земельный участок</option>
+                            <option value="Коммерческая" ${ad?.type === 'Коммерческая' ? 'selected' : ''}>Коммерческая</option>
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Действие *</label>
+                        <select id="editAction" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            <option value="Продажа" ${ad?.action === 'Продажа' ? 'selected' : ''}>Продажа</option>
+                            <option value="Аренда" ${ad?.action === 'Аренда' ? 'selected' : ''}>Аренда</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Эмодзи</label>
+                        <select id="editEmoji" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            ${['🏢','🏠','🏡','🌳','🌲','🏘️'].map(e => `<option value="${e}" ${ad?.emoji === e ? 'selected' : ''}>${e}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Комнат</label>
+                        <input type="number" id="editRooms" value="${ad?.rooms || 0}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Название *</label>
+                    <input type="text" id="editTitle" value="${ad?.title || ''}" placeholder="Например: 3-комнатная в центре" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Адрес * (Астрахань или область)</label>
+                    <input type="text" id="editAddress" value="${ad?.address || ''}" placeholder="Астрахань, ул. Пушкина, 15" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    <div style="font-size:13px; color:#0d47a1; background:#e3f2fd; padding:8px 14px; border-radius:8px; margin-top:4px;">📍 Объявления только по Астрахани и Астраханской области</div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Цена *</label>
+                        <input type="text" id="editPrice" value="${ad?.priceText || ''}" placeholder="5 000 000 ₽" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Площадь (м²)</label>
+                        <input type="number" id="editArea" value="${ad?.area || ''}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Этаж</label>
+                        <input type="number" id="editFloor" value="${ad?.floor || ''}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Всего этажей</label>
+                        <input type="number" id="editTotalFloors" value="${ad?.totalFloors || ''}" min="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Описание</label>
+                    <textarea id="editDescription" rows="3" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px; font-family:inherit;">${ad?.description || ''}</textarea>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Особенности (через запятую)</label>
+                    <input type="text" id="editFeatures" value="${ad?.features?.join(', ') || ''}" placeholder="Парковка, Лифт, Домофон" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Регион</label>
+                        <select id="editRegion" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                            <option value="Астрахань" ${ad?.region === 'Астрахань' ? 'selected' : ''}>Астрахань</option>
+                            <option value="Астраханская область" ${ad?.region === 'Астраханская область' ? 'selected' : ''}>Астраханская область</option>
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:150px;">
+                        <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Дата</label>
+                        <input type="date" id="editDate" value="${ad?.date || new Date().toISOString().split('T')[0]}" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:14px;">
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:8px;">
+                    <button type="submit" style="flex:1; padding:12px; background:#2d7d46; color:white; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer;">💾 Сохранить</button>
+                    <button type="button" onclick="closeModal()" style="flex:1; padding:12px; background:#f5f5f5; color:#555; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer;">Отмена</button>
+                </div>
+            </form>
+        `;
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('modalOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function saveAd(event) {
+        event.preventDefault();
+        const title = document.getElementById('editTitle').value.trim();
+        const address = document.getElementById('editAddress').value.trim();
+        const priceText = document.getElementById('editPrice').value.trim();
+        const type = document.getElementById('editType').value;
+        const action = document.getElementById('editAction').value;
+        const emoji = document.getElementById('editEmoji').value;
+        const rooms = parseInt(document.getElementById('editRooms').value) || 0;
+        const area = parseInt(document.getElementById('editArea').value) || 0;
+        const floor = parseInt(document.getElementById('editFloor').value) || 0;
+        const totalFloors = parseInt(document.getElementById('editTotalFloors').value) || 0;
+        const description = document.getElementById('editDescription').value.trim();
+        const features = document.getElementById('editFeatures').value.split(',').map(f => f.trim()).filter(f => f);
+        const region = document.getElementById('editRegion').value;
+        const date = document.getElementById('editDate').value;
+
+        if (!title) { showToast('⚠️ Введите название'); return; }
+        if (!address) { showToast('⚠️ Введите адрес'); return; }
+        if (!priceText) { showToast('⚠️ Введите цену'); return; }
+
+        const isAstrakhan = address.toLowerCase().includes('астрахан') ||
+            address.toLowerCase().includes('астраханской обл') ||
+            address.toLowerCase().includes('астраханская обл') ||
+            region === 'Астрахань' || region === 'Астраханская область';
+
+        if (!isAstrakhan) {
+            showToast('⚠️ Объявления только по Астрахани и Астраханской области!');
+            return;
+        }
+
+        const badge = action === 'Продажа' ? 'sale' : 'rent';
+        const adData = {
+            id: editingId || nextId++,
+            type,
+            action,
+            rooms,
+            title,
+            address,
+            price: parseInt(priceText.replace(/[^0-9]/g, '')) || 0,
+            priceText,
+            area,
+            floor,
+            totalFloors,
+            description: description || 'Описание отсутствует',
+            features: features.length ? features : ['Нет данных'],
+            date: date || new Date().toISOString().split('T')[0],
+            badge,
+            emoji,
+            region
+        };
+
+        if (editingId) {
+            const index = adsData.findIndex(a => a.id === editingId);
+            if (index !== -1) {
+                adsData[index] = adData;
+                showToast('✅ Объявление обновлено!');
+            }
+        } else {
+            adsData.push(adData);
+            showToast('✅ Объявление добавлено!');
+        }
+
+        closeModal();
+        filterAds();
+        updateCategories();
+    }
+
+    // ================================================================
+    //  УДАЛЕНИЕ
+    // ================================================================
+    let deleteTargetId = null;
+
+    function confirmDeleteAd(id) {
+        deleteTargetId = id;
+        document.getElementById('confirmDialog').classList.add('active');
+    }
+
+    function confirmDelete() {
+        if (deleteTargetId !== null) {
+            adsData = adsData.filter(a => a.id !== deleteTargetId);
+            showToast('🗑️ Объявление удалено');
+            deleteTargetId = null;
+            closeConfirm();
+            filterAds();
+            updateCategories();
+            if (currentAdId === deleteTargetId) closeModal();
+        }
+    }
+
+    function closeConfirm() {
+        document.getElementById('confirmDialog').classList.remove('active');
+        deleteTargetId = null;
+    }
+
+    // ================================================================
+    //  КОНТАКТЫ
+    // ================================================================
+    function contactOwner() {
+        const ad = adsData.find(a => a.id === currentAdId);
+        if (!ad) return;
+        showToast(`📞 Позвоните владельцу: +7 967 829 74 77 (Дмитрий) по поводу "${ad.title}"`);
+    }
+
+    function sendMessage(e) {
+        e.preventDefault();
+        showToast('✅ Сообщение отправлено! Мы свяжемся с вами в ближайшее время.');
+        e.target.reset();
+    }
+
+    // ================================================================
+    //  ВСПОМОГАТЕЛЬНЫЕ
+    // ================================================================
+    function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => showToast('✅ Ссылка скопирована!'));
+        } else {
+            const input = document.createElement('input');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast('✅ Ссылка скопирована!');
+        }
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function updateCategories() {
+        const counts = {
+            all: adsData.length,
+            sale: adsData.filter(a => a.action === 'Продажа').length,
+            rent: adsData.filter(a => a.action === 'Аренда').length,
+            '1room': adsData.filter(a => a.rooms === 1).length,
+            '2room': adsData.filter(a => a.rooms === 2).length,
+            '3room': adsData.filter(a => a.rooms === 3).length,
+            house: adsData.filter(a => a.type === 'Дом').length,
+            land: adsData.filter(a => a.type === 'Земельный участок').length,
+            commercial: adsData.filter(a => a.type === 'Коммерческая').length
+        };
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            const cat = btn.dataset.cat;
+            const count = counts[cat] || 0;
+            const text = btn.textContent.replace(/\s*\(\d+\)\s*$/, '').trim();
+            btn.textContent = `${text} (${count})`;
+        });
+    }
+
+    // ================================================================
+    //  ИНИЦИАЛИЗАЦИЯ
+    // ================================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                filterAds();
+            });
+        });
+
+        document.getElementById('filterType').addEventListener('change', filterAds);
+        document.getElementById('filterAction').addEventListener('change', filterAds);
+        document.getElementById('filterSearch').addEventListener('input', filterAds);
+
+        renderAds(adsData);
+        updateCategories();
+
+        const params = new URLSearchParams(window.location.search);
+        const adId = params.get('ad');
+        if (adId) {
+            const id = parseInt(adId);
+            if (adsData.find(a => a.id === id)) {
+                setTimeout(() => openAd(id), 300);
+            }
+        }
+    });
+
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
+
+<!-- ========== ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ ========== -->
+<div class="confirm-dialog" id="confirmDialog" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:white; border-radius:16px; padding:30px; max-width:400px; width:100%; text-align:center;">
+        <h3>⚠️ Удалить объявление?</h3>
+        <p style="color:#666; margin:16px 0;">Вы уверены, что хотите удалить это объявление? Действие необратимо.</p>
+        <div style="display:flex; gap:12px;">
+            <button onclick="confirmDelete()" style="flex:1; padding:10px; background:#d32f2f; color:white; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Да, удалить</button>
+            <button onclick="closeConfirm()" style="flex:1; padding:10px; background:#f5f5f5; color:#555; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">Отмена</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
