@@ -4,290 +4,1688 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Твой Дом — Недвижимость Астрахань</title>
-    <script src="https://mapgl.2gis.com/api/js/v1?key=865c4e73-4016-4156-b687-7688eeec7986"></script>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
-        body { background:#f0f2f5; color:#1a1a2e; }
-        .container { max-width:1200px; margin:0 auto; padding:0 20px; }
-        a { text-decoration:none; color:inherit; }
-
-        .header { background:white; box-shadow:0 2px 8px rgba(0,0,0,0.06); padding:10px 0; position:sticky; top:0; z-index:100; }
-        .header-content { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-
-        .logo { display:flex; align-items:center; gap:14px; cursor:pointer; transition:transform 0.3s ease; }
-        .logo:hover { transform:scale(1.02); }
-        .logo img { height:70px; width:auto; border-radius:8px; background:white; padding:8px 12px; box-shadow:0 2px 8px rgba(0,0,0,0.08); filter:brightness(0) invert(1) saturate(0%); }
-        .logo-text .brand { font-size:26px; font-weight:800; color:#1a1a2e; }
-        .logo-text .brand span { color:#2d7d46; }
-        .logo-text .sub { font-size:13px; color:#666; font-weight:500; }
-
-        .header-contacts { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
-        .header-contacts .phone { font-size:17px; font-weight:700; color:#2d7d46; }
-        .header-contacts .manager { font-size:12px; color:#888; }
-        .header-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-        .user-info { display:flex; align-items:center; gap:8px; padding-right:12px; border-right:1px solid #eee; cursor:pointer; transition:0.2s; }
-        .user-info:hover { opacity:0.7; }
-        .user-info .avatar { width:32px; height:32px; border-radius:50%; background:#2d7d46; color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
-        .user-info .avatar.guest { background:#888; }
-        .user-info .name { font-weight:600; font-size:14px; }
-        .user-info .role { font-size:11px; color:#888; }
-        .btn { padding:8px 16px; border:none; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; transition:0.2s; display:inline-flex; align-items:center; gap:6px; }
-        .btn-primary { background:#2d7d46; color:white; }
-        .btn-primary:hover { background:#1e5f33; }
-        .btn-fav { background:#fff3e0; color:#e65100; border:none; padding:8px 14px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; }
-        .btn-fav:hover { background:#ffe0b2; }
-        .btn-fav .count { background:#e65100; color:white; border-radius:50%; padding:0 6px; font-size:11px; }
-        .btn-logout { background:#f5f5f5; color:#555; border:none; padding:8px 14px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; }
-        .btn-logout:hover { background:#e0e0e0; }
-        .btn-archive { background:#fff8e1; color:#f57f17; border:none; padding:8px 14px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; }
-        .btn-archive:hover { background:#ffecb3; }
-        .btn-login { display:none !important; }
-
-        .hero { background:linear-gradient(135deg, #f0f7f0 0%, #e8f0fe 100%); padding:40px 20px; margin:20px 0 30px; border-radius:16px; text-align:center; }
-        .hero h1 { font-size:32px; color:#1a1a2e; margin:0 0 4px 0; }
-        .hero h1 span { color:#2d7d46; }
-        .hero p { font-size:16px; color:#555; max-width:600px; margin:8px auto 16px; }
-        .hero .region-badge { background:#2d7d46; color:white; padding:6px 20px; border-radius:20px; font-size:13px; display:inline-block; }
-
-        .categories { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
-        .cat-btn { padding:8px 18px; border:1px solid #e0e0e0; border-radius:20px; background:white; font-size:13px; font-weight:500; cursor:pointer; transition:0.2s; color:#555; }
-        .cat-btn:hover { border-color:#2d7d46; color:#2d7d46; }
-        .cat-btn.active { background:#2d7d46; border-color:#2d7d46; color:white; }
-
-        .filters { background:white; padding:14px 18px; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.04); margin-bottom:30px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
-        .filters select, .filters input { padding:8px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px; flex:1; min-width:140px; background:white; transition:0.2s; }
-        .filters select:focus, .filters input:focus { outline:none; border-color:#2d7d46; }
-
-        .ads-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px; margin-bottom:40px; }
-        .ad-card { background:white; border-radius:12px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04); transition:0.3s; cursor:pointer; position:relative; display:flex; flex-direction:column; }
-        .ad-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,0.08); }
-        .ad-card .badge { position:absolute; top:12px; right:12px; padding:4px 14px; border-radius:12px; font-size:11px; font-weight:700; text-transform:uppercase; z-index:2; }
-        .badge.sale { background:#e8f5e9; color:#2e7d32; }
-        .badge.rent { background:#fff3e0; color:#e65100; }
-        .badge.actual { background:#e3f2fd; color:#0d47a1; left:12px; right:auto; font-size:10px; }
-        .badge.archived { background:#eeeeee; color:#888; left:12px; right:auto; font-size:10px; }
-        .ad-card .favorite-btn { position:absolute; top:12px; left:12px; background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:32px; height:32px; font-size:18px; cursor:pointer; z-index:3; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 4px rgba(0,0,0,0.1); transition:0.2s; }
-        .ad-card .favorite-btn:hover { transform:scale(1.1); }
-        .ad-card .favorite-btn.active { color:#e53935; }
-        .ad-card .media-preview { width:100%; height:180px; background:#f0f2f5; overflow:hidden; position:relative; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-        .ad-card .media-preview img, .ad-card .media-preview video { width:100%; height:100%; object-fit:cover; }
-        .ad-card .media-preview .no-media { font-size:48px; color:#ccc; }
-        .ad-card .media-preview .media-count { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.6); color:white; padding:2px 10px; border-radius:12px; font-size:11px; }
-        .ad-card .card-body { padding:14px 16px 12px; display:flex; flex-direction:column; flex:1; }
-        .ad-card .card-body .price { font-size:22px; font-weight:700; color:#2d7d46; margin-bottom:4px; }
-        .ad-card .card-body .title { font-size:16px; font-weight:600; color:#1a1a2e; margin-bottom:4px; line-height:1.3; }
-        .ad-card .card-body .address { font-size:13px; color:#666; margin-bottom:8px; }
-        .ad-card .card-body .params { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
-        .ad-card .card-body .params span { background:#f5f5f5; padding:2px 10px; border-radius:4px; font-size:12px; color:#555; }
-        .ad-card .card-body .meta { display:flex; justify-content:space-between; font-size:11px; color:#999; border-top:1px solid #f0f0f0; padding-top:8px; margin-top:auto; flex-wrap:wrap; gap:4px; }
-        .ad-card .ad-link-row { display:flex; align-items:center; gap:4px; padding:8px 16px 12px; border-top:1px solid #f0f0f0; flex-wrap:wrap; }
-        .ad-card .ad-link-row .share-btn { flex:1; padding:6px 10px; border:none; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; transition:0.2s; touch-action:manipulation; min-height:32px; color:white; text-align:center; }
-        .ad-card .ad-link-row .share-btn.tg { background:#0088cc; }
-        .ad-card .ad-link-row .share-btn.wa { background:#25D366; }
-        .ad-card .ad-link-row .share-btn.sms { background:#ff9800; }
-        .ad-card .ad-link-row .share-btn.email { background:#9c27b0; }
-        .ad-card .ad-link-row .share-btn.copy { background:#2d7d46; }
-
-        .file-upload { border:2px dashed #e0e0e0; border-radius:8px; padding:20px; text-align:center; transition:0.2s; cursor:pointer; }
-        .file-upload:hover { border-color:#2d7d46; background:#f8f9fa; }
-        .file-upload .file-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-        .file-upload .file-tag { background:#e8f5e9; padding:4px 12px; border-radius:20px; font-size:12px; color:#2e7d32; display:inline-flex; align-items:center; gap:6px; }
-        .file-upload .file-tag .remove-file { cursor:pointer; color:#d32f2f; font-weight:bold; }
-
-        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; padding:20px; overflow-y:auto; animation:fadeIn 0.3s; }
-        .modal-overlay.active { display:flex; align-items:flex-start; justify-content:center; }
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-        .modal-content { background:white; border-radius:16px; padding:28px; max-width:800px; width:100%; margin:40px auto; position:relative; animation:slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-        .modal-content .close-btn { position:sticky; top:0; float:right; background:#f0f0f0; border:none; width:40px; height:40px; border-radius:50%; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; z-index:5; }
-        .modal-content .close-btn:hover { background:#e0e0e0; }
-
-        .detail-badge { display:inline-block; padding:4px 16px; border-radius:12px; font-size:12px; font-weight:700; text-transform:uppercase; }
-        .detail-emoji { font-size:48px; display:block; margin:8px 0; }
-        .detail-specs { display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:10px; margin:16px 0; background:#f8f9fa; padding:16px; border-radius:12px; }
-        .detail-specs .spec { text-align:center; }
-        .detail-specs .spec .label { font-size:11px; color:#999; text-transform:uppercase; }
-        .detail-specs .spec .value { font-size:18px; font-weight:700; color:#1a1a2e; }
-        .detail-gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin:16px 0; }
-        .detail-gallery .gallery-item { border-radius:10px; overflow:hidden; background:#f5f5f5; position:relative; aspect-ratio:1; display:flex; align-items:center; justify-content:center; }
-        .detail-gallery .gallery-item img, .detail-gallery .gallery-item video { width:100%; height:100%; object-fit:cover; }
-        .detail-gallery .gallery-item .no-media { font-size:32px; color:#ccc; }
-        .detail-gallery .gallery-item .media-type { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.6); color:white; padding:2px 8px; border-radius:10px; font-size:10px; }
-
-        .map-wrapper { border-radius:12px; overflow:hidden; margin:16px 0; height:260px; background:#e8e8e8; position:relative; }
-        .map-wrapper #mapContainer { width:100%; height:100%; }
-        .map-placeholder { display:flex; align-items:center; justify-content:center; height:100%; color:#999; font-size:14px; background:#f5f5f5; }
-
-        .contact-block { background:#f8f9fa; border-radius:12px; padding:16px; margin:16px 0; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
-        .contact-block .seller-info { display:flex; align-items:center; gap:12px; }
-        .contact-block .seller-info .avatar { width:48px; height:48px; border-radius:50%; background:#2d7d46; color:white; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; }
-        .contact-block .seller-info .name-phone { font-size:14px; }
-        .contact-block .seller-info .name-phone .name { font-weight:700; font-size:16px; }
-        .contact-block .seller-info .name-phone .phone { color:#2d7d46; font-weight:600; cursor:pointer; }
-        .contact-block .actions { display:flex; gap:10px; flex-wrap:wrap; }
-        .contact-block .actions .btn-chat { background:#1a73e8; color:white; border:none; padding:10px 24px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; transition:0.2s; display:inline-flex; align-items:center; gap:6px; }
-        .contact-block .actions .btn-chat:hover { background:#1557b0; }
-        .contact-block .actions .btn-phone { background:#2d7d46; color:white; border:none; padding:10px 24px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; transition:0.2s; display:inline-flex; align-items:center; gap:6px; }
-        .contact-block .actions .btn-phone:hover { background:#1e5f33; }
-
-        .reviews-section { margin:20px 0; padding-top:16px; border-top:1px solid #f0f0f0; }
-        .reviews-section h4 { margin-bottom:12px; font-size:17px; display:flex; align-items:center; gap:8px; }
-        .reviews-section .rating-summary { display:flex; align-items:center; gap:12px; margin-bottom:16px; padding:12px 16px; background:#f8f9fa; border-radius:10px; }
-        .reviews-section .rating-summary .big-rating { font-size:32px; font-weight:700; color:#2d7d46; }
-        .reviews-section .rating-summary .stars { font-size:20px; color:#ffb300; }
-        .reviews-section .rating-summary .count { font-size:13px; color:#888; }
-        .review-item { background:white; border-radius:10px; padding:14px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
-        .review-item .review-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-        .review-item .review-header .reviewer { display:flex; align-items:center; gap:10px; }
-        .review-item .review-header .reviewer .initials { width:36px; height:36px; border-radius:50%; background:#2d7d46; color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
-        .review-item .review-header .reviewer .name { font-weight:600; font-size:14px; color:#1a1a2e; }
-        .review-item .review-header .reviewer .date { font-size:11px; color:#999; }
-        .review-item .review-header .rating-stars { font-size:16px; color:#ffb300; }
-        .review-item .review-text { font-size:14px; color:#444; line-height:1.6; margin-top:4px; }
-        .review-item .review-helpful { margin-top:8px; font-size:12px; color:#888; }
-
-        .review-form { display:flex; flex-direction:column; gap:10px; margin-top:12px; background:#f8f9fa; padding:16px; border-radius:10px; }
-        .review-form textarea { padding:10px; border:1px solid #e0e0e0; border-radius:8px; font-size:13px; min-height:60px; resize:vertical; font-family:inherit; transition:0.2s; }
-        .review-form textarea:focus { outline:none; border-color:#2d7d46; }
-        .review-form .rating-select { display:flex; gap:4px; font-size:24px; }
-        .review-form .rating-select .star { cursor:pointer; color:#ddd; transition:0.2s; }
-        .review-form .rating-select .star.active { color:#ffb300; }
-        .review-form .rating-select .star:hover { transform:scale(1.2); }
-        .review-form .form-row { display:flex; gap:10px; flex-wrap:wrap; }
-        .review-form .form-row input { flex:1; padding:8px 12px; border:1px solid #e0e0e0; border-radius:8px; font-size:13px; transition:0.2s; min-width:120px; }
-        .review-form .form-row input:focus { outline:none; border-color:#2d7d46; }
-        .review-form button { padding:8px 20px; background:#2d7d46; color:white; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:0.2s; align-self:flex-start; }
-        .review-form button:hover { background:#1e5f33; }
-
-        .share-buttons-modal { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
-        .share-buttons-modal button { flex:1; padding:10px 16px; border:none; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; transition:0.2s; color:white; touch-action:manipulation; min-height:40px; }
-        .share-buttons-modal button:active { transform:scale(0.95); }
-        .share-buttons-modal .btn-copy { background:#2d7d46; }
-        .share-buttons-modal .btn-wa { background:#25D366; }
-        .share-buttons-modal .btn-tg { background:#0088cc; }
-        .share-buttons-modal .btn-sms { background:#ff9800; }
-        .share-buttons-modal .btn-email { background:#9c27b0; }
-
-        .chat-floating { position:fixed; bottom:30px; right:30px; z-index:999; display:flex; flex-direction:column; align-items:flex-end; gap:12px; }
-        .chat-toggle { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg, #00b894, #00a884); color:white; border:none; font-size:28px; cursor:pointer; box-shadow:0 4px 20px rgba(0,184,148,0.35); transition:0.3s; display:flex; align-items:center; justify-content:center; position:relative; }
-        .chat-toggle:hover { transform:scale(1.05); box-shadow:0 6px 30px rgba(0,184,148,0.45); }
-        .chat-toggle .badge { position:absolute; top:-4px; right:-4px; background:#e53935; color:white; border-radius:50%; width:24px; height:24px; font-size:11px; display:flex; align-items:center; justify-content:center; font-weight:700; border:2px solid white; }
-        .chat-toggle .tooltip { position:absolute; bottom:70px; right:0; background:#1a1a2e; color:white; padding:8px 16px; border-radius:12px; font-size:13px; white-space:nowrap; box-shadow:0 4px 20px rgba(0,0,0,0.15); opacity:0; transform:translateY(10px); transition:0.3s; pointer-events:none; }
-        .chat-toggle .tooltip::after { content:''; position:absolute; bottom:-8px; right:20px; border-left:8px solid transparent; border-right:8px solid transparent; border-top:8px solid #1a1a2e; }
-        .chat-toggle:hover .tooltip { opacity:1; transform:translateY(0); }
-        .chat-window { background:white; border-radius:16px; width:400px; max-width:90vw; max-height:560px; box-shadow:0 8px 40px rgba(0,0,0,0.15); overflow:hidden; display:none; flex-direction:column; animation:slideUp 0.3s ease; }
-        .chat-window.open { display:flex; }
-        .chat-window .chat-header { background:linear-gradient(135deg, #00b894, #00a884); color:white; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-        .chat-window .chat-header .info { display:flex; align-items:center; gap:10px; }
-        .chat-window .chat-header .info .avatar { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; }
-        .chat-window .chat-header .info .name { font-weight:600; font-size:15px; }
-        .chat-window .chat-header .info .status { font-size:11px; opacity:0.85; }
-        .chat-window .chat-header .back-btn { background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:4px 8px; margin-right:4px; display:none; }
-        .chat-window .chat-header .close-chat { background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:4px 8px; opacity:0.7; transition:0.2s; }
-        .chat-window .chat-header .close-chat:hover { opacity:1; }
-        .chat-window .chat-list { overflow-y:auto; flex:1; background:white; padding:8px 0; display:block; }
-        .chat-window .chat-list.hidden { display:none; }
-        .chat-window .chat-list .chat-item { display:flex; align-items:center; padding:12px 16px; cursor:pointer; transition:0.2s; border-bottom:1px solid #f5f5f5; gap:12px; }
-        .chat-window .chat-list .chat-item:hover { background:#f8f9fa; }
-        .chat-window .chat-list .chat-item .chat-avatar { width:44px; height:44px; border-radius:50%; background:#e8f5e9; color:#2d7d46; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex-shrink:0; }
-        .chat-window .chat-list .chat-item .chat-info { flex:1; min-width:0; }
-        .chat-window .chat-list .chat-item .chat-info .chat-name { font-weight:600; font-size:14px; color:#1a1a2e; }
-        .chat-window .chat-list .chat-item .chat-info .chat-last { font-size:13px; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .chat-window .chat-list .chat-item .chat-time { font-size:11px; color:#999; flex-shrink:0; }
-        .chat-window .chat-list .chat-item .chat-unread { background:#e53935; color:white; border-radius:50%; width:20px; height:20px; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
-        .chat-window .chat-list .empty-chats { text-align:center; color:#999; padding:40px 20px; font-size:14px; }
-        .chat-window .chat-messages { padding:16px; overflow-y:auto; flex:1; max-height:300px; background:#f5f6fa; display:none; flex-direction:column; gap:8px; }
-        .chat-window .chat-messages.active { display:flex; }
-        .chat-window .chat-messages .message { display:flex; flex-direction:column; max-width:85%; }
-        .chat-window .chat-messages .message.incoming { align-self:flex-start; }
-        .chat-window .chat-messages .message.outgoing { align-self:flex-end; }
-        .chat-window .chat-messages .message .bubble { padding:10px 16px; border-radius:16px; font-size:14px; line-height:1.4; word-wrap:break-word; }
-        .chat-window .chat-messages .message.incoming .bubble { background:white; border-bottom-left-radius:4px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
-        .chat-window .chat-messages .message.outgoing .bubble { background:#00b894; color:white; border-bottom-right-radius:4px; }
-        .chat-window .chat-messages .message .time { font-size:10px; color:#999; margin-top:4px; padding:0 4px; }
-        .chat-window .chat-messages .message.incoming .time { align-self:flex-start; }
-        .chat-window .chat-messages .message.outgoing .time { align-self:flex-end; }
-        .chat-window .chat-messages .empty-state { text-align:center; color:#999; padding:30px 0; font-size:14px; }
-        .chat-window .chat-input-area { display:none; padding:12px 16px; border-top:1px solid #f0f0f0; background:white; flex-shrink:0; gap:10px; align-items:center; }
-        .chat-window .chat-input-area.active { display:flex; }
-        .chat-window .chat-input-area input { flex:1; padding:10px 16px; border:1px solid #e0e0e0; border-radius:24px; font-size:14px; transition:0.2s; outline:none; min-width:0; }
-        .chat-window .chat-input-area input:focus { border-color:#00b894; }
-        .chat-window .chat-input-area input::placeholder { color:#b2bec3; }
-        .chat-window .chat-input-area button { padding:10px 20px; background:#00b894; color:white; border:none; border-radius:24px; font-weight:600; font-size:14px; cursor:pointer; transition:0.2s; flex-shrink:0; white-space:nowrap; }
-        .chat-window .chat-input-area button:hover { background:#00a884; }
-        .chat-window .chat-input-area button:active { transform:scale(0.95); }
-
-        .edit-name-modal .modal-content { max-width:400px; }
-        .edit-name-modal .modal-content .edit-name-form { display:flex; flex-direction:column; gap:12px; }
-        .edit-name-modal .modal-content .edit-name-form input { padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:16px; transition:0.2s; }
-        .edit-name-modal .modal-content .edit-name-form input:focus { outline:none; border-color:#2d7d46; }
-        .edit-name-modal .modal-content .edit-name-form button { padding:10px; background:#2d7d46; color:white; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; transition:0.2s; }
-        .edit-name-modal .modal-content .edit-name-form button:hover { background:#1e5f33; }
-
-        .login-modal .modal-content { max-width:400px; }
-        .login-modal .modal-content .login-hint { font-size:12px; color:#999; text-align:center; margin-top:12px; }
-
-        .archive-modal .modal-content { max-width:700px; }
-        .archive-item { background:#f8f9fa; border-radius:10px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
-        .archive-item .info { flex:1; }
-        .archive-item .info .title { font-weight:600; }
-        .archive-item .info .date { font-size:12px; color:#999; }
-        .archive-item .restore-btn { padding:6px 16px; background:#2d7d46; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s; }
-        .archive-item .restore-btn:hover { background:#1e5f33; }
-        .archive-empty { text-align:center; color:#999; padding:30px; }
-
-        .toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#1a1a2e; color:white; padding:12px 24px; border-radius:10px; z-index:2000; display:none; font-size:14px; text-align:center; max-width:90%; box-shadow:0 4px 20px rgba(0,0,0,0.3); animation:slideUp 0.3s ease; }
-        .toast.show { display:block; }
-        .empty-state { grid-column:1 / -1; text-align:center; padding:40px 20px; color:#999; }
-        .empty-state .icon { font-size:48px; margin-bottom:12px; }
-
-        .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center; padding:20px; }
-        .confirm-dialog.show { display:flex; }
-        .confirm-dialog .confirm-box { background:white; border-radius:12px; padding:30px; max-width:400px; width:100%; text-align:center; }
-        .confirm-dialog .confirm-box h3 { margin-bottom:16px; }
-        .confirm-dialog .confirm-box .btn-confirm { padding:10px 20px; background:#d32f2f; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; }
-        .confirm-dialog .confirm-box .btn-cancel { padding:10px 20px; background:#f5f5f5; color:#555; border:none; border-radius:8px; font-weight:600; cursor:pointer; margin-left:8px; }
-
-        @media (max-width:768px) {
-            .header-content { flex-direction:column; align-items:center; gap:8px; }
-            .header-actions { justify-content:center; flex-wrap:wrap; }
-            .logo img { height:55px; }
-            .logo-text .brand { font-size:22px; }
-            .logo-text .sub { font-size:12px; }
-            .hero h1 { font-size:26px; }
-            .ads-grid { grid-template-columns:1fr; }
-            .filters { flex-direction:column; }
-            .filters select, .filters input { min-width:100%; }
-            .modal-content { padding:16px; margin:10px 0; }
-            .detail-gallery { grid-template-columns:repeat(2, 1fr); }
-            .contact-block { flex-direction:column; align-items:stretch; }
-            .contact-block .actions { justify-content:center; }
-            .chat-window { width:95vw; max-height:70vh; position:fixed; bottom:80px; right:10px; }
-            .chat-toggle { width:56px; height:56px; font-size:24px; }
-            .chat-floating { bottom:20px; right:20px; }
-            .chat-toggle .tooltip { display:none; }
-            .reviews-section .rating-summary { flex-wrap:wrap; }
-            .map-wrapper { height:200px; }
+        /* ===== ОБЩИЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         }
-        @media (max-width:480px) {
-            .container { padding:0 12px; }
-            .logo-text .brand { font-size:18px; }
-            .logo-text .sub { font-size:10px; }
-            .logo img { height:45px; padding:4px 8px; }
-            .hero h1 { font-size:22px; }
-            .ad-card .media-preview { height:150px; }
-            .detail-gallery { grid-template-columns:1fr; }
-            .chat-window { width:100vw; max-width:100vw; border-radius:12px 12px 0 0; bottom:0; right:0; max-height:80vh; }
-            .chat-floating { bottom:16px; right:16px; }
-            .chat-toggle { width:48px; height:48px; font-size:20px; }
-            .reviews-section .rating-summary .big-rating { font-size:26px; }
-            .map-wrapper { height:160px; }
+        body {
+            background: #f0f2f5;
+            color: #1a1a2e;
         }
-        @media (hover:none) and (pointer:coarse) {
-            .chat-toggle { width:56px; height:56px; font-size:24px; }
-            .chat-toggle .tooltip { display:none; }
-            .chat-window .chat-input-area button { min-height:44px; padding:10px 16px; }
-            .chat-window .chat-input-area input { min-height:44px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        /* ===== ШАПКА ===== */
+        .header {
+            background: white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* ===== ЛОГОТИП СЛЕВА ===== */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+        .logo:hover {
+            opacity: 0.8;
+        }
+        .logo img {
+            height: 48px;
+            width: auto;
+            border-radius: 8px;
+            background: white;
+            padding: 6px 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            filter: brightness(0) invert(1) saturate(0%);
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .logo-text .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .logo-text .brand span {
+            color: #2d7d46;
+        }
+        .logo-text .sub {
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== НАВИГАЦИЯ ===== */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .nav-links a {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: #2d7d46;
+        }
+        .nav-links .active {
+            color: #2d7d46;
+        }
+
+        /* ===== КОНТАКТЫ ===== */
+        .header-contacts {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .header-contacts .phone {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d7d46;
+        }
+        .header-contacts .manager {
+            font-size: 12px;
+            color: #888;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-right: 12px;
+            border-right: 1px solid #eee;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .user-info:hover {
+            opacity: 0.7;
+        }
+        .user-info .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2d7d46;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .user-info .avatar.guest {
+            background: #888;
+        }
+        .user-info .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .user-info .role {
+            font-size: 11px;
+            color: #888;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: #2d7d46;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1e5f33;
+        }
+        .btn-fav {
+            background: #fff3e0;
+            color: #e65100;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-fav:hover {
+            background: #ffe0b2;
+        }
+        .btn-fav .count {
+            background: #e65100;
+            color: white;
+            border-radius: 50%;
+            padding: 0 6px;
+            font-size: 11px;
+        }
+        .btn-logout {
+            background: #f5f5f5;
+            color: #555;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-logout:hover {
+            background: #e0e0e0;
+        }
+        .btn-archive {
+            background: #fff8e1;
+            color: #f57f17;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-archive:hover {
+            background: #ffecb3;
+        }
+        .btn-login {
+            display: none !important;
+        }
+
+        /* ===== ГЕРОЙ ===== */
+        .hero {
+            background: linear-gradient(135deg, #f0f7f0 0%, #e8f0fe 100%);
+            padding: 32px 20px;
+            margin: 16px 0 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 28px;
+            color: #1a1a2e;
+            margin: 0 0 4px 0;
+        }
+        .hero h1 span {
+            color: #2d7d46;
+        }
+        .hero p {
+            font-size: 15px;
+            color: #555;
+            max-width: 500px;
+            margin: 6px auto 12px;
+        }
+        .hero .region-badge {
+            background: #2d7d46;
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        /* ===== КАТЕГОРИИ ===== */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .cat-btn {
+            padding: 6px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #555;
+        }
+        .cat-btn:hover {
+            border-color: #2d7d46;
+            color: #2d7d46;
+        }
+        .cat-btn.active {
+            background: #2d7d46;
+            border-color: #2d7d46;
+            color: white;
+        }
+
+        /* ===== ФИЛЬТРЫ ===== */
+        .filters {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .filters select,
+        .filters input {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            flex: 1;
+            min-width: 120px;
+            background: white;
+            transition: 0.2s;
+        }
+        .filters select:focus,
+        .filters input:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+
+        /* ===== КАРТОЧКИ ===== */
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .ad-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .ad-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .ad-card .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        .badge.sale {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .badge.rent {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .badge.actual {
+            background: #e3f2fd;
+            color: #0d47a1;
+            left: 10px;
+            right: auto;
+            font-size: 9px;
+        }
+        .badge.archived {
+            background: #eeeeee;
+            color: #888;
+            left: 10px;
+            right: auto;
+            font-size: 9px;
+        }
+
+        .ad-card .favorite-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: 0.2s;
+        }
+        .ad-card .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+        .ad-card .favorite-btn.active {
+            color: #e53935;
+        }
+
+        .ad-card .media-preview {
+            width: 100%;
+            height: 180px;
+            background: #f0f2f5;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ad-card .media-preview img,
+        .ad-card .media-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .ad-card .media-preview .no-media {
+            font-size: 40px;
+            color: #ccc;
+        }
+        .ad-card .media-preview .media-count {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .ad-card .card-body {
+            padding: 12px 14px 10px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .ad-card .card-body .price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d7d46;
+            margin-bottom: 2px;
+        }
+        .ad-card .card-body .title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 2px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .ad-card .card-body .address {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+        .ad-card .card-body .params {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+        .ad-card .card-body .params span {
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #555;
+        }
+        .ad-card .card-body .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #999;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 6px;
+            margin-top: auto;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        /* ===== ШАРИНГ ===== */
+        .ad-card .ad-link-row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 14px 10px;
+            border-top: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+        }
+        .ad-card .ad-link-row .share-btn {
+            flex: 1;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            touch-action: manipulation;
+            min-height: 28px;
+            color: white;
+            text-align: center;
+        }
+        .ad-card .ad-link-row .share-btn.tg {
+            background: #0088cc;
+        }
+        .ad-card .ad-link-row .share-btn.wa {
+            background: #25D366;
+        }
+        .ad-card .ad-link-row .share-btn.sms {
+            background: #ff9800;
+        }
+        .ad-card .ad-link-row .share-btn.email {
+            background: #9c27b0;
+        }
+        .ad-card .ad-link-row .share-btn.copy {
+            background: #2d7d46;
+        }
+        .ad-card .ad-link-row .share-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== МОДАЛКА ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            animation: fadeIn 0.3s;
+        }
+        .modal-overlay.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 800px;
+            width: 100%;
+            margin: 30px auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-content .close-btn {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: #f0f0f0;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            z-index: 5;
+        }
+        .modal-content .close-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .detail-badge {
+            display: inline-block;
+            padding: 3px 14px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .detail-emoji {
+            font-size: 40px;
+            display: block;
+            margin: 6px 0;
+        }
+        .detail-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+        }
+        .detail-specs .spec {
+            text-align: center;
+        }
+        .detail-specs .spec .label {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+        }
+        .detail-specs .spec .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .detail-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .detail-gallery .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f5f5f5;
+            position: relative;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .detail-gallery .gallery-item img,
+        .detail-gallery .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .detail-gallery .gallery-item .no-media {
+            font-size: 28px;
+            color: #ccc;
+        }
+        .detail-gallery .gallery-item .media-type {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 9px;
+        }
+
+        /* ===== КОНТАКТЫ ===== */
+        .contact-block {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .contact-block .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .contact-block .seller-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2d7d46;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .contact-block .seller-info .name-phone {
+            font-size: 13px;
+        }
+        .contact-block .seller-info .name-phone .name {
+            font-weight: 700;
+            font-size: 15px;
+        }
+        .contact-block .seller-info .name-phone .phone {
+            color: #2d7d46;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .contact-block .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .contact-block .actions .btn-chat {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .contact-block .actions .btn-chat:hover {
+            background: #1557b0;
+        }
+        .contact-block .actions .btn-phone {
+            background: #2d7d46;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .contact-block .actions .btn-phone:hover {
+            background: #1e5f33;
+        }
+
+        /* ===== ОТЗЫВЫ ===== */
+        .reviews-section {
+            margin: 16px 0;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .reviews-section h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reviews-section .rating-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .reviews-section .rating-summary .big-rating {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d7d46;
+        }
+        .reviews-section .rating-summary .stars {
+            font-size: 18px;
+            color: #ffb300;
+        }
+        .reviews-section .rating-summary .count {
+            font-size: 12px;
+            color: #888;
+        }
+        .review-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        .review-item .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .review-item .review-header .reviewer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .review-item .review-header .reviewer .initials {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2d7d46;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .review-item .review-header .reviewer .name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a1a2e;
+        }
+        .review-item .review-header .reviewer .date {
+            font-size: 10px;
+            color: #999;
+        }
+        .review-item .review-header .rating-stars {
+            font-size: 14px;
+            color: #ffb300;
+        }
+        .review-item .review-text {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.5;
+            margin-top: 2px;
+        }
+        .review-item .review-helpful {
+            margin-top: 6px;
+            font-size: 11px;
+            color: #888;
+        }
+
+        .review-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            background: #f8f9fa;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .review-form textarea {
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            min-height: 50px;
+            resize: vertical;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .review-form textarea:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+        .review-form .rating-select {
+            display: flex;
+            gap: 3px;
+            font-size: 22px;
+        }
+        .review-form .rating-select .star {
+            cursor: pointer;
+            color: #ddd;
+            transition: 0.2s;
+        }
+        .review-form .rating-select .star.active {
+            color: #ffb300;
+        }
+        .review-form .rating-select .star:hover {
+            transform: scale(1.2);
+        }
+        .review-form .form-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .review-form .form-row input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.2s;
+            min-width: 100px;
+        }
+        .review-form .form-row input:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+        .review-form button {
+            padding: 6px 16px;
+            background: #2d7d46;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            align-self: flex-start;
+        }
+        .review-form button:hover {
+            background: #1e5f33;
+        }
+
+        .share-buttons-modal {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0;
+        }
+        .share-buttons-modal button {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+            touch-action: manipulation;
+            min-height: 34px;
+        }
+        .share-buttons-modal button:active {
+            transform: scale(0.95);
+        }
+        .share-buttons-modal .btn-copy {
+            background: #2d7d46;
+        }
+        .share-buttons-modal .btn-wa {
+            background: #25D366;
+        }
+        .share-buttons-modal .btn-tg {
+            background: #0088cc;
+        }
+        .share-buttons-modal .btn-sms {
+            background: #ff9800;
+        }
+        .share-buttons-modal .btn-email {
+            background: #9c27b0;
+        }
+
+        /* ===== ФОРМА РЕДАКТИРОВАНИЯ ===== */
+        .file-upload {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .file-upload:hover {
+            border-color: #2d7d46;
+            background: #f8f9fa;
+        }
+        .file-upload .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .file-upload .file-tag {
+            background: #e8f5e9;
+            padding: 3px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            color: #2e7d32;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .file-upload .file-tag .remove-file {
+            cursor: pointer;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .file-upload .file-count {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .edit-form .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .edit-form .form-row .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+        .edit-form label {
+            font-weight: 600;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .edit-form input,
+        .edit-form select,
+        .edit-form textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .edit-form input:focus,
+        .edit-form select:focus,
+        .edit-form textarea:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+        .edit-form textarea {
+            min-height: 60px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        /* ===== ЧАТ ===== */
+        .chat-floating {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .chat-toggle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00b894, #00a884);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 184, 148, 0.35);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .chat-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(0, 184, 148, 0.45);
+        }
+        .chat-toggle .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #e53935;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid white;
+        }
+        .chat-toggle .tooltip {
+            position: absolute;
+            bottom: 64px;
+            right: 0;
+            background: #1a1a2e;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: 0.3s;
+            pointer-events: none;
+        }
+        .chat-toggle .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            right: 18px;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #1a1a2e;
+        }
+        .chat-toggle:hover .tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chat-window {
+            background: white;
+            border-radius: 14px;
+            width: 360px;
+            max-width: 90vw;
+            max-height: 480px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
+        }
+        .chat-window.open {
+            display: flex;
+        }
+
+        .chat-window .chat-header {
+            background: linear-gradient(135deg, #00b894, #00a884);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .chat-window .chat-header .info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chat-window .chat-header .info .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .chat-window .chat-header .info .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .chat-window .chat-header .info .status {
+            font-size: 10px;
+            opacity: 0.85;
+        }
+        .chat-window .chat-header .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 2px 6px;
+            margin-right: 2px;
+            display: none;
+        }
+        .chat-window .chat-header .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 2px 6px;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+        .chat-window .chat-header .close-chat:hover {
+            opacity: 1;
+        }
+
+        .chat-window .chat-list {
+            overflow-y: auto;
+            flex: 1;
+            background: white;
+            padding: 4px 0;
+            display: block;
+        }
+        .chat-window .chat-list.hidden {
+            display: none;
+        }
+        .chat-window .chat-list .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 1px solid #f5f5f5;
+            gap: 10px;
+        }
+        .chat-window .chat-list .chat-item:hover {
+            background: #f8f9fa;
+        }
+        .chat-window .chat-list .chat-item .chat-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            color: #2d7d46;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .chat-window .chat-list .chat-item .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .chat-window .chat-list .chat-item .chat-info .chat-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a1a2e;
+        }
+        .chat-window .chat-list .chat-item .chat-info .chat-last {
+            font-size: 12px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-window .chat-list .chat-item .chat-time {
+            font-size: 10px;
+            color: #999;
+            flex-shrink: 0;
+        }
+        .chat-window .chat-list .chat-item .chat-unread {
+            background: #e53935;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .chat-window .chat-list .empty-chats {
+            text-align: center;
+            color: #999;
+            padding: 30px 20px;
+            font-size: 13px;
+        }
+
+        .chat-window .chat-messages {
+            padding: 12px;
+            overflow-y: auto;
+            flex: 1;
+            max-height: 280px;
+            background: #f5f6fa;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .chat-window .chat-messages.active {
+            display: flex;
+        }
+        .chat-window .chat-messages .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+        }
+        .chat-window .chat-messages .message.incoming {
+            align-self: flex-start;
+        }
+        .chat-window .chat-messages .message.outgoing {
+            align-self: flex-end;
+        }
+        .chat-window .chat-messages .message .bubble {
+            padding: 8px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .chat-window .chat-messages .message.incoming .bubble {
+            background: white;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+        .chat-window .chat-messages .message.outgoing .bubble {
+            background: #00b894;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-window .chat-messages .message .time {
+            font-size: 9px;
+            color: #999;
+            margin-top: 2px;
+            padding: 0 4px;
+        }
+        .chat-window .chat-messages .message.incoming .time {
+            align-self: flex-start;
+        }
+        .chat-window .chat-messages .message.outgoing .time {
+            align-self: flex-end;
+        }
+        .chat-window .chat-messages .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 24px 0;
+            font-size: 13px;
+        }
+
+        .chat-window .chat-input-area {
+            display: none;
+            padding: 10px 14px;
+            border-top: 1px solid #f0f0f0;
+            background: white;
+            flex-shrink: 0;
+            gap: 8px;
+            align-items: center;
+        }
+        .chat-window .chat-input-area.active {
+            display: flex;
+        }
+        .chat-window .chat-input-area input {
+            flex: 1;
+            padding: 8px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 13px;
+            transition: 0.2s;
+            outline: none;
+            min-width: 0;
+        }
+        .chat-window .chat-input-area input:focus {
+            border-color: #00b894;
+        }
+        .chat-window .chat-input-area input::placeholder {
+            color: #b2bec3;
+        }
+        .chat-window .chat-input-area button {
+            padding: 8px 16px;
+            background: #00b894;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .chat-window .chat-input-area button:hover {
+            background: #00a884;
+        }
+        .chat-window .chat-input-area button:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== МОДАЛКИ ===== */
+        .login-modal .modal-content {
+            max-width: 400px;
+        }
+        .login-modal .modal-content .login-hint {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .archive-modal .modal-content {
+            max-width: 700px;
+        }
+        .archive-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .archive-item .info {
+            flex: 1;
+        }
+        .archive-item .info .title {
+            font-weight: 600;
+        }
+        .archive-item .info .date {
+            font-size: 11px;
+            color: #999;
+        }
+        .archive-item .restore-btn {
+            padding: 4px 14px;
+            background: #2d7d46;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .archive-item .restore-btn:hover {
+            background: #1e5f33;
+        }
+        .archive-empty {
+            text-align: center;
+            color: #999;
+            padding: 24px;
+        }
+
+        .edit-name-modal .modal-content {
+            max-width: 400px;
+        }
+        .edit-name-modal .modal-content .edit-name-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .edit-name-modal .modal-content .edit-name-form input {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+        .edit-name-modal .modal-content .edit-name-form input:focus {
+            outline: none;
+            border-color: #2d7d46;
+        }
+        .edit-name-modal .modal-content .edit-name-form button {
+            padding: 8px;
+            background: #2d7d46;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .edit-name-modal .modal-content .edit-name-form button:hover {
+            background: #1e5f33;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 2000;
+            display: none;
+            font-size: 13px;
+            text-align: center;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        .toast.show {
+            display: block;
+        }
+
+        /* ===== ПУСТОЙ РЕЗУЛЬТАТ ===== */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+        }
+        .empty-state .icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        /* ===== ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ ===== */
+        .confirm-dialog {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .confirm-dialog.show {
+            display: flex;
+        }
+        .confirm-dialog .confirm-box {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+        }
+        .confirm-dialog .confirm-box h3 {
+            margin-bottom: 12px;
+        }
+        .confirm-dialog .confirm-box p {
+            color: #666;
+            margin-bottom: 16px;
+        }
+        .confirm-dialog .confirm-box .btn-confirm {
+            padding: 8px 20px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .confirm-dialog .confirm-box .btn-confirm:hover {
+            background: #b71c1c;
+        }
+        .confirm-dialog .confirm-box .btn-cancel {
+            padding: 8px 20px;
+            background: #f5f5f5;
+            color: #555;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 6px;
+            transition: 0.2s;
+        }
+        .confirm-dialog .confirm-box .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .header-left {
+                justify-content: space-between;
+            }
+            .nav-links {
+                display: none;
+            }
+            .header-contacts {
+                justify-content: space-between;
+            }
+            .header-actions {
+                justify-content: flex-end;
+            }
+            .logo img {
+                height: 40px;
+            }
+            .logo-text .brand {
+                font-size: 18px;
+            }
+            .ads-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 24px;
+            }
+            .filters {
+                flex-direction: column;
+            }
+            .filters select,
+            .filters input {
+                min-width: 100%;
+            }
+            .modal-content {
+                padding: 16px;
+                margin: 10px 0;
+            }
+            .detail-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .contact-block {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .contact-block .actions {
+                justify-content: center;
+            }
+            .chat-window {
+                width: 95vw;
+                max-height: 70vh;
+                position: fixed;
+                bottom: 70px;
+                right: 10px;
+            }
+            .chat-toggle {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            .chat-floating {
+                bottom: 16px;
+                right: 16px;
+            }
+            .chat-toggle .tooltip {
+                display: none;
+            }
+            .reviews-section .rating-summary {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            .logo-text .brand {
+                font-size: 16px;
+            }
+            .logo-text .sub {
+                font-size: 9px;
+            }
+            .logo img {
+                height: 36px;
+                padding: 4px 8px;
+            }
+            .hero h1 {
+                font-size: 20px;
+            }
+            .ad-card .media-preview {
+                height: 140px;
+            }
+            .detail-gallery {
+                grid-template-columns: 1fr;
+            }
+            .chat-window {
+                width: 100vw;
+                max-width: 100vw;
+                border-radius: 12px 12px 0 0;
+                bottom: 0;
+                right: 0;
+                max-height: 80vh;
+            }
+            .chat-floating {
+                bottom: 12px;
+                right: 12px;
+            }
+            .chat-toggle {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+            .reviews-section .rating-summary .big-rating {
+                font-size: 24px;
+            }
+        }
+        @media (hover: none) and (pointer: coarse) {
+            .chat-toggle {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            .chat-toggle .tooltip {
+                display: none;
+            }
+            .chat-window .chat-input-area button {
+                min-height: 40px;
+                padding: 8px 14px;
+            }
+            .chat-window .chat-input-area input {
+                min-height: 40px;
+            }
         }
     </style>
 </head>
@@ -296,13 +1694,22 @@
     <!-- ========== ШАПКА ========== -->
     <header class="header">
         <div class="container header-content">
-            <a href="index.html" class="logo" onclick="location.reload();">
-                <img src="logo.png" alt="Твой Дом" onerror="this.style.display='none'">
-                <div class="logo-text">
-                    <div class="brand">Твой <span>Дом</span></div>
-                    <div class="sub">Агентство недвижимости</div>
+            <div class="header-left">
+                <!-- ЛОГОТИП СЛЕВА -->
+                <a href="index.html" class="logo" onclick="location.reload();">
+                    <img src="logo.png" alt="Твой Дом" onerror="this.style.display='none'">
+                    <div class="logo-text">
+                        <div class="brand">Твой <span>Дом</span></div>
+                        <div class="sub">Агентство недвижимости</div>
+                    </div>
+                </a>
+                <!-- НАВИГАЦИЯ -->
+                <div class="nav-links">
+                    <a href="#" class="active">Купить</a>
+                    <a href="#">Снять</a>
+                    <a href="#">Новостройки</a>
                 </div>
-            </a>
+            </div>
             <div class="header-contacts">
                 <div>
                     <div class="phone">+7 967 829 74 77</div>
@@ -375,7 +1782,7 @@
     <div class="modal-overlay archive-modal" id="archiveModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeArchive()">✕</button>
-            <h2 style="margin-bottom:20px;">📦 Архив объявлений</h2>
+            <h2 style="margin-bottom:16px;">📦 Архив объявлений</h2>
             <div id="archiveBody"></div>
         </div>
     </div>
@@ -383,17 +1790,18 @@
     <div class="modal-overlay login-modal" id="loginModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeLogin()">✕</button>
-            <h2 style="margin-bottom:20px;">🔑 Вход для администратора</h2>
+            <h2 style="margin-bottom:16px;">🔑 Вход для администратора</h2>
             <form id="loginForm" onsubmit="return login(event)">
-                <div style="margin-bottom:16px;">
-                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Номер телефона</label>
-                    <input type="tel" id="loginPhone" placeholder="Введите номер телефона" style="width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-size:16px;" required>
+                <div style="margin-bottom:12px;">
+                    <label style="font-weight:600; font-size:13px; display:block; margin-bottom:3px;">Номер телефона</label>
+                    <input type="tel" id="loginPhone" placeholder="Введите номер телефона" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:6px; font-size:15px;" required>
                 </div>
-                <div style="margin-bottom:16px;">
-                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Имя</label>
-                    <input type="text" id="loginName" placeholder="Введите ваше имя" style="width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-size:16px;" required>
+                <div style="margin-bottom:12px;">
+                    <label style="font-weight:600; font-size:13px; display:block; margin-bottom:3px;">Имя</label>
+                    <input type="text" id="loginName" placeholder="Введите ваше имя" style="width:100%; padding:10px 12px; border:1px solid #e0e0e0; border-radius:6px; font-size:15px;" required>
                 </div>
-                <button type="submit" style="width:100%; padding:12px; background:#2d7d46; color:white; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer;">🔑 Войти</button>
+                <button type="submit" style="width:100%; padding:10px; background:#2d7d46; color:white; border:none; border-radius:6px; font-size:15px; font-weight:600; cursor:pointer;">🔑 Войти</button>
+                <div class="login-hint">Только администраторы могут добавлять объявления</div>
             </form>
         </div>
     </div>
@@ -401,7 +1809,7 @@
     <div class="modal-overlay edit-name-modal" id="editNameModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeEditName()">✕</button>
-            <h2 style="margin-bottom:20px;">✏️ Редактировать имя</h2>
+            <h2 style="margin-bottom:16px;">✏️ Редактировать имя</h2>
             <form class="edit-name-form" onsubmit="saveGuestName(event)">
                 <input type="text" id="editNameInput" placeholder="Введите ваше имя" required>
                 <button type="submit">💾 Сохранить</button>
@@ -413,7 +1821,7 @@
     <div class="confirm-dialog" id="confirmDialog">
         <div class="confirm-box">
             <h3>⚠️ Удалить объявление?</h3>
-            <p style="color:#666; margin:16px 0;">Вы уверены? Действие необратимо.</p>
+            <p>Вы уверены? Действие необратимо.</p>
             <div>
                 <button class="btn-confirm" onclick="confirmDelete()">Да, удалить</button>
                 <button class="btn-cancel" onclick="closeConfirm()">Отмена</button>
@@ -438,7 +1846,7 @@
                     </div>
                 </div>
                 <div>
-                    <button class="back-btn" id="chatBackBtn" onclick="showChatList()" style="display:none;">←</button>
+                    <button class="back-btn" id="chatBackBtn" onclick="showChatList()">←</button>
                     <button class="close-chat" onclick="toggleChat()">✕</button>
                 </div>
             </div>
@@ -470,31 +1878,6 @@
         const IMG_BASE = 'https://picsum.photos/seed/';
         const DISTRICTS = ['Кировский', 'Советский', 'Ленинский', 'Трусовский', 'Приволжский'];
 
-        const streetCoords = {
-            'Трофимова': [46.3521, 48.0385],
-            'Наб. Приволжского затона': [46.3397, 48.0508],
-            'Набережная Приволжского затона': [46.3397, 48.0508],
-            'Пирогова': [46.3167, 48.0208],
-            'Пушкина': [46.3497, 48.0408],
-            'Боевая': [46.3297, 48.0508],
-            'Кирова': [46.3497, 48.0308],
-            'Адмиралтейская': [46.3447, 48.0408],
-            'Приволжский': [46.2567, 48.1408],
-            'Красные Баррикады': [46.2367, 48.2408],
-            'Икряное': [46.0567, 48.1408],
-            'Наримановский': [46.4167, 47.8408],
-        };
-
-        function getExactCoords(address) {
-            for (let street in streetCoords) {
-                if (address.toLowerCase().includes(street.toLowerCase())) {
-                    return streetCoords[street];
-                }
-            }
-            const offset = Math.random() * 0.01 - 0.005;
-            return [46.3497 + offset, 48.0408 + offset];
-        }
-
         let adsData = [{
             id: 1,
             type: 'Квартира',
@@ -516,7 +1899,6 @@
             emoji: '🏢',
             actual: true,
             archived: false,
-            coords: [46.3521, 48.0385],
             media: [
                 { type: 'image', url: IMG_BASE + 'studio1/400/300' },
                 { type: 'image', url: IMG_BASE + 'studio2/400/300' }
@@ -546,7 +1928,6 @@
             emoji: '🏢',
             actual: true,
             archived: false,
-            coords: [46.3397, 48.0508],
             media: [
                 { type: 'image', url: IMG_BASE + 'naberezhnaya1/400/300' }
             ],
@@ -575,7 +1956,6 @@
             emoji: '🏡',
             actual: true,
             archived: false,
-            coords: [46.3167, 48.0208],
             media: [
                 { type: 'image', url: IMG_BASE + 'cottage1/400/300' }
             ],
@@ -601,7 +1981,6 @@
             emoji: '🌳',
             actual: false,
             archived: true,
-            coords: [46.2567, 48.1408],
             media: [{ type: 'image', url: IMG_BASE + 'land1/400/300' }],
             reviews: []
         }, {
@@ -625,7 +2004,6 @@
             emoji: '🏢',
             actual: true,
             archived: false,
-            coords: [46.3497, 48.0408],
             media: [
                 { type: 'image', url: IMG_BASE + 'center1/400/300' },
                 { type: 'image', url: IMG_BASE + 'center2/400/300' }
@@ -636,12 +2014,6 @@
             ]
         }];
 
-        adsData.forEach(ad => {
-            if (!ad.coords) {
-                ad.coords = getExactCoords(ad.address);
-            }
-        });
-
         let nextId = 6;
         let currentAdId = null;
         let currentFiltered = [];
@@ -650,7 +2022,6 @@
         let editingId = null;
         let deleteTargetId = null;
         let currentChatUserId = null;
-        let mapInstance = null;
 
         // ================================================================
         //  АВТОРИЗАЦИЯ
@@ -938,34 +2309,6 @@
             }
         }
 
-        function initMap(coords, address) {
-            const container = document.getElementById('mapContainer');
-            if (!container) return;
-            try {
-                if (typeof window.mapgl === 'undefined') {
-                    container.innerHTML = `<div class="map-placeholder">🗺️ Карта загружается...</div>`;
-                    return;
-                }
-                if (mapInstance) {
-                    mapInstance.destroy();
-                    mapInstance = null;
-                }
-                const center = coords || [46.3497, 48.0408];
-                mapInstance = new window.mapgl.Map('mapContainer', {
-                    center: center,
-                    zoom: 17,
-                    key: '865c4e73-4016-4156-b687-7688eeec7986'
-                });
-                new window.mapgl.Marker(mapInstance, {
-                    coordinates: center,
-                    icon: 'red'
-                });
-            } catch (e) {
-                console.warn('Ошибка загрузки карты:', e);
-                container.innerHTML = `<div class="map-placeholder">🗺️ Не удалось загрузить карту</div>`;
-            }
-        }
-
         // ================================================================
         //  ЧАТ
         // ================================================================
@@ -1250,9 +2593,9 @@
                 const mediaCount = hasMedia ? ad.media.length : 0;
                 const districtDisplay = ad.district ? ` • ${ad.district} р-н` : '';
                 const isArchived = ad.archived === true;
-                const featuresDisplay = ad.features && ad.features.length > 0 ? ad.features.slice(0, 4).join(' · ') :
+                const featuresDisplay = ad.features && ad.features.length > 0 ? ad.features.slice(0, 3).join(' · ') :
                     '';
-                const featuresMore = ad.features && ad.features.length > 4 ? ` +${ad.features.length - 4}` : '';
+                const featuresMore = ad.features && ad.features.length > 3 ? ` +${ad.features.length - 3}` : '';
                 return `
                             <div class="ad-card" onclick="${isArchived ? '' : `openAd(${ad.id})`}">
                                 <span class="badge ${ad.badge}">${ad.action === 'Продажа' ? 'Продается' : 'Сдается'}</span>
@@ -1279,7 +2622,7 @@
                                         ${ad.rooms ? `<span>🛏 ${ad.rooms} комн.</span>` : ''}
                                         ${ad.floor ? `<span>🏗 ${ad.floor}/${ad.totalFloors} эт.</span>` : ''}
                                     </div>
-                                    ${featuresDisplay ? `<div style="font-size:12px; color:#666; margin:4px 0;">${featuresDisplay}${featuresMore}</div>` : ''}
+                                    ${featuresDisplay ? `<div style="font-size:11px; color:#666; margin:3px 0;">${featuresDisplay}${featuresMore}</div>` : ''}
                                     <div class="meta">
                                         <span>${ad.type}</span>
                                         <span>📍 ${ad.region}</span>
@@ -1418,19 +2761,19 @@
             let adminActions = '';
             if (currentUser && isAdmin(currentUser)) {
                 adminActions = `
-                            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
                                 <button onclick="closeModal(); setTimeout(() => openEditForm(${ad.id}), 400);" 
-                                        style="flex:1; padding:10px; background:#1a73e8; color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">✏️ Редактировать</button>
+                                        style="flex:1; padding:8px 16px; background:#1a73e8; color:white; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">✏️ Редактировать</button>
                                 <button onclick="closeModal(); setTimeout(() => confirmDeleteAd(${ad.id}), 400);" 
-                                        style="flex:1; padding:10px; background:#d32f2f; color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">🗑️ Удалить</button>
+                                        style="flex:1; padding:8px 16px; background:#d32f2f; color:white; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">🗑️ Удалить</button>
                                 <button onclick="closeModal(); archiveAd(${ad.id});" 
-                                        style="flex:1; padding:10px; background:#f57f17; color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">📦 В архив</button>
+                                        style="flex:1; padding:8px 16px; background:#f57f17; color:white; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">📦 В архив</button>
                             </div>
                         `;
             }
 
             const featuresDisplay = ad.features && ad.features.length > 0 ? ad.features.map(f =>
-                `<span style="background:#e8f5e9; padding:4px 14px; border-radius:20px; font-size:13px; color:#2e7d32;">${f}</span>`
+                `<span style="background:#e8f5e9; padding:3px 12px; border-radius:16px; font-size:12px; color:#2e7d32;">${f}</span>`
             ).join('') : '';
 
             const html = `
@@ -1439,9 +2782,9 @@
                             ${ad.actual ? ' ● Актуально' : ''}
                         </span>
                         <span class="detail-emoji">${ad.emoji}</span>
-                        <h2 style="font-size:26px;">${ad.title}</h2>
-                        <div style="color:#666; margin-bottom:10px;">📍 ${ad.address}${districtDisplay}</div>
-                        <div style="font-size:32px; font-weight:700; color:#2d7d46;">${ad.priceText}</div>
+                        <h2 style="font-size:24px;">${ad.title}</h2>
+                        <div style="color:#666; margin-bottom:8px;">📍 ${ad.address}${districtDisplay}</div>
+                        <div style="font-size:28px; font-weight:700; color:#2d7d46;">${ad.priceText}</div>
 
                         <div class="detail-specs">
                             <div class="spec"><div class="label">Площадь</div><div class="value">${ad.area || '—'} м²</div></div>
@@ -1452,22 +2795,18 @@
                             ${ad.district ? `<div class="spec"><div class="label">Район</div><div class="value">${ad.district}</div></div>` : ''}
                         </div>
 
-                        <div style="line-height:1.8; margin:16px 0;">${ad.description}</div>
+                        <div style="line-height:1.7; margin:12px 0;">${ad.description}</div>
 
                         ${featuresDisplay ? `
-                            <div style="display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;">
+                            <div style="display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;">
                                 ${featuresDisplay}
                             </div>
                         ` : ''}
 
                         ${galleryHtml}
 
-                        <div class="map-wrapper">
-                            <div id="mapContainer"></div>
-                        </div>
-
-                        <div style="margin:12px 0;">
-                            <div style="font-weight:600; font-size:14px; color:#1a1a2e; margin-bottom:8px;">📤 Поделиться объявлением:</div>
+                        <div style="margin:10px 0;">
+                            <div style="font-weight:600; font-size:13px; color:#1a1a2e; margin-bottom:6px;">📤 Поделиться объявлением:</div>
                             <div class="share-buttons-modal">
                                 <button class="btn-copy" onclick="shareLink('copy', '${fullLink}');">📋 Копировать</button>
                                 <button class="btn-wa" onclick="shareLink('whatsapp', '${fullLink}');">💬 WhatsApp</button>
@@ -1502,7 +2841,7 @@
                             </form>
                         </div>
 
-                        <div style="margin-top:16px; font-size:13px; color:#999;">
+                        <div style="margin-top:12px; font-size:12px; color:#999;">
                             📅 Добавлено: ${ad.date} · ID: #${ad.id} · ${ad.region}
                         </div>
                     `;
@@ -1510,20 +2849,11 @@
             document.getElementById('modalBody').innerHTML = html;
             document.getElementById('modalOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
-            setTimeout(() => {
-                if (ad.coords) {
-                    initMap(ad.coords, ad.address);
-                }
-            }, 500);
         }
 
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('active');
             document.body.style.overflow = '';
-            if (mapInstance) {
-                mapInstance.destroy();
-                mapInstance = null;
-            }
         }
 
         function archiveAd(id) {
@@ -1612,115 +2942,108 @@
             ).join('');
 
             const featuresValue = ad?.features ? ad.features.join(', ') : '';
-            const coordsValue = ad?.coords ? ad.coords.join(', ') : '';
             const fileCount = tempMediaFiles.length + mediaList.length;
 
             const html = `
                         <h2>${isEdit ? '✏️ Редактирование объявления' : '➕ Добавление объявления'}</h2>
-                        <p style="color:#888; font-size:14px; margin-bottom:16px;">📍 Все объявления только по Астрахани и Астраханской области</p>
-                        <p style="color:#2d7d46; font-size:13px; margin-bottom:12px;">📸 Можно загрузить до 50 фото и видео</p>
+                        <p style="color:#888; font-size:13px; margin-bottom:12px;">📍 Все объявления только по Астрахани и Астраханской области</p>
+                        <p style="color:#2d7d46; font-size:12px; margin-bottom:10px;">📸 Можно загрузить до 50 фото и видео</p>
 
-                        <form class="edit-form" style="display:flex; flex-direction:column; gap:14px;" onsubmit="saveAd(event)">
-                            <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Тип *</label>
-                                    <select id="editType" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                        <form class="edit-form" onsubmit="saveAd(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Тип *</label>
+                                    <select id="editType">
                                         <option value="Квартира" ${ad?.type === 'Квартира' ? 'selected' : ''}>Квартира</option>
                                         <option value="Дом" ${ad?.type === 'Дом' ? 'selected' : ''}>Дом</option>
                                         <option value="Земельный участок" ${ad?.type === 'Земельный участок' ? 'selected' : ''}>Земельный участок</option>
                                     </select>
                                 </div>
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Действие *</label>
-                                    <select id="editAction" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <div class="form-group">
+                                    <label>Действие *</label>
+                                    <select id="editAction">
                                         <option value="Продажа" ${ad?.action === 'Продажа' ? 'selected' : ''}>Продажа</option>
                                         <option value="Аренда" ${ad?.action === 'Аренда' ? 'selected' : ''}>Аренда</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Эмодзи</label>
-                                    <select id="editEmoji" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Эмодзи</label>
+                                    <select id="editEmoji">
                                         ${['🏢','🏠','🏡','🌳','🌲'].map(e => `<option value="${e}" ${ad?.emoji === e ? 'selected' : ''}>${e}</option>`).join('')}
                                     </select>
                                 </div>
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Комнат</label>
-                                    <input type="number" id="editRooms" value="${ad?.rooms || 0}" min="0" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <div class="form-group">
+                                    <label>Комнат</label>
+                                    <input type="number" id="editRooms" value="${ad?.rooms || 0}" min="0">
                                 </div>
                             </div>
 
                             <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Название *</label>
-                                <input type="text" id="editTitle" value="${ad?.title || ''}" placeholder="Например: 3-комнатная в центре" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <label>Название *</label>
+                                <input type="text" id="editTitle" value="${ad?.title || ''}" placeholder="Например: 3-комнатная в центре">
                             </div>
 
                             <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Адрес *</label>
-                                <input type="text" id="editAddress" value="${ad?.address || ''}" placeholder="Астрахань, ул. Пушкина, 15" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
-                                <div style="font-size:13px; color:#0d47a1; background:#e3f2fd; padding:8px 14px; border-radius:8px; margin-top:4px;">📍 Только Астрахань и область</div>
+                                <label>Адрес *</label>
+                                <input type="text" id="editAddress" value="${ad?.address || ''}" placeholder="Астрахань, ул. Пушкина, 15">
+                                <div style="font-size:11px; color:#0d47a1; background:#e3f2fd; padding:4px 10px; border-radius:4px; margin-top:3px;">📍 Только Астрахань и область</div>
                             </div>
 
                             <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Район</label>
-                                <select id="editDistrict" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <label>Район</label>
+                                <select id="editDistrict">
                                     <option value="">Выберите район</option>
                                     ${districtOptions}
                                 </select>
                             </div>
 
-                            <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Цена *</label>
-                                    <input type="text" id="editPrice" value="${ad?.priceText || ''}" placeholder="5 000 000 ₽" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Цена *</label>
+                                    <input type="text" id="editPrice" value="${ad?.priceText || ''}" placeholder="5 000 000 ₽">
                                 </div>
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Площадь (м²)</label>
-                                    <input type="number" id="editArea" value="${ad?.area || ''}" min="0" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <div class="form-group">
+                                    <label>Площадь (м²)</label>
+                                    <input type="number" id="editArea" value="${ad?.area || ''}" min="0">
                                 </div>
                             </div>
 
-                            <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Этаж</label>
-                                    <input type="number" id="editFloor" value="${ad?.floor || ''}" min="0" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Этаж</label>
+                                    <input type="number" id="editFloor" value="${ad?.floor || ''}" min="0">
                                 </div>
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Всего этажей</label>
-                                    <input type="number" id="editTotalFloors" value="${ad?.totalFloors || ''}" min="0" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <div class="form-group">
+                                    <label>Всего этажей</label>
+                                    <input type="number" id="editTotalFloors" value="${ad?.totalFloors || ''}" min="0">
                                 </div>
                             </div>
 
                             <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Описание</label>
-                                <textarea id="editDescription" rows="3" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px; font-family:inherit;">${ad?.description || ''}</textarea>
+                                <label>Описание</label>
+                                <textarea id="editDescription" rows="3">${ad?.description || ''}</textarea>
                             </div>
 
                             <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Особенности (через запятую, с эмодзи)</label>
-                                <input type="text" id="editFeatures" value="${featuresValue}" placeholder="🛋️ Мебель, 📺 Техника, 🌐 Интернет" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
-                                <div style="font-size:12px; color:#888; margin-top:4px;">💡 Пример: 🛋️ Мебель, 📺 Техника, 🌐 Интернет, ❄️ Кондиционер</div>
+                                <label>Особенности (через запятую, с эмодзи)</label>
+                                <input type="text" id="editFeatures" value="${featuresValue}" placeholder="🛋️ Мебель, 📺 Техника, 🌐 Интернет">
+                                <div style="font-size:11px; color:#888; margin-top:2px;">💡 Пример: 🛋️ Мебель, 📺 Техника, 🌐 Интернет</div>
                             </div>
 
                             <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Координаты (широта, долгота)</label>
-                                <input type="text" id="editCoords" value="${coordsValue}" placeholder="46.3497, 48.0408" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
-                                <div style="font-size:12px; color:#888; margin-top:4px;">📍 Для точного отображения на карте</div>
-                            </div>
-
-                            <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Фото и видео (до 50 файлов)</label>
+                                <label>Фото и видео (до 50 файлов)</label>
                                 <div class="file-upload" onclick="document.getElementById('fileInput').click()">
                                     <div>📤 Нажмите для загрузки файлов</div>
-                                    <div style="font-size:12px; color:#999; margin-top:4px;">Поддерживаются JPG, PNG, MP4, MOV</div>
-                                    <div style="font-size:12px; color:#2d7d46; margin-top:4px;">
+                                    <div style="font-size:11px; color:#999; margin-top:2px;">Поддерживаются JPG, PNG, MP4, MOV</div>
+                                    <div style="font-size:11px; color:#2d7d46; margin-top:3px;">
                                         ${fileCount > 0 ? `✅ Загружено ${fileCount} файлов` : '📭 Файлы не загружены'}
                                         ${fileCount >= 50 ? ' ⚠️ Максимум 50 файлов!' : ''}
                                     </div>
                                     <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display:none;" onchange="handleFiles(event)">
-                                    <div class="file-list" id="fileList" style="margin-top:8px;">
+                                    <div class="file-list" id="fileList" style="margin-top:6px;">
                                         ${mediaHtml}
                                         ${tempMediaFiles.map((m, i) => `
                                             <span class="file-tag">
@@ -1733,30 +3056,30 @@
                             </div>
 
                             <div>
-                                <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Актуально</label>
-                                <select id="editActual" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <label>Актуально</label>
+                                <select id="editActual">
                                     <option value="true" ${ad?.actual !== false ? 'selected' : ''}>Да</option>
                                     <option value="false" ${ad?.actual === false ? 'selected' : ''}>Нет</option>
                                 </select>
                             </div>
 
-                            <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Регион</label>
-                                    <select id="editRegion" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Регион</label>
+                                    <select id="editRegion">
                                         <option value="Астрахань" ${ad?.region === 'Астрахань' ? 'selected' : ''}>Астрахань</option>
                                         <option value="Астраханская область" ${ad?.region === 'Астраханская область' ? 'selected' : ''}>Астраханская область</option>
                                     </select>
                                 </div>
-                                <div style="flex:1; min-width:150px;">
-                                    <label style="font-weight:600; font-size:14px; display:block; margin-bottom:4px;">Дата</label>
-                                    <input type="date" id="editDate" value="${ad?.date || new Date().toISOString().split('T')[0]}" style="width:100%; padding:10px 14px; border:1px solid #e0e0e0; border-radius:8px; font-size:14px;">
+                                <div class="form-group">
+                                    <label>Дата</label>
+                                    <input type="date" id="editDate" value="${ad?.date || new Date().toISOString().split('T')[0]}">
                                 </div>
                             </div>
 
-                            <div style="display:flex; gap:12px; margin-top:8px;">
-                                <button type="submit" style="flex:1; padding:12px; background:#2d7d46; color:white; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer;">💾 Сохранить</button>
-                                <button type="button" onclick="closeModal()" style="flex:1; padding:12px; background:#f5f5f5; color:#555; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer;">Отмена</button>
+                            <div style="display:flex; gap:8px; margin-top:6px;">
+                                <button type="submit" style="flex:1; padding:10px; background:#2d7d46; color:white; border:none; border-radius:6px; font-size:15px; font-weight:600; cursor:pointer;">💾 Сохранить</button>
+                                <button type="button" onclick="closeModal()" style="flex:1; padding:10px; background:#f5f5f5; color:#555; border:none; border-radius:6px; font-size:15px; font-weight:600; cursor:pointer;">Отмена</button>
                             </div>
                         </form>
                     `;
@@ -1791,7 +3114,7 @@
                     const tag = document.createElement('span');
                     tag.className = 'file-tag';
                     tag.innerHTML = `
-                                ${isImage ? '📷' : '🎬'} ${file.name.substring(0, 20)}${file.name.length > 20 ? '...' : ''}
+                                ${isImage ? '📷' : '🎬'} ${file.name.substring(0, 18)}${file.name.length > 18 ? '...' : ''}
                                 <span class="remove-file" onclick="removeTempFile(this, '${url}')">✕</span>
                             `;
                     fileList.appendChild(tag);
@@ -1840,17 +3163,6 @@
             const date = document.getElementById('editDate').value;
             const actual = document.getElementById('editActual').value === 'true';
             const district = document.getElementById('editDistrict').value;
-            const coordsStr = document.getElementById('editCoords').value.trim();
-            let coords = null;
-            if (coordsStr) {
-                const parts = coordsStr.split(',').map(s => parseFloat(s.trim()));
-                if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-                    coords = parts;
-                }
-            }
-            if (!coords) {
-                coords = getExactCoords(address);
-            }
 
             if (!title || !address || !priceText) {
                 showToast('⚠️ Заполните обязательные поля');
@@ -1908,7 +3220,6 @@
                 region,
                 actual,
                 archived: false,
-                coords: coords,
                 media: media,
                 reviews: editingId ? (adsData.find(a => a.id === editingId)?.reviews || []) : []
             };
@@ -1967,7 +3278,7 @@
             t.textContent = msg;
             t.classList.add('show');
             clearTimeout(t._timeout);
-            t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
+            t._timeout = setTimeout(() => t.classList.remove('show'), 3500);
         }
 
         function updateCategories() {
@@ -2023,12 +3334,6 @@
         //  ИНИЦИАЛИЗАЦИЯ
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            window.addEventListener('error', function(e) {
-                if (e.message && e.message.includes('Unsafe attempt to load URL')) {
-                    e.preventDefault();
-                    return true;
-                }
-            }, true);
             loadUser();
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
