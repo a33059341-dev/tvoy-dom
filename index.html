@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Твой Дом — Недвижимость Астрахань</title>
+    <title>ТвойДом — Недвижимость Астрахань</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
@@ -19,7 +19,7 @@
         .logo:hover { opacity:0.8; }
         .logo img { height:48px; width:auto; border-radius:8px; background:white; padding:6px 12px; box-shadow:0 1px 4px rgba(0,0,0,0.06); filter:brightness(0) invert(1) saturate(0%); }
         .logo-text { display:flex; flex-direction:column; line-height:1.2; }
-        .logo-text .brand { font-size:20px; font-weight:700; color:#1a1a2e; }
+        .logo-text .brand { font-size:20px; font-weight:700; color:#1a1a2e; letter-spacing:-0.5px; }
         .logo-text .brand span { color:#2d7d46; }
         .logo-text .sub { font-size:10px; color:#999; letter-spacing:0.5px; }
 
@@ -313,9 +313,9 @@
     <header class="header">
         <div class="container header-content">
             <a href="index.html" class="logo" onclick="location.reload();">
-                <img src="logo.png" alt="Твой Дом" onerror="this.style.display='none'">
+                <img src="logo.png" alt="ТвойДом" onerror="this.style.display='none'">
                 <div class="logo-text">
-                    <div class="brand">Твой <span>Дом</span></div>
+                    <div class="brand">Твой<span>Дом</span></div>
                     <div class="sub">Агентство недвижимости</div>
                 </div>
             </a>
@@ -325,7 +325,7 @@
                     <div class="manager">Дмитрий · 9:00–21:00</div>
                 </div>
                 <div class="header-actions">
-                    <div class="user-info" id="userInfo" onclick="showLoginForm()">
+                    <div class="user-info" id="userInfo" onclick="openEditName()">
                         <div class="avatar guest" id="userAvatar">👤</div>
                         <div>
                             <div class="name" id="userName">Гость</div>
@@ -333,7 +333,7 @@
                         </div>
                     </div>
                     <button class="btn-fav" onclick="showFavorites()">
-                        ⭐ <span class="count" id="favoritesCount">0</span>
+                        ❤️ <span class="count" id="favoritesCount">0</span>
                     </button>
                     <button class="btn-storage" id="storageBtn" onclick="toggleStorage()" title="Хранилище на ПК">
                         💾 <span id="storageStatus">off</span>
@@ -400,7 +400,7 @@
         </div>
     </div>
 
-    <div class="modal-overlay login-modal" id="loginModal">
+    <div class="modal-overlay login-modal" id="loginModal" style="display:none;">
         <div class="modal-content">
             <button class="close-btn" onclick="closeLogin()">✕</button>
             <h2 style="margin-bottom:16px;">🔑 Вход для администратора</h2>
@@ -640,21 +640,16 @@
                 this.folderHandle = null;
                 this.isActive = false;
                 this.rootPath = '';
-                this.filesMap = new Map(); // path -> { type, url, size }
+                this.filesMap = new Map();
                 this.init();
             }
 
             async init() {
                 try {
-                    // Проверяем сохраненный доступ
                     const saved = localStorage.getItem('fs_storage_active');
                     if (saved === 'true') {
-                        // Пытаемся восстановить доступ к папке
-                        // Восстановление возможно только в рамках сессии
                         const folderId = sessionStorage.getItem('fs_folder_id');
                         if (folderId) {
-                            // Восстанавливаем через запрос к API (только если есть)
-                            // В данном случае просим пользователя выбрать заново
                             await this.requestAccess(true);
                         }
                     }
@@ -674,7 +669,6 @@
                     this.folderHandle = handle;
                     this.isActive = true;
 
-                    // Проверяем права на запись
                     try {
                         const testFile = await handle.getFileHandle('test.txt', { create: true });
                         const writable = await testFile.createWritable();
@@ -687,7 +681,6 @@
                         return false;
                     }
 
-                    // Сохраняем статус
                     localStorage.setItem('fs_storage_active', 'true');
                     sessionStorage.setItem('fs_folder_id', Date.now().toString());
 
@@ -712,22 +705,18 @@
                 }
 
                 try {
-                    // Создаем папку для объявления
                     const adFolderName = `ad_${adId}`;
                     let adFolder;
                     try {
                         adFolder = await this.folderHandle.getDirectoryHandle(adFolderName, { create: true });
                     } catch (e) {
-                        // Если папка существует, используем её
                         adFolder = await this.folderHandle.getDirectoryHandle(adFolderName);
                     }
 
-                    // Генерируем имя файла
                     const timestamp = Date.now();
                     const safeName = file.name.replace(/[^a-zA-Z0-9.\-_\u0400-\u04FF]/g, '_');
                     const fileName = `${timestamp}_${safeName}`;
 
-                    // Сохраняем файл
                     const fileHandle = await adFolder.getFileHandle(fileName, { create: true });
                     const writable = await fileHandle.createWritable();
                     await writable.write(file);
@@ -736,7 +725,6 @@
                     const path = `${adFolderName}/${fileName}`;
                     const fileSize = Math.round(file.size / 1024);
 
-                    // Сохраняем в кэш
                     this.filesMap.set(path, {
                         type: file.type.startsWith('image/') ? 'image' : 'video',
                         size: fileSize,
@@ -769,10 +757,8 @@
                     const fileHandle = await adFolder.getFileHandle(fileName);
                     const file = await fileHandle.getFile();
 
-                    // Создаем URL для отображения
                     const url = URL.createObjectURL(file);
 
-                    // Сохраняем в кэш для быстрого доступа
                     if (!this.filesMap.has(path)) {
                         this.filesMap.set(path, {
                             type: file.type.startsWith('image/') ? 'image' : 'video',
@@ -797,7 +783,6 @@
                     const adFolderName = `ad_${adId}`;
                     await this.folderHandle.removeEntry(adFolderName, { recursive: true });
 
-                    // Удаляем из кэша
                     for (const [path] of this.filesMap) {
                         if (path.startsWith(adFolderName)) {
                             this.filesMap.delete(path);
@@ -820,13 +805,11 @@
                     let totalFiles = 0;
                     let totalSize = 0;
 
-                    // Проходим по всем папкам
                     for await (const [name] of this.folderHandle.entries()) {
                         if (name.startsWith('ad_')) {
                             const folder = await this.folderHandle.getDirectoryHandle(name);
                             for await (const [fileName] of folder.entries()) {
                                 totalFiles++;
-                                // Размер файла можно получить только через getFile
                                 try {
                                     const fileHandle = await folder.getFileHandle(fileName);
                                     const file = await fileHandle.getFile();
@@ -864,7 +847,6 @@
 
             toggle() {
                 if (this.isActive) {
-                    // Отключаем
                     this.isActive = false;
                     this.folderHandle = null;
                     localStorage.removeItem('fs_storage_active');
@@ -872,7 +854,6 @@
                     showToast('💾 Хранилище на ПК отключено');
                     this.updateUI();
                 } else {
-                    // Включаем
                     this.requestAccess(false);
                 }
             }
@@ -1038,14 +1019,11 @@
                     nextId = 1;
                 }
 
-                // Проверяем файлы на ПК
                 if (fsStorage.isActive) {
-                    // Проверяем, есть ли файлы на ПК для существующих объявлений
                     for (const ad of adsData) {
                         if (ad.media) {
                             for (const media of ad.media) {
                                 if (media.type === 'file' && media.path) {
-                                    // Проверяем, существует ли файл
                                     const url = await fsStorage.loadFile(media.path);
                                     if (url) {
                                         media.url = url;
@@ -1089,12 +1067,11 @@
         // ================================================================
         function toggleStorage() {
             fsStorage.toggle();
-            // Обновляем отображение объявлений
             renderAds(currentFiltered);
         }
 
         // ================================================================
-        //  АВТОРИЗАЦИЯ
+        //  АВТОРИЗАЦИЯ - только для Дмитрия и Gleb
         // ================================================================
         function loadUser() {
             const saved = localStorage.getItem('user');
@@ -1150,49 +1127,50 @@
             updateChatHeaderName();
         }
 
-        function showLoginForm() {
-            if (currentUser && isAdmin(currentUser)) {
-                showToast('✅ Вы уже авторизованы как ' + currentUser.name);
-                return;
+        // Вход только через автоматическую авторизацию для Дмитрия и Gleb
+        function autoLoginForAdmins() {
+            // Проверяем, есть ли уже сохраненный пользователь
+            const saved = localStorage.getItem('user');
+            if (saved) {
+                try {
+                    const user = JSON.parse(saved);
+                    const cleanPhone = user.phone.replace(/[^0-9]/g, '');
+                    const adminClean1 = ADMIN_PHONE.replace(/[^0-9]/g, '');
+                    const adminClean2 = ADMIN_PHONE2.replace(/[^0-9]/g, '');
+                    if (cleanPhone === adminClean1 || cleanPhone === adminClean2) {
+                        return; // Уже авторизован
+                    }
+                } catch (e) {}
             }
-            document.getElementById('loginModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            document.getElementById('loginPhone').value = '';
-            document.getElementById('loginName').value = '';
+
+            // Проверяем, не является ли пользователь Дмитрием или Gleb по localStorage
+            const savedName = localStorage.getItem('userName');
+            if (savedName) {
+                if (savedName.toLowerCase() === ADMIN_NAME.toLowerCase() || 
+                    savedName.toLowerCase() === ADMIN_NAME2.toLowerCase()) {
+                    // Автоматически входим
+                    const phone = savedName.toLowerCase() === ADMIN_NAME.toLowerCase() ? ADMIN_PHONE : ADMIN_PHONE2;
+                    currentUser = {
+                        phone: phone.replace(/[^0-9]/g, ''),
+                        name: savedName,
+                        isAdmin: true
+                    };
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    updateUIForUser();
+                    showToast('✅ Авторизован как ' + savedName);
+                }
+            }
+        }
+
+        function showLoginForm() {
+            // Убираем возможность входа через форму
+            showToast('ℹ️ Вход только для администраторов (Дмитрий и Gleb)');
         }
 
         function login(e) {
-            if (e) e.preventDefault();
-            const phone = document.getElementById('loginPhone').value.trim();
-            const name = document.getElementById('loginName').value.trim();
-            if (!phone || !name) {
-                showToast('⚠️ Заполните все поля');
-                return false;
-            }
-            const cleanPhone = phone.replace(/[^0-9]/g, '');
-            const adminClean1 = ADMIN_PHONE.replace(/[^0-9]/g, '');
-            const adminClean2 = ADMIN_PHONE2.replace(/[^0-9]/g, '');
-            if ((cleanPhone !== adminClean1 || name.toLowerCase() !== ADMIN_NAME.toLowerCase()) &&
-                (cleanPhone !== adminClean2 || name.toLowerCase() !== ADMIN_NAME2.toLowerCase())) {
-                showToast('❌ Доступ только для администраторов');
-                return false;
-            }
-            currentUser = {
-                phone: cleanPhone,
-                name: name,
-                isAdmin: true
-            };
-            try {
-                localStorage.setItem('user', JSON.stringify(currentUser));
-                localStorage.setItem('userName', name);
-            } catch (err) {
-                console.error('❌ Ошибка сохранения:', err);
-            }
-            updateUIForUser();
-            closeLogin();
-            showToast('✅ Добро пожаловать, ' + name + '!');
-            renderAds(currentFiltered);
-            updateChatList();
+            // Отключаем возможность входа через форму
+            e.preventDefault();
+            showToast('ℹ️ Вход только для администраторов (Дмитрий и Gleb)');
             return false;
         }
 
@@ -1211,7 +1189,7 @@
         function closeLogin() {
             const modal = document.getElementById('loginModal');
             if (modal) {
-                modal.classList.remove('active');
+                modal.classList.add('hidden');
             }
             document.body.style.overflow = '';
         }
@@ -1244,8 +1222,8 @@
             let fav = getFavorites();
             const idx = fav.indexOf(id);
             if (idx > -1) { fav.splice(idx, 1);
-                showToast('⭐ Удалено из избранного'); } else { fav.push(id);
-                showToast('⭐ Добавлено в избранное'); }
+                showToast('❤️ Удалено из избранного'); } else { fav.push(id);
+                showToast('❤️ Добавлено в избранное'); }
             saveFavorites(fav);
             renderAds(currentFiltered);
         }
@@ -1258,10 +1236,10 @@
 
         function showFavorites() {
             const fav = getFavorites();
-            if (!fav.length) { showToast('⭐ У вас пока нет избранных'); return; }
+            if (!fav.length) { showToast('❤️ У вас пока нет избранных'); return; }
             const filtered = adsData.filter(ad => fav.includes(ad.id) && !ad.archived);
             renderAds(filtered);
-            showToast(`⭐ Показано ${filtered.length} избранных`);
+            showToast(`❤️ Показано ${filtered.length} избранных`);
         }
 
         // ================================================================
@@ -1338,7 +1316,7 @@
                     break;
                 case 'email':
                     const subject = encodeURIComponent(`Объявление: ${adTitle}`);
-                    const emailBody = encodeURIComponent(`Здравствуйте!\n\nПосмотрите объявление:\n${adTitle}\n${fullUrl}\n\nС уважением, Твой Дом`);
+                    const emailBody = encodeURIComponent(`Здравствуйте!\n\nПосмотрите объявление:\n${adTitle}\n${fullUrl}\n\nС уважением, ТвойДом`);
                     window.open(`mailto:?subject=${subject}&body=${emailBody}`, '_blank');
                     break;
                 case 'copy':
@@ -1664,7 +1642,6 @@
                 const featuresDisplay = ad.features && ad.features.length > 0 ? ad.features.slice(0, 3).join(' · ') :
                     '';
                 const featuresMore = ad.features && ad.features.length > 3 ? ` +${ad.features.length - 3}` : '';
-                // Проверяем, есть ли файлы на ПК
                 const hasStoredFiles = ad.media && ad.media.some(m => m.type === 'file' && m.stored);
                 
                 return `
@@ -1754,9 +1731,7 @@
                 galleryHtml = `
                             <div class="detail-gallery">
                                 ${ad.media.map(m => {
-                                    // Если это файл на ПК, загружаем
                                     if (m.type === 'file' && m.stored) {
-                                        // Пытаемся загрузить файл
                                         fsStorage.loadFile(m.path).then(url => {
                                             if (url) {
                                                 const img = document.querySelector(`[data-path="${m.path}"]`);
@@ -1867,7 +1842,6 @@
                 `<span style="background:#e8f5e9; padding:3px 12px; border-radius:16px; font-size:12px; color:#2e7d32;">${f}</span>`
             ).join('') : '';
 
-            // Информация о хранилище
             const storageInfo = ad.media && ad.media.some(m => m.type === 'file' && m.stored) ?
                 '<span style="background:#e3f2fd; padding:2px 10px; border-radius:12px; font-size:10px; color:#0d47a1; display:inline-block; margin-left:6px;">💾 Файлы на ПК</span>' :
                 '';
@@ -2046,7 +2020,6 @@
             const featuresValue = ad?.features ? ad.features.join(', ') : '';
             const fileCount = tempMediaFiles.length + mediaList.length;
 
-            // Информация о хранилище
             const storageInfo = fsStorage.isActive ?
                 '<span style="color:#0d47a1; background:#e3f2fd; padding:2px 10px; border-radius:12px; font-size:11px; display:inline-block;">💾 Файлы будут сохранены на ПК</span>' :
                 '<span style="color:#888; font-size:11px;">💾 Файлы будут сохранены в браузере (нажмите 💾 сверху для сохранения на ПК)</span>';
@@ -2208,7 +2181,6 @@
             const fileList = document.getElementById('fileList');
             const fileInput = document.getElementById('fileInput');
 
-            // Если хранилище на ПК активно, но нет доступа - запрашиваем
             if (fsStorage.isActive && !fsStorage.folderHandle) {
                 await fsStorage.requestAccess(false);
             }
@@ -2226,7 +2198,6 @@
                 try {
                     let mediaItem;
 
-                    // Пытаемся сохранить на ПК
                     if (fsStorage.isActive && fsStorage.folderHandle) {
                         const adId = editingId || 'new';
                         const result = await fsStorage.saveFile(file, adId);
@@ -2235,7 +2206,6 @@
                         }
                     }
 
-                    // Если не удалось сохранить на ПК - сохраняем в браузере
                     if (!mediaItem) {
                         const compressed = await compressImage(file, 1200, 0.7);
                         mediaItem = {
@@ -2250,7 +2220,6 @@
 
                     tempMediaFiles.push(mediaItem);
 
-                    // Отображаем в списке
                     const tag = document.createElement('span');
                     tag.className = 'file-tag';
                     const sizeText = mediaItem.size ? ` (${mediaItem.size} КБ)` : '';
@@ -2268,7 +2237,6 @@
             }
             fileInput.value = '';
 
-            // Обновляем счётчик
             const countEl = document.querySelector('.file-upload .file-count');
             if (countEl) {
                 const total = tempMediaFiles.length + document.querySelectorAll('.file-tag:not(.file-count)').length;
@@ -2290,7 +2258,6 @@
             const ad = adsData.find(a => a.id === adId);
             if (ad && ad.media) {
                 const removed = ad.media[index];
-                // Если файл на ПК - удаляем с ПК
                 if (removed && removed.type === 'file' && removed.stored && fsStorage.isActive) {
                     fsStorage.deleteAdFiles(adId);
                 }
@@ -2412,7 +2379,7 @@
         }
 
         // ================================================================
-        //  УДАЛЕНИЕ (ПОЛНОСТЬЮ УДАЛЯЕТ ОБЪЯВЛЕНИЕ)
+        //  УДАЛЕНИЕ
         // ================================================================
         function confirmDeleteAd(id) {
             if (!currentUser || !isAdmin(currentUser)) {
@@ -2425,7 +2392,6 @@
 
         async function confirmDelete() {
             if (deleteTargetId !== null) {
-                // Удаляем файлы с ПК
                 if (fsStorage.isActive) {
                     await fsStorage.deleteAdFiles(deleteTargetId);
                 }
@@ -2519,13 +2485,14 @@
         //  ИНИЦИАЛИЗАЦИЯ
         // ================================================================
         document.addEventListener('DOMContentLoaded', async function() {
-            // Загружаем данные из IndexedDB
             await loadAllData();
 
             loadUser();
             fsStorage.updateUI();
+            
+            // Автоматически входим, если пользователь - Дмитрий или Gleb
+            autoLoginForAdmins();
 
-            // Проверяем доступ к File System API
             if (!('showDirectoryPicker' in window)) {
                 console.log('File System Access API не поддерживается');
                 document.getElementById('storageBtn').style.opacity = '0.5';
