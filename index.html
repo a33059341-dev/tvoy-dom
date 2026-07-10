@@ -640,7 +640,9 @@
             ]
         }];
 
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        // ================================================================
+        //  ИНИЦИАЛИЗАЦИЯ
+        // ================================================================
         let adsData = [];
         let nextId = 1;
         let db = null;
@@ -653,7 +655,9 @@
         let deleteTargetId = null;
         let currentChatUserId = null;
 
-        // ===== КЛАСС ДЛЯ РАБОТЫ С ФАЙЛОВОЙ СИСТЕМОЙ =====
+        // ================================================================
+        //  КЛАСС ДЛЯ РАБОТЫ С ФАЙЛОВОЙ СИСТЕМОЙ
+        // ================================================================
         class FileSystemStorage {
             constructor() {
                 this.folderHandle = null;
@@ -671,11 +675,14 @@
                 } catch (e) {
                     console.log('Ошибка восстановления доступа к ФС:', e);
                 }
+                this.updateUI();
             }
 
             async requestAccess(silent = false) {
                 if (!('showDirectoryPicker' in window)) {
                     if (!silent) showToast('⚠️ Ваш браузер не поддерживает File System Access API');
+                    this.isActive = false;
+                    this.updateUI();
                     return false;
                 }
 
@@ -693,6 +700,7 @@
                     } catch (e) {
                         this.isActive = false;
                         if (!silent) showToast('⚠️ Нет прав на запись в выбранную папку');
+                        this.updateUI();
                         return false;
                     }
 
@@ -810,14 +818,27 @@
                 const statusTextEl = document.getElementById('storageStatusText');
                 const btn = document.getElementById('storageBtn');
 
-                if (this.isActive) {
+                if (!('showDirectoryPicker' in window)) {
+                    statusEl.textContent = '❌';
+                    if (btn) btn.style.opacity = '0.5';
+                    if (statusTextEl) {
+                        statusTextEl.textContent = '💾 Хранилище: не поддерживается';
+                    }
+                    return;
+                }
+
+                if (this.isActive && this.folderHandle) {
                     statusEl.textContent = 'on';
-                    btn.classList.add('active');
-                    statusTextEl.textContent = '💾 Хранилище: Ваш ПК ✅';
+                    if (btn) btn.classList.add('active');
+                    if (statusTextEl) {
+                        statusTextEl.textContent = '💾 Хранилище: Ваш ПК ✅';
+                    }
                 } else {
                     statusEl.textContent = 'off';
-                    btn.classList.remove('active');
-                    statusTextEl.textContent = '💾 Хранилище: IndexedDB (в браузере)';
+                    if (btn) btn.classList.remove('active');
+                    if (statusTextEl) {
+                        statusTextEl.textContent = '💾 Хранилище: IndexedDB (в браузере)';
+                    }
                 }
             }
 
@@ -837,7 +858,9 @@
 
         const fsStorage = new FileSystemStorage();
 
-        // ===== ИНИЦИАЛИЗАЦИЯ INDEXEDDB =====
+        // ================================================================
+        //  ИНИЦИАЛИЗАЦИЯ INDEXEDDB
+        // ================================================================
         function initIndexedDB() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open('TvoyDomDB', 1);
@@ -960,14 +983,13 @@
         }
 
         // ================================================================
-        //  🔥 ГЛАВНОЕ: АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БАЗЫ ДАННЫХ ДЛЯ ДМИТРИЯ
+        //  🔥 АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БАЗЫ ДАННЫХ
         // ================================================================
         async function ensureDatabaseExists() {
             try {
                 await initIndexedDB();
                 const data = await loadAdsFromDB();
 
-                // Если база пустая или нет данных - создаем
                 if (!data || data.length === 0) {
                     console.log('📦 База данных пуста, создаем начальные объявления...');
                     adsData = JSON.parse(JSON.stringify(defaultAds));
@@ -977,13 +999,11 @@
                     return true;
                 }
 
-                // Данные есть - загружаем
                 adsData = data;
                 console.log('✅ Загружено из базы:', adsData.length, 'объявлений');
                 return true;
             } catch (e) {
                 console.error('❌ Ошибка создания базы:', e);
-                // Пробуем восстановить
                 try {
                     indexedDB.deleteDatabase('TvoyDomDB');
                     await initIndexedDB();
@@ -999,21 +1019,79 @@
             }
         }
 
-        // ===== ЗАГРУЗКА ДАННЫХ (ОБНОВЛЕННАЯ) =====
+        // ================================================================
+        //  🚀 АВТОМАТИЧЕСКИЙ ВХОД ДЛЯ ДМИТРИЯ И GLEB
+        // ================================================================
+        function autoLoginForAdmins() {
+            // Проверяем сохраненного пользователя
+            const saved = localStorage.getItem('user');
+            if (saved) {
+                try {
+                    const user = JSON.parse(saved);
+                    const cleanPhone = user.phone.replace(/[^0-9]/g, '');
+                    const adminClean1 = ADMIN_PHONE.replace(/[^0-9]/g, '');
+                    const adminClean2 = ADMIN_PHONE2.replace(/[^0-9]/g, '');
+                    if (cleanPhone === adminClean1 || cleanPhone === adminClean2) {
+                        currentUser = user;
+                        currentUser.isAdmin = true;
+                        updateUIForUser();
+                        console.log('✅ Авторизован как', currentUser.name);
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Ошибка загрузки пользователя:', e);
+                    localStorage.removeItem('user');
+                }
+            }
+
+            // Пробуем восстановить по имени
+            const savedName = localStorage.getItem('userName');
+            if (savedName) {
+                if (savedName.toLowerCase() === ADMIN_NAME.toLowerCase() ||
+                    savedName.toLowerCase() === ADMIN_NAME2.toLowerCase()) {
+                    const phone = savedName.toLowerCase() === ADMIN_NAME.toLowerCase() ? ADMIN_PHONE : ADMIN_PHONE2;
+                    currentUser = {
+                        phone: phone.replace(/[^0-9]/g, ''),
+                        name: savedName,
+                        isAdmin: true
+                    };
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    updateUIForUser();
+                    showToast('✅ Авторизован как ' + savedName);
+                    console.log('✅ Авторизован как', savedName);
+                    return;
+                }
+            }
+
+            // Если ничего не помогло - принудительный вход для Дмитрия
+            // (только если есть сохраненное имя Дмитрий или Gleb)
+            if (savedName === 'Дмитрий' || savedName === 'Gleb') {
+                const phone = savedName === 'Дмитрий' ? ADMIN_PHONE : ADMIN_PHONE2;
+                currentUser = {
+                    phone: phone.replace(/[^0-9]/g, ''),
+                    name: savedName,
+                    isAdmin: true
+                };
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                updateUIForUser();
+                showToast('✅ Авторизован как ' + savedName);
+            }
+        }
+
+        // ================================================================
+        //  ЗАГРУЗКА ДАННЫХ
+        // ================================================================
         async function loadAllData() {
-            // Сначала убеждаемся, что база существует
             const success = await ensureDatabaseExists();
             
             if (success && adsData.length > 0) {
                 nextId = Math.max(...adsData.map(a => a.id)) + 1;
             } else {
-                // Если всё сломалось - создаем заново
                 adsData = JSON.parse(JSON.stringify(defaultAds));
                 nextId = adsData.length > 0 ? Math.max(...adsData.map(a => a.id)) + 1 : 1;
                 await saveAdsToDB(adsData);
             }
 
-            // Проверяем файлы на ПК
             if (fsStorage.isActive) {
                 for (const ad of adsData) {
                     if (ad.media) {
@@ -1098,37 +1176,6 @@
                 if (resetBtn) resetBtn.style.display = 'none';
             }
             updateChatHeaderName();
-        }
-
-        function autoLoginForAdmins() {
-            const saved = localStorage.getItem('user');
-            if (saved) {
-                try {
-                    const user = JSON.parse(saved);
-                    const cleanPhone = user.phone.replace(/[^0-9]/g, '');
-                    const adminClean1 = ADMIN_PHONE.replace(/[^0-9]/g, '');
-                    const adminClean2 = ADMIN_PHONE2.replace(/[^0-9]/g, '');
-                    if (cleanPhone === adminClean1 || cleanPhone === adminClean2) {
-                        return;
-                    }
-                } catch (e) {}
-            }
-
-            const savedName = localStorage.getItem('userName');
-            if (savedName) {
-                if (savedName.toLowerCase() === ADMIN_NAME.toLowerCase() ||
-                    savedName.toLowerCase() === ADMIN_NAME2.toLowerCase()) {
-                    const phone = savedName.toLowerCase() === ADMIN_NAME.toLowerCase() ? ADMIN_PHONE : ADMIN_PHONE2;
-                    currentUser = {
-                        phone: phone.replace(/[^0-9]/g, ''),
-                        name: savedName,
-                        isAdmin: true
-                    };
-                    localStorage.setItem('user', JSON.stringify(currentUser));
-                    updateUIForUser();
-                    showToast('✅ Авторизован как ' + savedName);
-                }
-            }
         }
 
         function showLoginForm() {
@@ -2153,11 +2200,9 @@
             document.getElementById('modalOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
             
-            // Автоматически показываем/скрываем поле комиссии
             toggleCommissionField();
         }
 
-        // Функция для показа/скрытия поля комиссии
         function toggleCommissionField() {
             const action = document.getElementById('editAction');
             const field = document.getElementById('commissionField');
@@ -2170,7 +2215,9 @@
             }
         }
 
-        // ===== ОБРАБОТКА ФАЙЛОВ =====
+        // ================================================================
+        //  ОБРАБОТКА ФАЙЛОВ
+        // ================================================================
         async function handleFiles(event) {
             const files = event.target.files;
             const fileList = document.getElementById('fileList');
@@ -2492,7 +2539,7 @@
         }
 
         // ================================================================
-        //  🔄 СБРОС ДАННЫХ (ДЛЯ ДМИТРИЯ)
+        //  СБРОС ДАННЫХ
         // ================================================================
         async function resetDatabase() {
             if (!currentUser || !isAdmin(currentUser)) {
@@ -2525,12 +2572,12 @@
         //  ИНИЦИАЛИЗАЦИЯ
         // ================================================================
         document.addEventListener('DOMContentLoaded', async function() {
-            // Загружаем данные (автоматически создаются если пусто)
             await loadAllData();
 
             loadUser();
             fsStorage.updateUI();
             
+            // АВТОМАТИЧЕСКИЙ ВХОД ДЛЯ ДМИТРИЯ И GLEB
             autoLoginForAdmins();
 
             if (!('showDirectoryPicker' in window)) {
@@ -2576,6 +2623,7 @@
             console.log('📊 Всего объявлений:', adsData.length);
             console.log('📊 Активных объявлений:', adsData.filter(a => !a.archived).length);
             console.log('💾 Хранилище:', fsStorage.isActive ? 'Ваш ПК ✅' : 'IndexedDB');
+            console.log('👤 Пользователь:', currentUser ? currentUser.name : 'Гость');
         });
 
         document.getElementById('modalOverlay').addEventListener('click', function(e) {
@@ -2663,6 +2711,7 @@
         window.fsStorage = fsStorage;
         window.toggleCommissionField = toggleCommissionField;
         window.resetDatabase = resetDatabase;
+        window.autoLoginForAdmins = autoLoginForAdmins;
     </script>
 
 </body>
