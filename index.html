@@ -208,7 +208,7 @@ img,video{display:block}
 /* Форма добавления */
 .file-upload{border:2px dashed #cbd5e1;border-radius:14px;padding:20px;text-align:center;transition:.2s;cursor:pointer}
 .file-upload:hover,.file-upload.dragover{border-color:var(--accent);background:var(--accent-soft)}
-.file-upload .file-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;max-height:180px;overflow-y:auto}
+.file-upload .editor-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:10px}.editor-media-card{min-width:0;border:1px solid var(--line,#ddd);border-radius:10px;overflow:hidden;background:#fff}.editor-media-card img,.editor-media-card video{display:block;width:100%;height:105px;object-fit:cover;background:#111}.editor-media-actions{display:flex;align-items:center;justify-content:center;gap:5px;padding:6px}.editor-media-actions button{border:1px solid #ddd;border-radius:6px;background:#f8fafc;padding:5px 8px;cursor:pointer}.editor-media-actions button:disabled{opacity:.35}.editor-media-actions .editor-media-remove{color:#b42318;font-size:11px}.file-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;max-height:180px;overflow-y:auto}
 .file-tag{background:var(--accent-soft);padding:4px 11px;border-radius:999px;font-size:11px;font-weight:600;color:var(--accent-d);display:inline-flex;align-items:center;gap:5px;border:1px solid #bbf7d0}
 .file-tag.stored{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
 .file-tag .remove-file{cursor:pointer;color:#e11d48;font-weight:800}
@@ -1167,10 +1167,15 @@ function showEditForm(ad){
  const isEdit=!!ad;
  const mediaList=ad?.media||[];
  const mediaHtml=mediaList.map((m,i)=>`
-  <span class="file-tag ${m.type==='file'?'stored':''}">
-   ${m.type==='image'?'📷':m.type==='file'?'💾':'🎬'} ${m.type==='file'?'Файл на ПК':(m.type==='image'?'Фото':'Видео')} ${i+1}${m.stored?' 💾':''}
-   <span class="remove-file" onclick="removeMedia(${ad.id},${i})">✕</span>
-  </span>`).join('');
+  <div class="editor-media-card">
+   ${m.type==='video'?`<video src="${m.url}" muted playsinline></video>`:`<img src="${m.url}" alt="Фото ${i+1}">`}
+   <div class="editor-media-actions">
+    <button type="button" onclick="moveExistingMedia(${ad.id},${i},-1)" ${i===0?'disabled':''}>←</button>
+    <span>${i+1}</span>
+    <button type="button" onclick="moveExistingMedia(${ad.id},${i},1)" ${i===mediaList.length-1?'disabled':''}>→</button>
+    <button type="button" class="editor-media-remove" onclick="removeMedia(${ad.id},${i})">Удалить</button>
+   </div>
+  </div>`).join('');
  const districtOptions=DISTRICTS.map(d=>`<option value="${d}" ${ad?.district===d?'selected':''}>${d}</option>`).join('');
  const featuresValue=ad?.features?ad.features.join(', '):'';
  const commissionOptions=COMMISSION_OPTIONS.map(c=>`<option value="${c}" ${ad?.commission===c?'selected':''}>${c||'Без комиссии'}</option>`).join('');
@@ -1252,7 +1257,7 @@ function showEditForm(ad){
      <div class="file-count" id="fileCountLabel">${mediaList.length+tempMediaFiles.length>0?'✅ Загружено: '+(mediaList.length+tempMediaFiles.length):'📭 Файлы не загружены'}</div>
      <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display:none" onchange="handleFiles(event)">
      <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
-     <div class="file-list" id="fileList">${mediaHtml}</div>
+     <div class="editor-media-grid" id="fileList">${mediaHtml}</div>
     </div>
    </div>
    <div><label>Актуально</label>
@@ -1281,6 +1286,7 @@ function showEditForm(ad){
  document.body.style.overflow='hidden';
  toggleCommissionField();
  setupDragDrop();
+ renderEditorTempMedia();
 }
 function toggleCommissionField(){
  const action=document.getElementById('editAction');
@@ -1323,12 +1329,8 @@ async function handleFiles(event){
    if(isVideo){mediaItem={type:'video',file,mimeType:file.type,stored:false};}
    else{const compressed=await compressImage(file);mediaItem={type:'image',url:compressed.url,mimeType:'image/jpeg',stored:false};}
    tempMediaFiles.push(mediaItem);
-   const tag=document.createElement('span');
-   tag.className='file-tag'+(mediaItem.stored?' stored':'');
-   const sizeText=mediaItem.size?(' ('+mediaItem.size+' КБ)'):'';
-   const storedText=mediaItem.stored?' 💾':'';
-   mediaItem.tempKey='tmp_'+Date.now()+'_'+Math.random().toString(36).slice(2);tag.innerHTML=(isImage?'📷 ':'🎬 ')+escapeHtml(file.name.substring(0,22))+(file.name.length>22?'…':'')+sizeText+storedText+' <span class="remove-file" onclick="removeTempFile(this,\''+mediaItem.tempKey+'\')">✕</span>';
-   document.getElementById('fileList').appendChild(tag);
+   mediaItem.tempKey='tmp_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+   renderEditorTempMedia();
   }catch(e){console.error('Ошибка файла',e);showToast('⚠️ Ошибка обработки: '+file.name);}
   processed++;
   setProgress(Math.round(processed/files.length*100));
@@ -1338,18 +1340,25 @@ async function handleFiles(event){
  updateFileCount();
  showToast('📎 Добавлено файлов: '+tempMediaFiles.length);
 }
-function removeTempFile(el,url){
- el.parentElement.remove();
- tempMediaFiles=tempMediaFiles.filter(m=>(m.tempKey||m.url)!==url);
- updateFileCount();
+function renderEditorTempMedia(){
+ const list=document.getElementById('fileList');if(!list)return;
+ const existing=editingId?(adsData.find(a=>a.id===editingId)?.media||[]):[];
+ list.innerHTML=existing.map((m,i)=>`<div class="editor-media-card">${m.type==='video'?`<video src="${m.url}" muted playsinline></video>`:`<img src="${m.url}" alt="Фото ${i+1}">`}<div class="editor-media-actions"><span>${i+1}</span><button type="button" onclick="moveExistingMedia(${editingId},${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" onclick="moveExistingMedia(${editingId},${i},1)" ${i===existing.length-1?'disabled':''}>→</button><button type="button" class="editor-media-remove" onclick="removeMedia(${editingId},${i})">Удалить</button></div></div>`).join('')+tempMediaFiles.map((m,i)=>`<div class="editor-media-card">${m.type==='video'?`<video src="${m.previewUrl||(m.previewUrl=URL.createObjectURL(m.file))}" muted playsinline></video>`:`<img src="${m.url}" alt="Новое фото">`}<div class="editor-media-actions"><span>Новое ${i+1}</span><button type="button" onclick="moveTempMedia(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" onclick="moveTempMedia(${i},1)" ${i===tempMediaFiles.length-1?'disabled':''}>→</button><button type="button" class="editor-media-remove" onclick="removeTempFile('${m.tempKey}')">Удалить</button></div></div>`).join('');
 }
-function removeMedia(adId,index){
- const ad=adsData.find(a=>a.id===adId);
- if(ad&&ad.media){
-  const removed=ad.media.splice(index,1)[0];
-  (async()=>{try{if(removed?.path){const {error}=await supabaseClient.storage.from(STORAGE_BUCKET).remove([removed.path]);if(error)throw error;}await saveOneAd(ad);showToast('🗑️ Файл удалён');openAd(adId);renderAds(currentFiltered);}catch(e){showToast('❌ Не удалось удалить файл: '+e.message);}})();
- }
+function moveTempMedia(index,direction){const next=index+direction;if(next<0||next>=tempMediaFiles.length)return;[tempMediaFiles[index],tempMediaFiles[next]]=[tempMediaFiles[next],tempMediaFiles[index]];renderEditorTempMedia();}
+function removeTempFile(url){tempMediaFiles=tempMediaFiles.filter(m=>(m.tempKey||m.url)!==url);renderEditorTempMedia();updateFileCount();}
+async function removeMedia(adId,index){
+ const ad=adsData.find(a=>a.id===adId);if(!ad||!ad.media?.[index])return;
+ const removed=ad.media.splice(index,1)[0];
+ try{await saveOneAd(ad);if(removed?.path){const {error}=await supabaseClient.storage.from(STORAGE_BUCKET).remove([removed.path]);if(error)console.warn('Не удалось удалить файл из Storage',error);}showToast('🗑️ Файл удалён');showEditForm(ad);}
+ catch(e){ad.media.splice(index,0,removed);showToast('❌ Не удалось удалить файл: '+(e.message||e));}
 }
+async function moveExistingMedia(adId,index,direction){
+ const ad=adsData.find(a=>a.id===adId);if(!ad?.media)return;const next=index+direction;if(next<0||next>=ad.media.length)return;
+ [ad.media[index],ad.media[next]]=[ad.media[next],ad.media[index]];
+ try{await saveOneAd(ad);showEditForm(ad);}catch(e){[ad.media[index],ad.media[next]]=[ad.media[next],ad.media[index]];showToast('❌ Не удалось изменить порядок: '+(e.message||e));}
+}
+
 async function saveAd(e){
  e.preventDefault();
  if(isSavingAd)return;
