@@ -205,6 +205,20 @@ img,video{display:block}
 .share-buttons-modal .btn-tg{background:#229ed9}.share-buttons-modal .btn-sms{background:#f59e0b}
 .share-buttons-modal .btn-email{background:#8b5cf6}
 
+/* Дополнительные фильтры и общий раздел отзывов */
+.extra-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:-10px auto 22px}
+.extra-filters select,.extra-filters input{width:100%;min-width:0;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;font:inherit;font-size:13px;color:var(--ink)}
+.site-reviews{margin:34px auto 46px;padding:24px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.site-reviews-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.site-review-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:14px 0}
+.site-review-card{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fbfcfb}
+.site-review-card .stars{color:#f59e0b;margin-bottom:5px}
+.review-admin-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.review-admin-row button{padding:7px 11px;border-radius:8px;font-weight:700;font-size:12px}
+.review-approve{background:#dcfce7;color:#166534}.review-reject{background:#fee2e2;color:#991b1b}
+.review-note{font-size:12px;color:var(--ink3);margin-top:8px}
+@media(max-width:600px){.site-reviews{padding:16px;margin:24px auto}.site-review-grid{grid-template-columns:1fr}.extra-filters{grid-template-columns:1fr 1fr}}
+
 /* Форма добавления */
 .file-upload{border:2px dashed #cbd5e1;border-radius:14px;padding:20px;text-align:center;transition:.2s;cursor:pointer}
 .file-upload:hover,.file-upload.dragover{border-color:var(--accent);background:var(--accent-soft)}
@@ -326,6 +340,95 @@ img,video{display:block}
 /* Скрываем служебный статус хранилища и плавающую кнопку сообщений */
 .storage-pill { display: none !important; }
 .chat-floating { display: none !important; }
+
+/* ===== ТВОЙДОМ: НОВЫЙ ВИЗУАЛЬНЫЙ ДИЗАЙН ===== */
+:root{
+ --bg:#f5f3ef;--card:#fff;--ink:#172b35;--ink2:#52636a;--ink3:#89969a;
+ --line:#e7e4de;--accent:#c56b43;--accent-d:#a84f2c;--accent-soft:#fbefe9;
+ --radius:18px;--shadow:0 8px 28px rgba(31,42,43,.07);--shadow-lg:0 18px 45px rgba(31,42,43,.14)
+}
+body{background:var(--bg)!important;color:var(--ink)!important;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+.container{max-width:1360px;padding-left:34px;padding-right:34px}
+.header{background:#fff!important;border-bottom:1px solid #e8e4dd!important;box-shadow:0 4px 20px rgba(30,40,40,.04)!important}
+.header-content{min-height:82px;padding:14px 0!important;gap:22px}
+.logo{gap:13px}.logo-mark{width:49px;height:49px;border-radius:15px;background:#173b43!important;box-shadow:none!important;color:#fff}
+.logo-text .brand{font-size:22px;letter-spacing:-.8px;color:#17313a}.logo-text .brand span{color:var(--accent)!important}
+.logo-text .sub{font-size:9px;letter-spacing:1.4px;color:#8b9697}
+.phone-block .phone{color:#a84f2c!important;font-size:15px}
+.btn{border-radius:10px;padding:11px 16px;font-size:13px}
+.btn-primary{background:#c56b43!important;box-shadow:0 5px 13px rgba(197,107,67,.2)!important}
+.btn-primary:hover{background:#a84f2c!important}
+.btn-fav{background:#fbf3ed!important;color:#a84f2c!important;border-color:#f0d9ca!important}
+.user-info{border-color:#e8e4dd!important}
+.hero{margin:30px 0 34px!important;min-height:370px;border-radius:26px!important;padding:62px 58px 48px!important;background:linear-gradient(112deg,#132f38 0%,#1d4448 58%,#72503f 140%)!important;box-shadow:0 22px 55px rgba(23,48,55,.18)!important}
+.hero:before{background:radial-gradient(ellipse at 83% 15%,rgba(213,145,103,.30),transparent 38%),radial-gradient(ellipse at 65% 100%,rgba(96,158,151,.2),transparent 45%)!important}
+.hero:after{content:'⌂';position:absolute;right:7%;top:2%;font-size:310px;line-height:1;color:rgba(255,255,255,.045);font-weight:300;pointer-events:none}
+.hero-inner{max-width:730px;z-index:1}
+.hero .region-badge{background:rgba(255,255,255,.09)!important;border:1px solid rgba(255,255,255,.18)!important;color:#f4ded1!important;padding:8px 15px!important;font-size:11px;letter-spacing:.3px}
+.hero h1{font-size:clamp(38px,5vw,59px)!important;letter-spacing:-2px!important;line-height:1.04!important;margin-bottom:17px!important;font-weight:800}
+.hero h1 .grad{background:linear-gradient(90deg,#f1c5a9,#e69b73)!important;-webkit-background-clip:text!important;background-clip:text!important}
+.hero p{font-size:15px!important;line-height:1.75!important;color:#d5dfdc!important;max-width:550px!important;margin-bottom:27px!important}
+.hero-search{max-width:650px!important;padding:8px!important;border-radius:13px!important;box-shadow:0 14px 35px rgba(0,0,0,.22)!important}
+.hero-search input{padding:14px 16px!important;font-size:14px!important}
+.hero-search button{background:#c56b43!important;border-radius:9px!important;padding:13px 25px!important}
+.hero-stats{gap:40px!important;margin-top:31px!important}
+.hero-stats .stat .num{font-size:27px!important;color:#fff!important}
+.hero-stats .stat .lbl{font-size:10px!important;color:#c3d0cc!important;letter-spacing:1px}
+/* Категории и поиск */
+.categories{gap:10px!important;margin-bottom:16px!important}
+.cat-btn{background:#fff!important;border:1px solid #e6e1d9!important;color:#53636a!important;border-radius:10px!important;padding:11px 17px!important;font-size:13px!important;box-shadow:none!important}
+.cat-btn:hover{border-color:#d9a58b!important;color:#a84f2c!important}
+.cat-btn.active{background:#173b43!important;border-color:#173b43!important;color:#fff!important}
+.filters{background:#fff!important;border:1px solid #e9e4dc!important;border-radius:15px!important;padding:13px!important;box-shadow:0 6px 22px rgba(30,40,40,.045)!important;gap:10px!important;margin-bottom:30px!important}
+.filters select,.filters input{min-height:48px!important;border:1px solid #e9e5de!important;border-radius:10px!important;padding:12px 15px!important;color:#33464c!important;font-size:13px!important}
+.filters select:focus,.filters input:focus{border-color:#c56b43!important;box-shadow:0 0 0 3px rgba(197,107,67,.12)!important}
+/* Карточки */
+.ads-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))!important;gap:23px!important;margin-bottom:55px!important}
+.ad-card{background:#fff!important;border:1px solid #eae6df!important;border-radius:17px!important;box-shadow:0 5px 22px rgba(30,40,40,.055)!important;overflow:hidden;transition:transform .2s,box-shadow .2s!important}
+.ad-card:hover{transform:translateY(-5px)!important;box-shadow:0 18px 38px rgba(30,40,40,.13)!important}
+.media-preview{height:230px!important;background:#e8e5df!important}
+.card-body{padding:18px 19px 15px!important}
+.card-body .price{font-size:24px!important;color:#a84f2c!important;letter-spacing:-.7px!important}
+.card-body .title{font-size:15px!important;line-height:1.45!important;color:#213940!important}
+.card-body .address{font-size:12px!important;color:#879294!important}
+.card-body .params span{background:#f5f2ed!important;color:#58676b!important;border-radius:7px!important;padding:6px 9px!important}
+.card-body .meta{border-color:#eeeae4!important}
+.ad-link-row{border-color:#eeeae4!important}
+.badge.sale{background:#497e70!important}.badge.rent{background:#c58a4e!important}
+.favorite-btn{box-shadow:0 3px 12px rgba(0,0,0,.12)!important}
+.empty-state{background:#fff!important;border:1px dashed #ded8ce!important;border-radius:16px!important}
+.home-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 17px!important}
+.home-section-kicker{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#b76540!important;margin-bottom:8px}
+.home-section-heading h2{font-size:clamp(24px,3vw,32px)!important;letter-spacing:-1px;color:#1b343b!important;margin-bottom:5px}
+.home-section-heading p{font-size:13px;color:#849093;line-height:1.55}
+/* Модальные окна и формы */
+.modal-content{border-radius:19px!important;border:1px solid #ebe5dc!important;box-shadow:0 25px 70px rgba(20,35,40,.22)!important}
+.close-btn{border-radius:9px!important}
+input,select,textarea{accent-color:#c56b43}
+/* Адаптация */
+@media(max-width:760px){
+ .container{padding-left:16px!important;padding-right:16px!important}
+ .header-content{flex-direction:row!important;align-items:center!important;flex-wrap:wrap!important;gap:10px!important}
+ .header-contacts{margin-left:auto}.header-actions{justify-content:flex-end;gap:5px!important}
+ .hero{margin:17px 0 23px!important;padding:36px 23px 29px!important;min-height:0!important;border-radius:19px!important}
+ .hero:after{font-size:175px;right:-5%;top:20%}
+ .hero h1{font-size:clamp(31px,8vw,42px)!important;letter-spacing:-1.2px!important}
+ .hero p{font-size:13px!important;max-width:95%!important}
+ .hero-search{display:flex!important;gap:5px!important}.hero-search input{padding:11px 9px!important;font-size:12px!important}.hero-search button{padding:11px 13px!important;font-size:12px!important}
+ .hero-stats{gap:21px!important;margin-top:22px!important}.hero-stats .stat .num{font-size:22px!important}
+ .categories{flex-wrap:nowrap!important;overflow-x:auto!important;padding-bottom:8px;scrollbar-width:none}.categories::-webkit-scrollbar{display:none}.cat-btn{flex:0 0 auto;padding:10px 14px!important}
+ .filters{flex-direction:column!important}.filters select,.filters input{min-width:100%!important}
+ .home-section-heading{display:block!important;margin-bottom:13px!important}
+ .ads-grid{grid-template-columns:1fr!important;gap:16px!important}.media-preview{height:230px!important}
+}
+@media(max-width:480px){
+ .container{padding-left:12px!important;padding-right:12px!important}
+ .header-content{gap:8px!important}.logo-mark{width:42px;height:42px}.logo-text .brand{font-size:19px}
+ .hero{padding:31px 18px 25px!important}.hero h1{font-size:30px!important}
+ .hero-search input{min-width:0}.hero-search button{padding:10px 11px!important}
+ .media-preview{height:215px!important}.modal-content{padding:18px!important}
+}
+
 </style>
 <base target="_blank">
 </head>
@@ -355,7 +458,6 @@ img,video{display:block}
           </div>
         </div>
         <button class="btn btn-login" id="loginBtn" onclick="showLoginModal()">🔑 Войти</button>
-        <button class="btn btn-fav" onclick="showFavorites()">❤️ <span class="count" id="favoritesCount">0</span></button>
         <button class="btn btn-archive" id="archiveBtn" onclick="openArchive()" style="display:none">📦 Архив</button>
         <button class="btn btn-reset" id="resetBtn" onclick="resetDatabase()" style="display:none">🔄 Сброс</button>
         <button class="btn btn-logout" id="logoutBtn" onclick="logout()" style="display:none">🚪 Выйти</button>
@@ -385,6 +487,15 @@ img,video{display:block}
   </div>
 </section>
 
+<!-- ========== ЗАГОЛОВОК КАТАЛОГА ========== -->
+<div class="container home-section-heading">
+  <div>
+    <div class="home-section-kicker">Подбор недвижимости</div>
+    <h2>Найдите место, которое станет вашим домом</h2>
+    <p>Актуальные предложения по продаже и аренде в Астрахани и области.</p>
+  </div>
+</div>
+
 <!-- ========== КАТЕГОРИИ ========== -->
 <div class="container categories" id="categories">
   <button class="cat-btn active" data-cat="all">🏠 Все</button>
@@ -412,9 +523,28 @@ img,video{display:block}
   </select>
   <input type="text" id="filterSearch" placeholder="🔍 Поиск по адресу или названию…">
 </div>
+<div class="container extra-filters">
+ <select id="filterDistrict"><option value="all">Все районы</option><option>Кировский</option><option>Советский</option><option>Ленинский</option><option>Трусовский</option><option>Приволжский</option></select>
+ <input type="number" id="filterPriceMin" min="0" placeholder="Цена от, ₽">
+ <input type="number" id="filterPriceMax" min="0" placeholder="Цена до, ₽">
+ <input type="number" id="filterAreaMin" min="0" placeholder="Площадь от, м²">
+ <select id="filterSort"><option value="new">Сначала новые</option><option value="priceUp">Сначала дешевле</option><option value="priceDown">Сначала дороже</option><option value="areaDown">Больше площадь</option><option value="popular">Популярные</option></select>
+</div>
 
 <!-- ========== СЕТКА ОБЪЯВЛЕНИЙ ========== -->
 <div class="container ads-grid" id="adsGrid"></div>
+<section class="container site-reviews" id="siteReviews">
+ <div class="site-reviews-head"><div><div class="home-section-kicker">Мнение клиентов</div><h2>Отзывы о ТвойДом</h2><p class="review-note">Отзывы публикуются после проверки администратором.</p></div><span id="siteReviewCount" class="review-note">Загрузка отзывов…</span></div>
+ <div id="siteReviewList" class="site-review-grid"><div class="review-note">Загружаем отзывы…</div></div>
+ <form class="review-form" id="siteReviewForm" onsubmit="submitSiteReview(event)">
+  <h3>Оставить отзыв</h3>
+  <div class="rating-select" id="siteRatingSelect"><span class="star active" onclick="setSiteRating(1)">★</span><span class="star active" onclick="setSiteRating(2)">★</span><span class="star active" onclick="setSiteRating(3)">★</span><span class="star active" onclick="setSiteRating(4)">★</span><span class="star active" onclick="setSiteRating(5)">★</span></div>
+  <textarea id="siteReviewText" minlength="5" maxlength="1500" placeholder="Расскажите о вашем опыте (5–1500 символов)" required></textarea>
+  <button type="submit">Отправить анонимно</button>
+  <div class="review-note">Имя не требуется. Сначала отзыв попадёт на модерацию.</div>
+ </form>
+ <div id="reviewModeration" style="display:none;margin-top:22px"><h3>🛡️ Отзывы на модерации</h3><div id="pendingReviewList"></div></div>
+</section>
 
 <!-- ========== МОДАЛКИ ========== -->
 <div class="modal-overlay" id="modalOverlay">
@@ -639,7 +769,7 @@ async function loadUser(){
  const {data,error}=await supabaseClient.auth.getSession();
  if(error)console.warn('Auth session:',error);
  applySession(data?.session||null);
- supabaseClient.auth.onAuthStateChange((_event,session)=>{applySession(session);});
+ supabaseClient.auth.onAuthStateChange((_event,session)=>{applySession(session);if(session?.user?.id===ADMIN_UID)setTimeout(loadSiteReviews,0);else{const m=document.getElementById('reviewModeration');if(m)m.style.display='none';}});
 }
 function updateUIForUser(){
  const avatar=document.getElementById('userAvatar'),nameEl=document.getElementById('userName'),roleEl=document.getElementById('userRole');
@@ -888,7 +1018,6 @@ function renderAds(list){
  if(!list.length){grid.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>Объявлений не найдено</p></div>';return;}
  grid.innerHTML=list.map(ad=>{
   const fullLink=getFullLink(ad.id);
-  const fav=isFavorite(ad.id);
   const hasMedia=ad.media&&ad.media.length>0;
   const firstMedia=hasMedia?ad.media[0]:null;
   const mediaCount=hasMedia?ad.media.length:0;
@@ -902,7 +1031,6 @@ function renderAds(list){
    ${ad.actual&&!isArchived?'<span class="badge actual">● Актуально</span>':''}
    ${isArchived?'<span class="badge archived">📦 Архив</span>':''}
    ${hasStoredFiles?'<span class="badge stored">💾 На ПК</span>':''}
-   <button class="favorite-btn ${fav?'active':''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">${fav?'❤️':'🤍'}</button>
    <div class="media-preview">
     ${firstMedia?
      (firstIsVideo?`<video src="${firstMedia.url}" muted playsinline preload="metadata"></video><span class="vid-tag">🎬 Видео</span>`:
@@ -922,7 +1050,7 @@ function renderAds(list){
     </div>
     <div class="meta">
      <span>${ad.type}</span>
-     <span>📅 ${ad.date}</span>
+     <span>📅 ${ad.date}</span><span>👁 ${getAdViews(ad.id)}</span>
      ${ad.reviews&&ad.reviews.length?`<span>💬 ${ad.reviews.length}</span>`:''}
     </div>
    </div>
@@ -941,12 +1069,18 @@ function filterAds(){
  const type=document.getElementById('filterType').value;
  const action=document.getElementById('filterAction').value;
  const search=document.getElementById('filterSearch').value.toLowerCase().trim();
+ const district=document.getElementById('filterDistrict')?.value||'all';
+ const minPrice=Number(document.getElementById('filterPriceMin')?.value)||0;
+ const maxPrice=Number(document.getElementById('filterPriceMax')?.value)||Infinity;
+ const minArea=Number(document.getElementById('filterAreaMin')?.value)||0;
  const cat=document.querySelector('.cat-btn.active')?.dataset.cat||'all';
  currentFiltered=adsData.filter(ad=>{
   if(ad.archived===true)return false;
   if(type!=='all'&&ad.type!==type)return false;
   if(action!=='all'&&ad.action!==action)return false;
-  if(search&&!ad.address.toLowerCase().includes(search)&&!ad.title.toLowerCase().includes(search))return false;
+  if(district!=='all'&&ad.district!==district)return false;
+  if(Number(ad.price)<minPrice||Number(ad.price)>maxPrice||Number(ad.area)<minArea)return false;
+  if(search&&!String(ad.address||'').toLowerCase().includes(search)&&!String(ad.title||'').toLowerCase().includes(search)&&!String(ad.description||'').toLowerCase().includes(search))return false;
   if(cat==='sale'&&ad.action!=='Продажа')return false;
   if(cat==='rent'&&ad.action!=='Аренда')return false;
   if(cat==='1room'&&ad.rooms!==1)return false;
@@ -956,6 +1090,8 @@ function filterAds(){
   if(cat==='land'&&ad.type!=='Земельный участок')return false;
   return true;
  });
+ const sort=document.getElementById('filterSort')?.value||'new';
+ currentFiltered.sort((a,b)=>sort==='priceUp'?a.price-b.price:sort==='priceDown'?b.price-a.price:sort==='areaDown'?b.area-a.area:sort==='popular'?getAdViews(b.id)-getAdViews(a.id):String(b.date||'').localeCompare(String(a.date||'')));
  renderAds(currentFiltered);
 }
 function heroSearch(){
@@ -1011,6 +1147,7 @@ function openAd(id){
  const ad=adsData.find(a=>a.id===id);
  if(!ad||ad.archived){showToast('❌ Объявление не найдено или в архиве');return;}
  currentAdId=id;
+ countAdView(id);
  const fullLink=getFullLink(id);
  let galleryHtml='';
  if(ad.media&&ad.media.length){
@@ -1107,19 +1244,7 @@ function openAd(id){
   </div>
   ${contactBlock}
   ${adminActions}
-  ${ad.reviews&&ad.reviews.length?`<div class="reviews-section"><h4>💬 Отзывы</h4>${reviewsHtml}</div>`:''}
-  <div class="reviews-section">
-   <h4>💬 Оставить отзыв</h4>
-   <form class="review-form" onsubmit="addReview(event,${ad.id})">
-    <div class="rating-select" id="ratingSelect">${[1,2,3,4,5].map(i=>`<span class="star ${i<=5?'active':''}" data-value="${i}" onclick="setRating(${i})">★</span>`).join('')}</div>
-    <div class="form-row">
-     <input type="text" placeholder="Ваше имя" id="reviewName" required>
-     <input type="text" placeholder="Ваш отзыв…" id="reviewText" required style="flex:2">
-    </div>
-    <input type="hidden" id="reviewRating" value="5">
-    <button type="submit">📝 Отправить</button>
-   </form>
-  </div>
+  <div class="review-note">💬 Отзывы о сайте можно прочитать и оставить в общем разделе «Отзывы о ТвойДом».</div>
   <div style="margin-top:14px;font-size:12px;color:var(--ink3)">📅 ${ad.date} · ID #${ad.id} · ${ad.region}</div>`;
  document.getElementById('modalOverlay').classList.add('active');
  document.body.style.overflow='hidden';
@@ -1132,24 +1257,46 @@ async function archiveAd(id){
   showToast('📦 Объявление отправлено в архив');closeModal();filterAds();updateCategories();}
 }
 
-/* ================= ОТЗЫВЫ ================= */
-let selectedRating=5;
-function setRating(v){
- selectedRating=v;document.getElementById('reviewRating').value=v;
- document.querySelectorAll('#ratingSelect .star').forEach((el,i)=>el.classList.toggle('active',i<v));
+/* ================= ОБЩИЕ ОТЗЫВЫ С МОДЕРАЦИЕЙ ================= */
+let siteSelectedRating=5;
+function setSiteRating(v){siteSelectedRating=Math.max(1,Math.min(5,Number(v)||5));document.querySelectorAll('#siteRatingSelect .star').forEach((el,i)=>el.classList.toggle('active',i<siteSelectedRating));}
+function getAdViews(id){try{return Number(JSON.parse(localStorage.getItem('td_ad_views')||'{}')[id])||0;}catch(e){return 0;}}
+function countAdView(id){try{const v=JSON.parse(localStorage.getItem('td_ad_views')||'{}');v[id]=(Number(v[id])||0)+1;localStorage.setItem('td_ad_views',JSON.stringify(v));}catch(e){}}
+async function loadSiteReviews(){
+ const list=document.getElementById('siteReviewList');if(!list)return;
+ try{
+  const {data,error}=await supabaseClient.from('reviews').select('id,name,rating,message,status,created_at').eq('status','approved').order('created_at',{ascending:false}).limit(30);
+  if(error)throw error;
+  document.getElementById('siteReviewCount').textContent=`Опубликовано: ${data.length}`;
+  list.innerHTML=data.length?data.map(r=>`<article class="site-review-card"><div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div><strong>Аноним</strong><div class="review-note">${new Date(r.created_at).toLocaleDateString('ru-RU')}</div><p>${escapeHtml(r.message)}</p></article>`).join(''):'<div class="review-note">Пока нет опубликованных отзывов. Будьте первым!</div>';
+  if(isAdmin(currentUser))await loadPendingReviews();
+ }catch(e){console.error('Reviews load:',e);list.innerHTML='<div class="review-note">Не удалось загрузить отзывы. Проверьте подключение.</div>';}
 }
-async function addReview(e,adId){
- e.preventDefault();
- const name=document.getElementById('reviewName').value.trim();
- const text=document.getElementById('reviewText').value.trim();
- const rating=parseInt(document.getElementById('reviewRating').value)||5;
- if(!name||!text){showToast('⚠️ Заполните все поля');return;}
- const ad=adsData.find(a=>a.id===adId);if(!ad)return;
- if(!ad.reviews)ad.reviews=[];
- ad.reviews.push({name,text,rating,date:new Date().toISOString().split('T')[0],helpful:0});
- await saveAllData();
- showToast('✅ Отзыв добавлен!');
- openAd(adId);renderAds(currentFiltered);
+async function submitSiteReview(e){
+ e.preventDefault();const message=document.getElementById('siteReviewText').value.trim();
+ if(message.length<5||message.length>1500){showToast('⚠️ Отзыв должен содержать от 5 до 1500 символов');return;}
+ const btn=document.querySelector('#siteReviewForm button[type="submit"]');btn.disabled=true;
+ try{
+  const {error}=await supabaseClient.from('reviews').insert({name:'Аноним',rating:siteSelectedRating,message,status:'pending'});
+  if(error)throw error;
+  document.getElementById('siteReviewForm').reset();setSiteRating(5);showToast('✅ Отзыв отправлен на проверку');
+  if(isAdmin(currentUser))await loadPendingReviews();
+ }catch(err){console.error(err);showToast('❌ Не удалось отправить отзыв: '+err.message);}
+ finally{btn.disabled=false;}
+}
+async function loadPendingReviews(){
+ if(!isAdmin(currentUser))return;
+ const wrap=document.getElementById('reviewModeration'),list=document.getElementById('pendingReviewList');if(!wrap||!list)return;
+ wrap.style.display='block';list.innerHTML='<div class="review-note">Загрузка…</div>';
+ const {data,error}=await supabaseClient.from('reviews').select('id,rating,message,created_at').eq('status','pending').order('created_at',{ascending:true});
+ if(error){list.innerHTML='<div class="review-note">Ошибка загрузки модерации: '+escapeHtml(error.message)+'</div>';return;}
+ list.innerHTML=data.length?data.map(r=>`<div class="site-review-card"><div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div><p>${escapeHtml(r.message)}</p><div class="review-note">${new Date(r.created_at).toLocaleString('ru-RU')}</div><div class="review-admin-row"><button class="review-approve" onclick="moderateReview(${r.id},'approved')">✓ Опубликовать</button><button class="review-reject" onclick="moderateReview(${r.id},'rejected')">Отклонить</button></div></div>`).join(''):'<div class="review-note">Новых отзывов нет.</div>';
+}
+async function moderateReview(id,status){
+ if(!isAdmin(currentUser)){showToast('⛔ Только администратор');return;}
+ const {error}=await supabaseClient.from('reviews').update({status}).eq('id',id);
+ if(error){showToast('❌ '+error.message);return;}
+ showToast(status==='approved'?'✅ Отзыв опубликован':'Отзыв отклонён');await loadSiteReviews();
 }
 
 /* ================= ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ ================= */
@@ -1553,11 +1700,14 @@ document.addEventListener('DOMContentLoaded',async function(){
  document.getElementById('filterType').addEventListener('change',filterAds);
  document.getElementById('filterAction').addEventListener('change',filterAds);
  document.getElementById('filterSearch').addEventListener('input',filterAds);
+ ['filterDistrict','filterPriceMin','filterPriceMax','filterAreaMin','filterSort'].forEach(id=>document.getElementById(id)?.addEventListener('input',filterAds));
+ ['filterDistrict','filterSort'].forEach(id=>document.getElementById(id)?.addEventListener('change',filterAds));
  document.getElementById('heroSearch').addEventListener('keydown',function(e){if(e.key==='Enter')heroSearch();});
  document.getElementById('chatInputFloat').addEventListener('keydown',function(e){if(e.key==='Enter')sendChatMessageFloat();});
 
  currentFiltered=adsData.filter(a=>!a.archived);
  renderAds(currentFiltered);updateCategories();updateFavoritesCount();updateUnreadBadge();
+ await loadSiteReviews();
 
  const params=new URLSearchParams(window.location.search);
  const adId=params.get('ad');
