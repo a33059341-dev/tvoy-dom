@@ -838,19 +838,22 @@ async function restoreFromArchive(id){
 /* ================= ССЫЛКИ / ШАРИНГ ================= */
 function getFullLink(id){return '?ad='+(id||currentAdId);}
 function shareLink(platform,url){
- if(!url){showToast('❌ Откройте объявление');return;}
- const fullUrl=window.location.href.split('?')[0]+'?ad='+(currentAdId||'');
- const ad=adsData.find(a=>a.id===currentAdId);
- const adTitle=ad?ad.title:'объявление';
- const text=encodeURIComponent('🏠 '+adTitle+' — недвижимость в Астрахани\n'+fullUrl);
- const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
- switch(platform){
-  case 'telegram':window.open('https://t.me/share/url?url='+encodeURIComponent(fullUrl)+'&text='+encodeURIComponent('🏠 Недвижимость Астрахань'),'_blank');break;
-  case 'whatsapp':window.open(isMobile?'https://wa.me/?text='+text:'https://web.whatsapp.com/send?text='+text,'_blank');break;
-  case 'sms':window.open('sms:?body='+text,'_blank');break;
-  case 'email':window.open('mailto:?subject='+encodeURIComponent('Объявление: '+adTitle)+'&body='+encodeURIComponent('Здравствуйте!\n\nПосмотрите объявление:\n'+adTitle+'\n'+fullUrl+'\n\nС уважением, ТвойДом'),'_blank');break;
-  case 'copy':copyText(fullUrl);break;
- }
+  if(!url){showToast('❌ Не удалось получить ссылку на объявление');return;}
+  const adParam=new URLSearchParams(String(url).replace(/^\?/,'')).get('ad');
+  if(!adParam){showToast('❌ Не удалось определить объявление');return;}
+  const baseUrl=window.location.href.split('#')[0].split('?')[0];
+  const fullUrl=baseUrl+'?ad='+encodeURIComponent(adParam);
+  const ad=adsData.find(a=>String(a.id)===String(adParam));
+  const adTitle=ad?ad.title:'объявление';
+  const text=encodeURIComponent('🏠 '+adTitle+' — недвижимость в Астрахани\n'+fullUrl);
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  switch(platform){
+   case 'telegram':window.open('https://t.me/share/url?url='+encodeURIComponent(fullUrl)+'&text='+encodeURIComponent('🏠 '+adTitle),'_blank');break;
+   case 'whatsapp':window.open(isMobile?'https://wa.me/?text='+text:'https://web.whatsapp.com/send?text='+text,'_blank');break;
+   case 'sms':window.open('sms:?body='+text,'_blank');break;
+   case 'email':window.open('mailto:?subject='+encodeURIComponent('Объявление: '+adTitle)+'&body='+encodeURIComponent('Здравствуйте!\n\nПосмотрите объявление:\n'+adTitle+'\n'+fullUrl+'\n\nС уважением, ТвойДом'),'_blank');break;
+   case 'copy':copyText(fullUrl);break;
+  }
 }
 function copyText(text){
  const done=()=>showToast('✅ Скопировано!');
