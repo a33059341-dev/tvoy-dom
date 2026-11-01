@@ -803,7 +803,12 @@ function toggleFavorite(id){
  saveFavorites(fav);renderAds(currentFiltered);
 }
 function isFavorite(id){return getFavorites().includes(id);}
-function updateFavoritesCount(){document.getElementById('favoritesCount').textContent=getFavorites().length;}
+function updateFavoritesCount(){
+ const countEl=document.getElementById('favoritesCount');
+ // The counter is not displayed on the homepage; don't let its absence
+ // interrupt rendering or shared-link opening.
+ if(countEl) countEl.textContent=getFavorites().length;
+}
 function showFavorites(){
  const fav=getFavorites();
  if(!fav.length){showToast('❤️ У вас пока нет избранных');return;}
@@ -1522,7 +1527,7 @@ async function saveAd(e){
  const area=parseInt(document.getElementById('editArea').value)||0;
  const floor=parseInt(document.getElementById('editFloor').value)||0;
  const totalFloors=parseInt(document.getElementById('editTotalFloors').value)||0;
- const description=document.getElementById('editDescription').value.trim();
+ const description=document.getElementById('editDescription').value.replace(/\r\n?/g,'\n').trim();
  const features=document.getElementById('editFeatures').value.split(',').map(f=>f.trim()).filter(Boolean);
  const region=document.getElementById('editRegion').value;
  const date=document.getElementById('editDate').value;
@@ -1715,7 +1720,7 @@ document.addEventListener('DOMContentLoaded',async function(){
  const params=new URLSearchParams(window.location.search);
  const adId=params.get('ad');
  if(adId){
-  const sharedAd=adsData.find(a=>String(a.id)===String(adId));
+  const sharedAd=adsData.find(a=>String(a.id)===String(adId) || (Number.isFinite(Number(a.id)) && Number(a.id)===Number(adId)));
   if(sharedAd && !sharedAd.archived){
    // Open after the page has completed its initial render.
    setTimeout(()=>openAd(sharedAd.id),0);
