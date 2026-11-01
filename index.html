@@ -844,13 +844,13 @@ async function restoreFromArchive(id){
 }
 
 /* ================= ССЫЛКИ / ШАРИНГ ================= */
-function getFullLink(id){return '?ad='+(id||currentAdId);}
+function getFullLink(id){const base=window.location.origin+window.location.pathname;return base+'?ad='+encodeURIComponent(id||currentAdId);}
 function shareLink(platform,url){
   if(!url){showToast('❌ Не удалось получить ссылку на объявление');return;}
-  const adParam=new URLSearchParams(String(url).replace(/^\?/,'')).get('ad');
+  let adParam=null;
+  try{adParam=new URL(String(url),window.location.href).searchParams.get('ad');}catch(e){}
   if(!adParam){showToast('❌ Не удалось определить объявление');return;}
-  const baseUrl=window.location.href.split('#')[0].split('?')[0];
-  const fullUrl=baseUrl+'?ad='+encodeURIComponent(adParam);
+  const fullUrl=new URL(String(url),window.location.href).origin+new URL(String(url),window.location.href).pathname+'?ad='+encodeURIComponent(adParam);
   const ad=adsData.find(a=>String(a.id)===String(adParam));
   const adTitle=ad?ad.title:'объявление';
   const text=encodeURIComponent('🏠 '+adTitle+' — недвижимость в Астрахани\n'+fullUrl);
@@ -1720,12 +1720,29 @@ document.addEventListener('DOMContentLoaded',async function(){
  const params=new URLSearchParams(window.location.search);
  const adId=params.get('ad');
  if(adId){
-  const sharedAd=adsData.find(a=>String(a.id)===String(adId) || (Number.isFinite(Number(a.id)) && Number(a.id)===Number(adId)));
-  if(sharedAd && !sharedAd.archived){
-   // Open after the page has completed its initial render.
-   setTimeout(()=>openAd(sharedAd.id),0);
-  }else{
-   console.warn('Объявление из ссылки не найдено:',adId);
+  // Resolve the shared listing from Supabase directly, not only from the current
+  // in-memory/filter state. This supports links opened in a fresh browser session.
+  try{
+   let sharedAd=adsData.find(a=>String(a.id)===String(adId));
+   if(!sharedAd){
+    const {data,error}=await supabaseClient.from('ads').select('*').eq('id',adId).maybeSingle();
+    if(error) throw error;
+    if(data){
+     sharedAd=dbToAd(data);
+     adsData.push(sharedAd);
+    }
+   }
+   if(sharedAd && !sharedAd.archived){
+    currentFiltered=adsData.filter(a=>!a.archived);
+    renderAds(currentFiltered);
+    openAd(sharedAd.id);
+   }else{
+    console.warn('Объявление из ссылки не найдено или находится в архиве:',adId);
+    showToast('Объявление по этой ссылке не найдено');
+   }
+  }catch(linkError){
+   console.error('Ошибка открытия объявления по ссылке:',linkError);
+   showToast('Не удалось открыть объявление. Проверьте доступ к объявлению.');
   }
  }
  updateChatHeaderName();
