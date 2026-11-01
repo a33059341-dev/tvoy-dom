@@ -1228,7 +1228,7 @@ function openAd(id){
    <div class="spec"><div class="label">Тип</div><div class="value">${ad.type}</div></div>
    <div class="spec"><div class="label">Регион</div><div class="value" style="font-size:13px">${ad.region}</div></div>
   </div>
-  <div style="line-height:1.7;margin:12px 0;font-size:14px;color:var(--ink2)">${ad.description||''}</div>
+  <div style="line-height:1.7;white-space:pre-line;overflow-wrap:anywhere;margin:12px 0;font-size:14px;color:var(--ink2)">${ad.description||''}</div>
   ${featuresHtml}
   ${galleryHtml}
   <div style="margin:12px 0">
@@ -1713,9 +1713,15 @@ document.addEventListener('DOMContentLoaded',async function(){
  const params=new URLSearchParams(window.location.search);
  const adId=params.get('ad');
  if(adId){
-  // Supabase may use UUID strings; do not convert the ID to a number.
-  const ad=adsData.find(a=>String(a.id)===String(adId)&&!a.archived);
-  if(ad){setTimeout(()=>openAd(ad.id),300);}
+  // Support both numeric IDs and UUID/string IDs from Supabase.
+  const ad=adsData.find(a=>String(a.id)===String(adId) ||
+    (Number.isFinite(Number(a.id)) && Number(a.id)===Number(adId)));
+  if(ad && !ad.archived){
+   history.replaceState(null,'',window.location.pathname+window.location.search);
+   requestAnimationFrame(()=>openAd(ad.id));
+  }else{
+   console.warn('Объявление из ссылки не найдено:',adId);
+  }
  }
  updateChatHeaderName();
  console.log('✅ ТвойДом загружен · объявлений:',adsData.length);
