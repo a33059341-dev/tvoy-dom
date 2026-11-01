@@ -1093,6 +1093,7 @@ function filterAds(){
  const sort=document.getElementById('filterSort')?.value||'new';
  currentFiltered.sort((a,b)=>sort==='priceUp'?a.price-b.price:sort==='priceDown'?b.price-a.price:sort==='areaDown'?b.area-a.area:sort==='popular'?getAdViews(b.id)-getAdViews(a.id):String(b.date||'').localeCompare(String(a.date||'')));
  renderAds(currentFiltered);
+ updateCategories();
 }
 function heroSearch(){
  const q=document.getElementById('heroSearch').value.trim();
@@ -1574,7 +1575,9 @@ async function saveAd(e){
    tempMediaFiles=tempMediaFiles.filter(x=>x!==item);
    await saveOneAd(adData);
   }
-  await saveOneAd(adData);
+  // Новое объявление уже сохранено при INSERT, а каждое загруженное
+  // фото сохраняется вместе с обновлённым списком media в цикле выше.
+  // Не выполняем лишний повторный UPSERT после успешной загрузки.
   showToast('✅ Объявление '+(adData.id?'сохранено':'добавлено')+'!');
   tempMediaFiles=[];editingId=null;closeModal();filterAds();updateCategories();
  }catch(error){
