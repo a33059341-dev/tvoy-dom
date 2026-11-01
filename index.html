@@ -1713,8 +1713,9 @@ document.addEventListener('DOMContentLoaded',async function(){
  const params=new URLSearchParams(window.location.search);
  const adId=params.get('ad');
  if(adId){
-  const id=parseInt(adId);
-  if(adsData.find(a=>a.id===id&&!a.archived)){setTimeout(()=>openAd(id),300);}
+  // Supabase may use UUID strings; do not convert the ID to a number.
+  const ad=adsData.find(a=>String(a.id)===String(adId)&&!a.archived);
+  if(ad){setTimeout(()=>openAd(ad.id),300);}
  }
  updateChatHeaderName();
  console.log('✅ ТвойДом загружен · объявлений:',adsData.length);
